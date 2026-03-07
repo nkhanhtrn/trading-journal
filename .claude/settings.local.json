@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find . -type f -name \"*.csv\" 2>/dev/null | head -20)",
+      "Bash(TMPDIR=/data/data/com.termux/files/home/tmp ls -la)",
+      "Bash(mkdir -p tmp && export TMPDIR=tmp && ls -la)",
+      "Bash(TMPDIR=/data/data/com.termux/files/home/.cache ls -la)",
+      "Bash(npm install)",
+      "Bash(TMPDIR=/data/data/com.termux/files/home npm install)",
+      "Bash(find . -type f -name \"*.json\" -o -name \"*.js\" -o -name \"*.ts\" 2>/dev/null | head -20)",
+      "Bash(node groupByStrategy.js)",
+      "Bash(find . -name \"*.vue\" -o -name \"main.js\" -o -name \"index.html\" 2>/dev/null | head -20)"
+    ]
+  }
+}

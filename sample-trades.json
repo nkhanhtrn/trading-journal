@@ -1,0 +1,118 @@
+[
+  {
+    "id": 1,
+    "date": "2026-03-01",
+    "underlying": "SPY",
+    "legs": [
+      { "type": "call", "strike": 450, "expiry": "2026-03-15", "premium": 5.50, "quantity": 1, "action": "buy" },
+      { "type": "call", "strike": 460, "expiry": "2026-03-15", "premium": 2.00, "quantity": 1, "action": "sell" }
+    ],
+    "debit_paid": 3.50,
+    "status": "open"
+  },
+  {
+    "id": 2,
+    "date": "2026-03-02",
+    "underlying": "AAPL",
+    "legs": [
+      { "type": "put", "strike": 170, "expiry": "2026-03-21", "premium": 2.50, "quantity": 10, "action": "buy" },
+      { "type": "put", "strike": 175, "expiry": "2026-03-21", "premium": 4.00, "quantity": 10, "action": "sell" }
+    ],
+    "credit_received": 1.50,
+    "status": "closed",
+    "exit_date": "2026-03-05",
+    "pnl": 120
+  },
+  {
+    "id": 3,
+    "date": "2026-03-02",
+    "underlying": "TSLA",
+    "legs": [
+      { "type": "call", "strike": 200, "expiry": "2026-03-15", "premium": 1.00, "quantity": 5, "action": "buy" },
+      { "type": "call", "strike": 190, "expiry": "2026-03-15", "premium": 3.50, "quantity": 5, "action": "sell" }
+    ],
+    "credit_received": 2.50,
+    "status": "open"
+  },
+  {
+    "id": 4,
+    "date": "2026-03-03",
+    "underlying": "SPY",
+    "legs": [
+      { "type": "put", "strike": 440, "expiry": "2026-03-22", "premium": 0.50, "quantity": 1, "action": "buy" },
+      { "type": "put", "strike": 445, "expiry": "2026-03-22", "premium": 1.20, "quantity": 1, "action": "sell" },
+      { "type": "call", "strike": 460, "expiry": "2026-03-22", "premium": 1.50, "quantity": 1, "action": "sell" },
+      { "type": "call", "strike": 465, "expiry": "2026-03-22", "premium": 0.80, "quantity": 1, "action": "buy" }
+    ],
+    "credit_received": 1.40,
+    "status": "open"
+  },
+  {
+    "id": 5,
+    "date": "2026-03-04",
+    "underlying": "QQQ",
+    "legs": [
+      { "type": "put", "strike": 480, "expiry": "2026-03-28", "premium": 5.00, "quantity": 2, "action": "buy" },
+      { "type": "put", "strike": 470, "expiry": "2026-03-28", "premium": 2.50, "quantity": 2, "action": "sell" }
+    ],
+    "debit_paid": 2.50,
+    "status": "open"
+  },
+  {
+    "id": 6,
+    "date": "2026-03-05",
+    "underlying": "NVDA",
+    "legs": [
+      { "type": "call", "strike": 900, "expiry": "2026-04-18", "premium": 15.00, "quantity": 1, "action": "buy" }
+    ],
+    "debit_paid": 15.00,
+    "status": "open"
+  },
+  {
+    "id": 7,
+    "date": "2026-03-05",
+    "underlying": "AMD",
+    "legs": [
+      { "type": "call", "strike": 140, "expiry": "2026-03-22", "premium": 8.00, "quantity": 1, "action": "buy" },
+      { "type": "call", "strike": 145, "expiry": "2026-03-22", "premium": 5.00, "quantity": 2, "action": "sell" },
+      { "type": "call", "strike": 150, "expiry": "2026-03-22", "premium": 2.50, "quantity": 1, "action": "buy" }
+    ],
+    "debit_paid": 0.50,
+    "status": "open"
+  },
+  {
+    "id": 8,
+    "date": "2026-03-06",
+    "underlying": "SPY",
+    "legs": [
+      { "type": "put", "strike": 445, "expiry": "2026-03-29", "premium": 2.00, "quantity": 3, "action": "buy" },
+      { "type": "put", "strike": 450, "expiry": "2026-03-29", "premium": 3.50, "quantity": 3, "action": "sell" }
+    ],
+    "credit_received": 1.50,
+    "status": "open"
+  },
+  {
+    "id": 9,
+    "date": "2026-03-06",
+    "underlying": "IWM",
+    "legs": [
+      { "type": "put", "strike": 200, "expiry": "2026-03-29", "premium": 0.30, "quantity": 5, "action": "buy" },
+      { "type": "put", "strike": 205, "expiry": "2026-03-29", "premium": 0.80, "quantity": 5, "action": "sell" },
+      { "type": "call", "strike": 220, "expiry": "2026-03-29", "premium": 0.70, "quantity": 5, "action": "sell" },
+      { "type": "call", "strike": 225, "expiry": "2026-03-29", "premium": 0.30, "quantity": 5, "action": "buy" }
+    ],
+    "credit_received": 0.90,
+    "status": "open"
+  },
+  {
+    "id": 10,
+    "date": "2026-03-07",
+    "underlying": "META",
+    "legs": [
+      { "type": "call", "strike": 550, "expiry": "2026-04-04", "premium": 8.50, "quantity": 2, "action": "buy" },
+      { "type": "call", "strike": 565, "expiry": "2026-04-04", "premium": 3.50, "quantity": 2, "action": "sell" }
+    ],
+    "debit_paid": 5.00,
+    "status": "open"
+  }
+]

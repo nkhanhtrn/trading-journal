@@ -1,0 +1,11 @@
+Date,Symbol,Type,Entry Price,Exit Price,Quantity,Stop Loss,Take Profit,Status,P&L,P&L %,Notes
+2025-01-15,AAPL,LONG,185.50,192.30,100,180.00,195.00,WIN,680.00,3.67,Strong earnings report, broke above resistance
+2025-01-18,TSLA,SHORT,248.00,235.50,50,255.00,230.00,WIN,625.00,5.04,Weak delivery numbers, bearish momentum
+2025-01-22,NVDA,LONG,650.00,635.00,25,640.00,680.00,LOSS,-375.00,-2.31,Hit stop loss, market weakness in tech sector
+2025-01-25,SPY,LONG,478.50,485.20,200,475.00,490.00,WIN,1340.00,1.40,Index bounce from support, good risk-reward
+2025-01-28,META,LONG,425.00,418.00,30,420.00,445.00,LOSS,-210.00,-1.65,Stopped out, weak guidance in earnings
+2025-02-01,AMD,LONG,175.00,185.50,100,170.00,190.00,WIN,1050.00,6.00,AI chip demand strength, broke consolidation
+2025-02-05,MSFT,LONG,410.00,410.00,50,405.00,425.00,OPEN,0.00,0.00,Cloud growth story, waiting for breakout
+2025-02-08,GOOGL,SHORT,145.00,148.50,100,148.00,138.00,LOSS,-350.00,-2.41,Failed breakdown, stopped at resistance
+2025-02-12,AMZN,LONG,178.00,182.50,75,175.00,188.00,WIN,337.50,2.53,Retail strength, AWS growth accelerating
+2025-02-15,NFLX,LONG,525.00,545.00,20,515.00,560.00,WIN,400.00,3.81,Subscriber beat, ad revenue growth
