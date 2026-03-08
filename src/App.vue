@@ -512,7 +512,10 @@ const saveTicketsToStorage = () => {
 
 // Open file picker
 const openCsvPicker = () => {
-  csvInputRef.value?.click()
+  const input = csvInputRef.value
+  if (input) {
+    input.click()
+  }
 }
 
 // Handle CSV file upload
