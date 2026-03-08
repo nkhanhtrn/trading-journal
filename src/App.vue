@@ -12,7 +12,7 @@
     <main class="flex-1 max-w-6xl mx-auto px-4 py-6 pb-24 overflow-auto">
       <!-- Calendar Tab -->
       <div v-if="activeTab === 'calendar'">
-        <SummaryCards :summary="displayStats" />
+        <SummaryCards :summary="stats" />
 
         <!-- Calendar -->
         <div class="bg-gray-800 rounded-lg p-4">
@@ -104,6 +104,9 @@
             <option value="date">Date</option>
           </select>
           <button @click="resetFilters" class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded text-sm">Clear</button>
+          <button @click="expandedSymbols = expandedSymbols.size === 0 ? new Set(groupedTrades.map(g => g.symbol)) : new Set()" class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded text-sm">
+            {{ expandedSymbols.size === 0 ? 'Expand All' : 'Collapse All' }}
+          </button>
         </div>
 
         <!-- P&L Summary -->
@@ -152,83 +155,125 @@
           </div>
         </div>
 
-        <!-- Tickets List -->
+        <!-- Tickets List grouped by Symbol -->
         <div class="space-y-4">
-          <div v-for="ticket in filteredTickets" :key="ticket.ticket" class="bg-gray-800 rounded-lg overflow-hidden">
-            <!-- Ticket Header -->
-            <div class="bg-gray-750 px-4 py-3 flex items-center justify-between cursor-pointer hover:bg-gray-700" @click="toggleTicket(ticket.ticket)">
+          <div v-for="group in groupedTrades" :key="group.symbol" class="bg-gray-800 rounded-lg overflow-hidden">
+            <!-- Symbol Header -->
+            <div class="bg-gray-750 px-4 py-3 flex items-center justify-between cursor-pointer hover:bg-gray-700" @click="toggleSymbol(group.symbol)">
               <div class="flex items-center gap-4">
-                <span class="text-sm font-mono text-blue-400">#{{ ticket.ticket }}</span>
-                <span class="text-lg font-bold text-white">{{ ticket.symbol }}</span>
-                <span class="text-sm text-gray-400">{{ ticket.date }}</span>
-                <span class="text-xs text-gray-500">{{ ticket.strategies.length }} strategies</span>
+                <span class="text-xl font-bold text-white">{{ group.symbol }}</span>
+                <span class="text-sm text-gray-400">{{ group.count }} trades</span>
+                <span class="text-xs px-2 py-1 rounded" :class="group.totalPnL >= 0 ? 'bg-green-900 text-green-300' : 'bg-red-900 text-red-300'">
+                  {{ group.totalPnL >= 0 ? '+' : '' }}${{ group.totalPnL.toFixed(0) }}
+                </span>
+                <span class="text-xs text-gray-500">{{ group.winRate }}% win rate</span>
               </div>
               <div class="flex items-center gap-4">
-                <span class="px-2 py-1 text-xs rounded" :class="getStatusClass(ticket.status)">{{ ticket.status }}</span>
-                <i class="fas fa-chevron-down text-gray-400 transition-transform" :class="{ 'rotate-180': expandedTickets.has(ticket.ticket) }"></i>
+                <span class="text-xs text-gray-500">{{ group.wins }}W / {{ group.losses }}L</span>
+                <i class="fas fa-chevron-down text-gray-400 transition-transform" :class="{ 'rotate-180': expandedSymbols.has(group.symbol) }"></i>
               </div>
             </div>
 
-            <!-- Strategies -->
-            <div v-show="expandedTickets.has(ticket.ticket)" class="border-t border-gray-700">
-              <div v-for="(strategy, sIndex) in ticket.strategies" :key="sIndex" class="border-b border-gray-700 last:border-b-0">
-                <div class="bg-gray-800 px-4 py-2 cursor-pointer hover:bg-gray-750" @click="toggleStrategy(ticket.ticket, sIndex)">
-                  <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-2">
-                      <i class="fas fa-chevron-right text-gray-500 text-xs transition-transform" :class="{ 'rotate-90': expandedStrategies.has(`${ticket.ticket}-${sIndex}`) }"></i>
-                      <span class="text-sm font-semibold text-white">{{ strategy.name }}</span>
-                      <span class="text-xs px-1.5 py-0.5 rounded" :class="strategy.debit_paid ? 'bg-red-900 text-red-300' : 'bg-green-900 text-green-300'">
-                        {{ strategy.debit_paid ? 'LONG' : 'SHORT' }}
-                      </span>
-                    </div>
+            <!-- Tickets for this Symbol -->
+            <div v-show="expandedSymbols.has(group.symbol)" class="border-t border-gray-700">
+              <div v-for="ticket in group.tickets" :key="ticket.ticket" class="border-b border-gray-700 last:border-b-0">
+                <!-- Ticket Header -->
+                <div class="px-4 py-2 flex items-center justify-between cursor-pointer hover:bg-gray-750" @click="toggleTicket(ticket.ticket)">
+                  <div class="flex items-center gap-3">
+                    <span class="text-sm font-mono text-blue-400">#{{ ticket.ticket }}</span>
+                    <span class="text-sm text-gray-400">{{ ticket.date }}</span>
+                    <span class="text-xs text-gray-500">{{ ticket.strategies.length }} legs</span>
+                    <span v-if="ticket.strategies[0]" class="text-xs text-gray-600">
+                      {{ ticket.strategies[0].legs[0]?.type.toUpperCase() }} ${{ ticket.strategies[0].legs[0]?.strike }}
+                    </span>
                   </div>
-                  <div class="flex items-center gap-3 mt-1 ml-4 text-xs text-gray-400">
-                    <span>In: <span class="text-gray-300">${{ getEntryPrice(strategy) }}</span></span>
-                    <span v-if="ticket.status !== 'OPEN'">Out: <span class="text-gray-300">${{ getExitPrice(strategy) }}</span></span>
-                    <span v-if="ticket.status === 'OPEN'">Held: {{ getHoldTime(strategy.entry_time) }}</span>
-                    <span v-else>Held: {{ getHoldTime(strategy.entry_time, strategy.exit_time) }}</span>
+                  <div class="flex items-center gap-3">
+                    <span v-if="ticket.status !== 'OPEN'" class="text-sm font-bold" :class="ticket.pnl >= 0 ? 'text-green-400' : 'text-red-400'">
+                      {{ ticket.pnl >= 0 ? '+' : '' }}${{ ticket.pnl }}
+                    </span>
+                    <span class="px-2 py-1 text-xs rounded" :class="getStatusClass(ticket.status)">{{ ticket.status }}</span>
+                    <i class="fas fa-chevron-right text-gray-500 text-xs transition-transform" :class="{ 'rotate-90': expandedTickets.has(ticket.ticket) }"></i>
                   </div>
                 </div>
 
-                <!-- Legs -->
-                <div v-show="expandedStrategies.has(`${ticket.ticket}-${sIndex}`)" class="px-4 pb-3">
-                  <table class="w-full text-sm">
-                    <thead class="bg-gray-750">
-                      <tr>
-                        <th class="px-3 py-1 text-left text-xs text-gray-400">Action</th>
-                        <th class="px-3 py-1 text-left text-xs text-gray-400">Type</th>
-                        <th class="px-3 py-1 text-right text-xs text-gray-400">Strike</th>
-                        <th class="px-3 py-1 text-left text-xs text-gray-400">Expiry</th>
-                        <th class="px-3 py-1 text-right text-xs text-gray-400">Premium</th>
-                      </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-700">
-                      <tr v-for="(leg, lIndex) in strategy.legs" :key="lIndex" class="hover:bg-gray-750">
-                        <td class="px-3 py-2">
-                          <span class="px-2 py-0.5 text-xs rounded" :class="leg.action === 'buy' ? 'bg-green-900 text-green-300' : 'bg-red-900 text-red-300'">
-                            {{ leg.action === 'buy' ? 'LONG' : 'SHORT' }}
-                          </span>
-                        </td>
-                        <td class="px-3 py-2 font-semibold">{{ leg.type.toUpperCase() }}</td>
-                        <td class="px-3 py-2 text-right text-gray-300">${{ leg.strike }}</td>
-                        <td class="px-3 py-2 text-gray-400">{{ leg.expiry }}</td>
-                        <td class="px-3 py-2 text-right text-gray-300">${{ leg.premium.toFixed(2) }}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-
-              <!-- P&L and Notes -->
-              <div class="px-4 py-3 bg-gray-750 border-t border-gray-700">
-                <div class="flex justify-between items-start">
-                  <div v-if="ticket.notes" class="flex-1 text-sm text-gray-400">{{ ticket.notes }}</div>
-                  <div v-if="ticket.status !== 'OPEN'" class="text-right">
-                    <div class="text-xs text-gray-400">P&L</div>
-                    <div class="text-xl font-bold" :class="ticket.pnl >= 0 ? 'text-green-400' : 'text-red-400'">
-                      {{ ticket.pnl >= 0 ? '+' : '' }}${{ ticket.pnl.toFixed(2) }}
-                    </div>
+                <!-- Ticket Details -->
+                <div v-show="expandedTickets.has(ticket.ticket)" class="px-4 pb-3 border-t border-gray-700">
+                  <!-- Opening Position -->
+                  <div class="mt-2">
+                    <div class="text-xs text-green-400 font-semibold mb-1">Opening Position ({{ ticket.date }})</div>
+                    <table class="w-full text-sm">
+                      <thead class="bg-gray-750">
+                        <tr>
+                          <th class="px-2 py-1 text-left text-xs text-gray-400">Action</th>
+                          <th class="px-2 py-1 text-left text-xs text-gray-400">Type</th>
+                          <th class="px-2 py-1 text-right text-xs text-gray-400">Strike</th>
+                          <th class="px-2 py-1 text-left text-xs text-gray-400">Expiry</th>
+                          <th class="px-2 py-1 text-right text-xs text-gray-400">Qty</th>
+                          <th class="px-2 py-1 text-right text-xs text-gray-400">Price</th>
+                        </tr>
+                      </thead>
+                      <tbody class="divide-y divide-gray-700">
+                        <tr v-for="(leg, lIndex) in openingLegs(ticket)" :key="'open-' + lIndex" class="hover:bg-gray-750">
+                          <td class="px-2 py-1">
+                            <span class="px-2 py-0.5 text-xs rounded" :class="leg.action === 'buy' ? 'bg-green-900 text-green-300' : 'bg-red-900 text-red-300'">
+                              {{ leg.action === 'buy' ? 'LONG' : 'SHORT' }}
+                            </span>
+                          </td>
+                          <td class="px-2 py-1 text-xs font-semibold">{{ leg.type.toUpperCase() }}</td>
+                          <td class="px-2 py-1 text-right text-gray-300 text-xs">${{ leg.strike }}</td>
+                          <td class="px-2 py-1 text-gray-400 text-xs">{{ leg.expiry }}</td>
+                          <td class="px-2 py-1 text-right text-gray-300 text-xs">{{ leg.quantity }}</td>
+                          <td class="px-2 py-1 text-right text-gray-300 text-xs">${{ leg.premium.toFixed(2) }}</td>
+                        </tr>
+                        <tr class="bg-gray-750 font-semibold">
+                          <td colspan="5" class="px-2 py-1 text-right text-xs text-gray-400">Net {{ openNetCost(ticket) >= 0 ? 'Credit' : 'Debit' }}:</td>
+                          <td class="px-2 py-1 text-right text-xs" :class="openNetCost(ticket) >= 0 ? 'text-green-400' : 'text-red-400'">
+                            {{ openNetCost(ticket) >= 0 ? '+' : '' }}${{ Math.abs(openNetCost(ticket)).toFixed(2) }}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
                   </div>
+
+                  <!-- Closing Position -->
+                  <div class="mt-3">
+                    <div class="text-xs text-red-400 font-semibold mb-1">Closing Position ({{ ticket.exit_date }})</div>
+                    <table class="w-full text-sm">
+                      <thead class="bg-gray-750">
+                        <tr>
+                          <th class="px-2 py-1 text-left text-xs text-gray-400">Action</th>
+                          <th class="px-2 py-1 text-left text-xs text-gray-400">Type</th>
+                          <th class="px-2 py-1 text-right text-xs text-gray-400">Strike</th>
+                          <th class="px-2 py-1 text-left text-xs text-gray-400">Expiry</th>
+                          <th class="px-2 py-1 text-right text-xs text-gray-400">Qty</th>
+                          <th class="px-2 py-1 text-right text-xs text-gray-400">Price</th>
+                        </tr>
+                      </thead>
+                      <tbody class="divide-y divide-gray-700">
+                        <tr v-for="(leg, lIndex) in closingLegs(ticket)" :key="'close-' + lIndex" class="hover:bg-gray-750">
+                          <td class="px-2 py-1">
+                            <span class="px-2 py-0.5 text-xs rounded" :class="leg.action === 'buy' ? 'bg-green-900 text-green-300' : 'bg-red-900 text-red-300'">
+                              {{ leg.action === 'buy' ? 'LONG' : 'SHORT' }}
+                            </span>
+                          </td>
+                          <td class="px-2 py-1 text-xs font-semibold">{{ leg.type.toUpperCase() }}</td>
+                          <td class="px-2 py-1 text-right text-gray-300 text-xs">${{ leg.strike }}</td>
+                          <td class="px-2 py-1 text-gray-400 text-xs">{{ leg.expiry }}</td>
+                          <td class="px-2 py-1 text-right text-gray-300 text-xs">{{ leg.quantity }}</td>
+                          <td class="px-2 py-1 text-right text-gray-300 text-xs">${{ leg.premium.toFixed(2) }}</td>
+                        </tr>
+                        <tr v-if="closingLegs(ticket).length > 0" class="bg-gray-750 font-semibold">
+                          <td colspan="5" class="px-2 py-1 text-right text-xs text-gray-400">Net {{ closeNetCost(ticket) >= 0 ? 'Credit' : 'Debit' }}:</td>
+                          <td class="px-2 py-1 text-right text-xs" :class="closeNetCost(ticket) >= 0 ? 'text-green-400' : 'text-red-400'">
+                            {{ closeNetCost(ticket) >= 0 ? '+' : '' }}${{ Math.abs(closeNetCost(ticket)).toFixed(2) }}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <!-- Notes -->
+                  <div v-if="ticket.notes" class="mt-2 text-xs text-gray-500">{{ ticket.notes }}</div>
                 </div>
               </div>
             </div>
@@ -276,12 +321,14 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { tradesData } from './data/trades.js'
+import SummaryCards from './components/SummaryCards.vue'
 import TradeFormModal from './components/TradeFormModal.vue'
 
 const tickets = ref([])
 const showAddModal = ref(false)
 const expandedTickets = ref(new Set())
 const expandedStrategies = ref(new Set())
+const expandedSymbols = ref(new Set())
 const activeTab = ref('calendar')
 const currentMonth = ref(new Date(2026, 2, 1)) // March 2026
 
@@ -301,6 +348,9 @@ const sortBy = ref('ticket')
 
 onMounted(() => {
   tickets.value = [...tradesData]
+  // Expand all symbols by default
+  const symbols = [...new Set(tickets.value.map(t => t.symbol))]
+  symbols.forEach(s => expandedSymbols.value.add(s))
 })
 
 const filteredTickets = computed(() => {
@@ -351,11 +401,13 @@ const calendarDays = computed(() => {
   const firstDay = new Date(year, month, 1).getDay()
   const totalDays = new Date(year, month + 1, 0).getDate()
 
+  // Track P&L by date (exit date for closed trades)
   const pnlByDate = {}
+
   tickets.value.forEach(ticket => {
-    if (ticket.pnl !== undefined) {
-      const date = ticket.date
-      pnlByDate[date] = (pnlByDate[date] || 0) + ticket.pnl
+    // Show P&L on exit date for closed trades
+    if (ticket.status !== 'OPEN' && ticket.exit_date && ticket.pnl !== undefined) {
+      pnlByDate[ticket.exit_date] = (pnlByDate[ticket.exit_date] || 0) + ticket.pnl
     }
   })
 
@@ -378,22 +430,34 @@ const calendarDays = computed(() => {
 // Summary stats for currently filtered trades
 const filteredSummary = computed(() => {
   const filtered = filteredTickets.value
-  const closed = filtered.filter(t => t.status !== 'OPEN' && t.pnl !== undefined)
-  const winners = closed.filter(t => t.status === 'WIN')
-  const losers = closed.filter(t => t.status === 'LOSS')
 
-  const totalPnL = closed.reduce((sum, t) => sum + (t.pnl || 0), 0)
+  // Only include trades that exit within the selected time period
+  let closedInPeriod = []
+  if (dateRange.value.mode === 'single') {
+    closedInPeriod = filtered.filter(t => t.exit_date === dateRange.value.single)
+  } else if (dateRange.value.mode === 'week' || dateRange.value.mode === 'month' || dateRange.value.mode === 'range') {
+    closedInPeriod = filtered.filter(t => t.exit_date >= dateRange.value.start && t.exit_date <= dateRange.value.end)
+  } else if (dateRange.value.mode === 'all' || !dateRange.value.mode) {
+    closedInPeriod = filtered.filter(t => t.status !== 'OPEN')
+  } else {
+    closedInPeriod = []
+  }
+
+  const winners = closedInPeriod.filter(t => t.status === 'WIN')
+  const losers = closedInPeriod.filter(t => t.status === 'LOSS')
+
+  const totalPnL = closedInPeriod.reduce((sum, t) => sum + (t.pnl || 0), 0)
   const winsAmount = winners.reduce((sum, t) => sum + (t.pnl || 0), 0)
   const lossesAmount = losers.reduce((sum, t) => sum + (t.pnl || 0), 0)
 
   const profitFactor = lossesAmount !== 0 ? Math.abs(winsAmount / lossesAmount) : winsAmount > 0 ? 999 : 0
-  const bestTrade = filtered.length > 0 ? Math.max(...filtered.map(t => t.pnl || 0)) : 0
+  const bestTrade = closedInPeriod.length > 0 ? Math.max(...closedInPeriod.map(t => t.pnl || 0)) : 0
 
   return {
-    count: filtered.length,
+    count: closedInPeriod.length,
     totalPnL,
-    winRate: closed.length > 0 ? Math.round((winners.length / closed.length) * 100) : 0,
-    avgPnL: closed.length > 0 ? totalPnL / closed.length : 0,
+    winRate: closedInPeriod.length > 0 ? Math.round((winners.length / closedInPeriod.length) * 100) : 0,
+    avgPnL: closedInPeriod.length > 0 ? totalPnL / closedInPeriod.length : 0,
     wins: winners.length,
     losses: losers.length,
     profitFactor,
@@ -537,11 +601,16 @@ const isTicketInDateRange = (ticket) => {
 
   switch (dateRange.value.mode) {
     case 'single':
-      return ticket.date === dateRange.value.single
+      // Show trade if the selected date matches either entry or exit date
+      return ticket.date === dateRange.value.single || ticket.exit_date === dateRange.value.single
     case 'week':
     case 'month':
     case 'range':
-      return ticket.date >= dateRange.value.start && ticket.date <= dateRange.value.end
+      // Show trade if it was active during the date range
+      const entryInRange = ticket.date >= dateRange.value.start && ticket.date <= dateRange.value.end
+      const exitInRange = ticket.exit_date && ticket.exit_date >= dateRange.value.start && ticket.exit_date <= dateRange.value.end
+      const spansRange = ticket.date <= dateRange.value.end && (!ticket.exit_date || ticket.exit_date >= dateRange.value.start)
+      return entryInRange || exitInRange || spansRange
     case 'all':
       return true
     default:
@@ -555,8 +624,126 @@ const resetFilters = () => {
   clearDateRange()
 }
 
+// Group filtered tickets by symbol
+const groupedTrades = computed(() => {
+  const groups = {}
+  filteredTickets.value.forEach(ticket => {
+    if (!groups[ticket.symbol]) {
+      groups[ticket.symbol] = []
+    }
+    groups[ticket.symbol].push(ticket)
+  })
+
+  // Calculate summary for each symbol
+  return Object.entries(groups).map(([symbol, tickets]) => {
+    const closed = tickets.filter(t => t.status !== 'OPEN')
+    const totalPnL = closed.reduce((sum, t) => sum + (t.pnl || 0), 0)
+    const wins = closed.filter(t => t.status === 'WIN').length
+    const losses = closed.filter(t => t.status === 'LOSS').length
+
+    return {
+      symbol,
+      tickets,
+      totalPnL,
+      winRate: closed.length > 0 ? Math.round((wins / closed.length) * 100) : 0,
+      wins,
+      losses,
+      count: tickets.length
+    }
+  }).sort((a, b) => b.totalPnL - a.totalPnL)
+})
+
+const toggleSymbol = (symbol) => {
+  if (expandedSymbols.value.has(symbol)) {
+    expandedSymbols.value.delete(symbol)
+  } else {
+    expandedSymbols.value.add(symbol)
+  }
+}
+
+// Split legs into opening (first half) and closing (second half)
+// For strategies with entry and exit, legs are stored: entry legs first, then exit legs
+const openingLegs = (ticket) => {
+  const legs = ticket.strategies[0]?.legs || []
+  // If there's an exit time, legs should contain both entry and exit
+  // For 2 legs: first is entry, second is exit
+  // For 4+ legs: first half is entry, second half is exit
+  if (ticket.exit_date && legs.length >= 2) {
+    const midPoint = Math.floor(legs.length / 2)
+    return legs.slice(0, midPoint)
+  }
+  // Otherwise, return all legs (single order, not yet closed)
+  return legs
+}
+
+const closingLegs = (ticket) => {
+  const legs = ticket.strategies[0]?.legs || []
+  // If there's an exit time, return the second half of legs
+  if (ticket.exit_date && legs.length >= 2) {
+    const midPoint = Math.floor(legs.length / 2)
+    return legs.slice(midPoint)
+  }
+  // Otherwise, return empty (no closing position)
+  return []
+}
+
+// Calculate net cost for opening position (credit = positive, debit = negative)
+const openNetCost = (ticket) => {
+  const legs = openingLegs(ticket)
+  let total = 0
+  legs.forEach(leg => {
+    if (leg.action === 'sell') {
+      total += leg.premium * leg.quantity
+    } else {
+      total -= leg.premium * leg.quantity
+    }
+  })
+  return total
+}
+
+// Calculate net cost for closing position (credit = positive, debit = negative)
+const closeNetCost = (ticket) => {
+  const legs = closingLegs(ticket)
+  let total = 0
+  legs.forEach(leg => {
+    if (leg.action === 'sell') {
+      total += leg.premium * leg.quantity
+    } else {
+      total -= leg.premium * leg.quantity
+    }
+  })
+  return total
+}
+
 const formatMonth = (date) => {
   return date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+}
+
+// Calculate return percentage for a trade
+const calculateReturnPct = (ticket) => {
+  if (!ticket.pnl || ticket.status === 'OPEN') return 0
+
+  const legs = ticket.strategies[0]?.legs || []
+  if (legs.length > 2) {
+    // Multi-leg strategy - use first half (entry legs)
+    const midPoint = Math.floor(legs.length / 2)
+    const entryLegs = legs.slice(0, midPoint)
+    let netCredit = 0
+    entryLegs.forEach(leg => {
+      if (leg.action === 'sell') {
+        netCredit += leg.premium * leg.quantity
+      } else {
+        netCredit -= leg.premium * leg.quantity
+      }
+    })
+    const investment = Math.abs(netCredit * 100) // Convert to dollars
+    if (investment > 0) {
+      const pct = (ticket.pnl / investment) * 100
+      return pct >= 0 ? `+${pct.toFixed(1)}` : pct.toFixed(1)
+    }
+  }
+
+  return ''
 }
 
 const prevMonth = () => {
