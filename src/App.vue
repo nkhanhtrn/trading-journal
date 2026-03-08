@@ -323,6 +323,13 @@
               {{ uploadMessage }}
             </div>
           </button>
+          <button
+            @click="showSettingsModal = true"
+            class="flex-1 py-2 text-center text-gray-400 hover:text-gray-300 transition-colors"
+          >
+            <i class="fas fa-cog text-lg"></i>
+            <div class="text-xs">Settings</div>
+          </button>
         </div>
       </div>
     </nav>
@@ -467,6 +474,76 @@
         </div>
       </div>
     </div>
+
+    <!-- Settings Modal -->
+    <div v-if="showSettingsModal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4" @click.self="showSettingsModal = false">
+      <div class="bg-gray-800 rounded-lg max-w-md w-full">
+        <div class="flex items-center justify-between p-4 border-b border-gray-700">
+          <h3 class="text-lg font-bold text-white">Settings</h3>
+          <button @click="showSettingsModal = false" class="text-gray-400 hover:text-white">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+
+        <div class="p-4 space-y-4">
+          <!-- API Key Section -->
+          <div>
+            <label class="block text-sm font-medium text-gray-300 mb-2">Finnhub API Key</label>
+            <input
+              v-model="settings.apiKey"
+              type="text"
+              placeholder="Enter your Finnhub API key"
+              class="w-full bg-gray-900 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-blue-500"
+            >
+            <p class="text-xs text-gray-500 mt-1">
+              Used for fetching historical prices. Get a free key at <a href="https://finnhub.io/register" target="_blank" class="text-blue-400 hover:underline">finnhub.io</a>
+            </p>
+            <p class="text-xs text-yellow-600 mt-1">
+              <i class="fas fa-exclamation-triangle mr-1"></i>
+              Free tier doesn't include historical candle data. Expired positions will calculate PnL based on premium only.
+            </p>
+          </div>
+
+          <!-- Clear Cache Section -->
+          <div class="border-t border-gray-700 pt-4">
+            <h4 class="text-sm font-medium text-gray-300 mb-2">Data Management</h4>
+            <button
+              @click="clearPriceCache"
+              class="text-sm bg-gray-700 hover:bg-gray-600 text-white px-3 py-2 rounded transition-colors"
+            >
+              Clear Price Cache
+            </button>
+            <p class="text-xs text-gray-500 mt-1">Clear cached historical prices (will re-fetch from API)</p>
+          </div>
+
+          <!-- Clear All Data Section -->
+          <div class="border-t border-gray-700 pt-4">
+            <button
+              @click="clearAllData"
+              class="text-sm bg-red-900/50 hover:bg-red-900/70 text-red-300 px-3 py-2 rounded transition-colors"
+            >
+              Clear All Trading Data
+            </button>
+            <p class="text-xs text-gray-500 mt-1">Permanently delete all tickets and positions</p>
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-2 p-4 border-t border-gray-700">
+          <button
+            @click="showSettingsModal = false"
+            class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded text-sm transition-colors"
+          >
+            Close
+          </button>
+          <button
+            @click="saveSettings"
+            class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm transition-colors"
+          >
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -485,6 +562,50 @@ const STORAGE_KEY = 'trading_journal_tickets'
 
 const tickets = ref([])
 const showAddModal = ref(false)
+const showSettingsModal = ref(false)
+
+// Settings
+const SETTINGS_KEY = 'trading_journal_settings'
+const settings = ref({
+  apiKey: ''
+})
+
+// Load settings from localStorage
+const loadSettings = () => {
+  try {
+    const saved = localStorage.getItem(SETTINGS_KEY)
+    if (saved) {
+      settings.value = JSON.parse(saved)
+    }
+  } catch {
+    // Ignore errors
+  }
+}
+
+// Save settings to localStorage
+const saveSettings = () => {
+  try {
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings.value))
+    showSettingsModal.value = false
+    uploadMessage.value = 'Settings saved'
+    setTimeout(() => uploadMessage.value = '', 2000)
+  } catch {
+    uploadMessage.value = 'Failed to save settings'
+    setTimeout(() => uploadMessage.value = '', 2000)
+  }
+}
+
+// Clear price cache
+const clearPriceCache = () => {
+  try {
+    localStorage.removeItem(PRICE_CACHE_KEY)
+    uploadMessage.value = 'Price cache cleared'
+    setTimeout(() => uploadMessage.value = '', 2000)
+  } catch {
+    uploadMessage.value = 'Failed to clear cache'
+    setTimeout(() => uploadMessage.value = '', 2000)
+  }
+}
 const csvInputRef = ref(null)
 const isUploading = ref(false)
 const uploadMessage = ref('')
@@ -510,25 +631,30 @@ const saveTicketsToStorage = () => {
   }
 }
 
-// Open file picker
-const openCsvPicker = () => {
-  const input = csvInputRef.value
-  if (input) {
-    input.click()
-  }
-}
-
 // Handle CSV file upload
 const handleCsvUpload = async (event) => {
+  console.log('handleCsvUpload called!', event.target.files)
   const file = event.target.files?.[0]
-  if (!file) return
+  console.log('File:', file)
+  if (!file) {
+    console.log('No file selected')
+    return
+  }
 
   isUploading.value = true
   uploadMessage.value = 'Processing...'
 
   try {
+    console.log('Reading file...')
     const text = await file.text()
-    const parsedTickets = parseCSV(text)
+    console.log('CSV text length:', text.length)
+    console.log('First 200 chars:', text.substring(0, 200))
+
+    const parsedTickets = await parseCSV(text)
+    console.log('Parsed tickets:', parsedTickets.length)
+    if (parsedTickets.length > 0) {
+      console.log('First ticket:', parsedTickets[0])
+    }
 
     if (parsedTickets.length === 0) {
       uploadMessage.value = 'No valid tickets found in CSV'
@@ -536,36 +662,17 @@ const handleCsvUpload = async (event) => {
       return
     }
 
-    // Merge with existing tickets, avoiding duplicates by ticket number
-    const existingTicketNumbers = new Set(tickets.value.map(t => t.ticket))
-    let addedCount = 0
-    let duplicateCount = 0
-
-    parsedTickets.forEach(ticket => {
-      if (!existingTicketNumbers.has(ticket.ticket)) {
-        tickets.value.push(ticket)
-        existingTicketNumbers.add(ticket.ticket)
-        addedCount++
-      } else {
-        duplicateCount++
-      }
-    })
-
-    // Sort by ticket number
-    tickets.value.sort((a, b) => a.ticket - b.ticket)
+    // Replace all tickets with the parsed ones
+    tickets.value = parsedTickets.sort((a, b) => a.ticket - b.ticket)
 
     // Save to storage
     saveTicketsToStorage()
 
+    console.log('Total tickets after upload:', tickets.value.length)
+    console.log('Tickets value:', tickets.value)
+
     // Show message
-    if (addedCount > 0) {
-      uploadMessage.value = `Added ${addedCount} ticket${addedCount > 1 ? 's' : ''}`
-      if (duplicateCount > 0) {
-        uploadMessage.value += ` (${duplicateCount} duplicate${duplicateCount > 1 ? 's' : ''} skipped)`
-      }
-    } else {
-      uploadMessage.value = `All ${duplicateCount} ticket${duplicateCount > 1 ? 's were' : ' was'} duplicates`
-    }
+    uploadMessage.value = `Loaded ${parsedTickets.length} ticket${parsedTickets.length > 1 ? 's' : ''}`
     setTimeout(() => uploadMessage.value = '', 3000)
 
   } catch (e) {
@@ -581,128 +688,807 @@ const handleCsvUpload = async (event) => {
   }
 }
 
-// Parse CSV data (Webull format)
-const parseCSV = (csvText) => {
-  const lines = csvText.trim().split('\n')
-  if (lines.length < 2) return []
-
-  // Parse header
-  const headers = parseCSVLine(lines[0]).map(h => h.trim().toLowerCase())
-
-  const ticketMap = new Map() // Use ticket number to group legs
-
-  // Skip header row and parse data
-  for (let i = 1; i < lines.length; i++) {
-    const values = parseCSVLine(lines[i])
-    if (values.length < headers.length) continue
-
-    const row = {}
-    headers.forEach((h, idx) => row[h] = values[idx]?.trim() || '')
-
-    // Skip empty rows
-    if (!row['symbol'] && !row['ticker']) continue
-
-    // Extract ticket number from various possible column names
-    const ticketNum = parseInt(row['ticket'] || row['ticket#'] || row['order id'] || row['id'] || Date.now())
-    const symbol = (row['symbol'] || row['ticker'] || '').toUpperCase()
-
-    // Create or get ticket
-    if (!ticketMap.has(ticketNum)) {
-      ticketMap.set(ticketNum, {
-        ticket: ticketNum,
-        date: parseWebullDate(row['date'] || row['entry date'] || row['open date'] || new Date().toISOString().split('T')[0]),
-        symbol: symbol,
-        status: row['status'] || (row['exit price'] && row['exit price'] !== '' ? 'CLOSED' : 'OPEN'),
-        exit_date: parseWebullDate(row['exit date'] || row['close date'] || '') || null,
-        pnl: parseFloat(row['p&l'] || row['pnl'] || row['profit loss'] || 0),
-        strategies: [{
-          name: row['strategy'] || row['strategy name'] || `${symbol} Strategy`,
-          legs: [],
-          entry_time: row['entry time'] || '',
-          entry_price: parseFloat(row['entry price']) || null,
-          exit_time: row['exit time'] || '',
-          exit_price: parseFloat(row['exit price']) || null
-        }],
-        notes: row['notes'] || ''
-      })
-    }
-
-    const ticket = ticketMap.get(ticketNum)
-
-    // Add leg
-    const leg = {
-      type: (row['type'] || row['option type'] || '').toLowerCase(),
-      strike: parseFloat(row['strike'] || row['strike price'] || 0),
-      expiry: parseWebullDate(row['expiry'] || row['expiration'] || row['exp date'] || '') || '',
-      premium: parseFloat(row['premium'] || row['price'] || row['debit'] || row['credit'] || 0),
-      quantity: parseInt(row['quantity'] || row['qty'] || row['contracts'] || 1),
-      action: (row['action'] || row['side'] || '').toLowerCase()
-    }
-
-    // Validate leg
-    if (leg.type && (leg.type === 'call' || leg.type === 'put') && leg.strike > 0) {
-      ticket.strategies[0].legs.push(leg)
-    }
+// Open file picker
+const openCsvPicker = () => {
+  console.log('openCsvPicker called, csvInputRef.value:', csvInputRef.value)
+  const input = csvInputRef.value
+  if (input) {
+    console.log('Calling input.click()')
+    input.click()
+  } else {
+    console.log('No input element found!')
   }
-
-  // Update status for tickets with exit dates but no explicit status
-  ticketMap.forEach(ticket => {
-    if (ticket.exit_date && ticket.status === 'OPEN') {
-      ticket.status = 'CLOSED'
-    }
-    // Determine WIN/LOSS based on P&L
-    if (ticket.status === 'CLOSED') {
-      ticket.status = ticket.pnl >= 0 ? 'WIN' : 'LOSS'
-    }
-  })
-
-  return Array.from(ticketMap.values())
 }
 
-// Parse CSV line (handles quoted values)
-const parseCSVLine = (line) => {
-  const result = []
-  let current = ''
-  let inQuotes = false
+// =====================================================
+// UTILITY FUNCTIONS
+// =====================================================
 
-  for (let i = 0; i < line.length; i++) {
-    const char = line[i]
-
-    if (char === '"') {
-      inQuotes = !inQuotes
-    } else if (char === ',' && !inQuotes) {
-      result.push(current)
-      current = ''
-    } else {
-      current += char
-    }
-  }
-  result.push(current)
-
-  return result.map(v => v.replace(/^"|"$/g, '').trim())
+function formatDate(dateStr) {
+  if (!dateStr) return null
+  const parts = dateStr.split(' ')[0].split('/')
+  if (parts.length === 3) return `${parts[2]}-${parts[0].padStart(2, '0')}-${parts[1].padStart(2, '0')}`
+  return dateStr
 }
 
-// Parse Webull date format (MM/DD/YYYY or YYYY-MM-DD)
-const parseWebullDate = (dateStr) => {
-  if (!dateStr || dateStr === '' || dateStr === 'N/A') return null
+function compareDates(timeA, timeB) {
+  const dateA = timeA ? new Date(timeA) : new Date(0)
+  const dateB = timeB ? new Date(timeB) : new Date(0)
+  return dateA.getTime() - dateB.getTime()
+}
 
-  // Try MM/DD/YYYY format
-  const parts = dateStr.split('/')
-  if (parts.length === 3) {
-    const [month, day, year] = parts
-    const date = new Date(year, month - 1, day)
-    if (!isNaN(date.getTime())) {
-      return date.toISOString().split('T')[0]
-    }
+function parseOptionSymbol(symbol) {
+  if (!symbol) return null
+  const match = symbol.match(/^([A-Z]+)2?(\d{2})(\d{2})(\d{2})([CP])(\d+)$/)
+  if (match) {
+    const [, underlying, year, month, day, type, strike] = match
+    return { underlying, year: `20${year}`, month, day, date: `20${year}-${month}-${day}`, type: type === 'C' ? 'call' : 'put', strike: parseInt(strike) / 1000 }
+  }
+  return null
+}
+
+function generateSingleOptionName(opt) {
+  const capitalType = opt.type.charAt(0).toUpperCase() + opt.type.slice(1)
+  const expiryMonth = opt.date.substring(5, 7) + '/' + opt.date.substring(8, 10)
+  return `${opt.underlying} ${capitalType} $${opt.strike} ${expiryMonth}`
+}
+
+// =====================================================
+// CATEGORIZATION
+// =====================================================
+
+function categorizeRow(row) {
+  const { name, symbol, side, status, filled } = row
+
+  // Skip cancelled orders
+  if (status !== 'Filled' || filled === 0) return null
+
+  // Single options: when name equals symbol
+  if (name && symbol && name === symbol) {
+    const opt = parseOptionSymbol(symbol)
+    if (!opt) return null
+    if (opt.type === 'call') return side === 'Buy' ? 'long_call' : 'short_call'
+    else return side === 'Buy' ? 'long_put' : 'short_put'
   }
 
-  // Try YYYY-MM-DD format
-  const date = new Date(dateStr)
-  if (!isNaN(date.getTime())) {
-    return date.toISOString().split('T')[0]
+  // Multi-leg strategies (header row: has name, no symbol)
+  if (name && !symbol) {
+    const nameLower = name.toLowerCase()
+    // Skip diagonal spreads - treat legs as individual single options
+    if (nameLower.includes('diagonal')) return null
+    if (nameLower.includes('vertical') || nameLower.includes('spread')) return 'vertical_spread'
+    if (nameLower.includes('iron condor') || nameLower.includes('condor')) return 'iron_condor'
+    if (nameLower.includes('straddle')) return 'straddle'
+    if (nameLower.includes('strangle')) return 'strangle'
+    return 'vertical_spread' // Default multi-leg to vertical
+  }
+
+  // Single options (has symbol, no name)
+  if (symbol && !name) {
+    const opt = parseOptionSymbol(symbol)
+    if (!opt) return null
+    if (opt.type === 'call') return side === 'Buy' ? 'long_call' : 'short_call'
+    else return side === 'Buy' ? 'long_put' : 'short_put'
   }
 
   return null
+}
+
+function categorizeAllRows(rows) {
+  const categorized = { vertical_spread: [], iron_condor: [], straddle: [], strangle: [], long_call: [], short_call: [], long_put: [], short_put: [] }
+  let currentHeader = null
+
+  for (let i = 0; i < rows.length; i++) {
+    const row = rows[i]
+
+    // Single option: name equals symbol
+    if (row.name && row.symbol && row.name === row.symbol) {
+      currentHeader = null
+      const bucket = categorizeRow(row)
+      if (bucket) categorized[bucket].push(row)
+      continue
+    }
+
+    // Header row (has name, no symbol)
+    if (row.name && !row.symbol) {
+      currentHeader = { ...row, legs: [] }
+      const bucket = categorizeRow(row)
+      // Skip diagonal headers - don't create a spread ticket
+      if (bucket) {
+        const nameLower = row.name.toLowerCase()
+        if (!nameLower.includes('diagonal')) {
+          categorized[bucket].push(currentHeader)
+        }
+      }
+      continue
+    }
+
+    // Leg row (has symbol, no name, and we have a header)
+    if (row.symbol && !row.name && currentHeader) {
+      // For diagonals, treat legs as single options
+      const headerNameLower = currentHeader.name?.toLowerCase() || ''
+      if (headerNameLower.includes('diagonal')) {
+        currentHeader = null
+        const bucket = categorizeRow(row)
+        if (bucket) categorized[bucket].push(row)
+        continue
+      }
+      currentHeader.legs.push(row)
+      continue
+    }
+
+    // Single option (no header, has symbol)
+    if (row.symbol && !row.name) {
+      currentHeader = null
+      const bucket = categorizeRow(row)
+      if (bucket) categorized[bucket].push(row)
+    }
+  }
+
+  return categorized
+}
+
+// =====================================================
+// STRATEGY PROCESSORS
+// =====================================================
+
+function processVerticalSpread(header) {
+  if (!header.legs || header.legs.length < 2) return []
+
+  return [{
+    ticketName: header.name,
+    side: header.side,
+    status: header.status,
+    filledTime: header.filledTime,
+    legs: header.legs.map(l => {
+      const opt = parseOptionSymbol(l.symbol)
+      return { ...opt, side: l.side, quantity: l.filled, premium: l.avgPrice, filledTime: l.filledTime }
+    }).filter(l => l.underlying)
+  }]
+}
+
+function processIronCondor(header) {
+  if (!header.legs || header.legs.length < 4) return []
+
+  return [{
+    ticketName: header.name,
+    side: header.side,
+    status: header.status,
+    filledTime: header.filledTime,
+    legs: header.legs.map(l => {
+      const opt = parseOptionSymbol(l.symbol)
+      return { ...opt, side: l.side, quantity: l.filled, premium: l.avgPrice, filledTime: l.filledTime }
+    }).filter(l => l.underlying)
+  }]
+}
+
+function processStraddle(header) {
+  if (!header.legs || header.legs.length < 2) return []
+
+  return [{
+    ticketName: header.name,
+    side: header.side,
+    status: header.status,
+    filledTime: header.filledTime,
+    legs: header.legs.map(l => {
+      const opt = parseOptionSymbol(l.symbol)
+      return { ...opt, side: l.side, quantity: l.filled, premium: l.avgPrice, filledTime: l.filledTime }
+    }).filter(l => l.underlying)
+  }]
+}
+
+function processStrangle(header) {
+  if (!header.legs || header.legs.length < 2) return []
+
+  return [{
+    ticketName: header.name,
+    side: header.side,
+    status: header.status,
+    filledTime: header.filledTime,
+    legs: header.legs.map(l => {
+      const opt = parseOptionSymbol(l.symbol)
+      return { ...opt, side: l.side, quantity: l.filled, premium: l.avgPrice, filledTime: l.filledTime }
+    }).filter(l => l.underlying)
+  }]
+}
+
+function processSingleOption(row) {
+  const opt = parseOptionSymbol(row.symbol)
+  if (!opt) return []
+
+  return [{
+    ticketName: generateSingleOptionName(opt),
+    side: row.side,
+    status: row.status,
+    filledTime: row.filledTime,
+    legs: [{ ...opt, side: row.side, quantity: row.filled, premium: row.avgPrice, filledTime: row.filledTime }]
+  }]
+}
+
+// =====================================================
+// MATCHING FUNCTIONS
+// =====================================================
+
+function matchMultiLeg(tradesList, startTicketId) {
+  const tickets = []
+  let ticketId = startTicketId
+
+  // Group by leg signature
+  const sigGroups = {}
+  for (const t of tradesList) {
+    const sig = t.legs.map(l => `${l.strike}-${l.type}-${l.date}`).sort().join('|')
+    if (!sigGroups[sig]) sigGroups[sig] = []
+    sigGroups[sig].push(t)
+  }
+
+  for (const group of Object.values(sigGroups)) {
+    group.sort((a, b) => compareDates(a.filledTime, b.filledTime))
+    const openPositions = []
+
+    for (const trade of group) {
+      const isCredit = trade.side === 'Sell'
+      const qty = trade.legs[0].quantity
+
+      if (isCredit) {
+        let remaining = qty
+        for (let i = 0; i < openPositions.length && remaining > 0; i++) {
+          const pos = openPositions[i]
+          if (!pos.isCredit && pos.remaining > 0) {
+            const closeQty = Math.min(remaining, pos.remaining)
+            const pnl = calcPnL(pos.trade, trade, closeQty)
+            tickets.push(createClosedTicket(pos.trade, trade, closeQty, pnl, ticketId++))
+            pos.remaining -= closeQty
+            remaining -= closeQty
+            if (pos.remaining <= 0) { openPositions.splice(i, 1); i-- }
+          }
+        }
+        if (remaining > 0) openPositions.push({ trade, remaining, isCredit: true })
+      } else {
+        let remaining = qty
+        for (let i = 0; i < openPositions.length && remaining > 0; i++) {
+          const pos = openPositions[i]
+          if (pos.isCredit && pos.remaining > 0) {
+            const closeQty = Math.min(remaining, pos.remaining)
+            const pnl = calcPnL(pos.trade, trade, closeQty)
+            tickets.push(createClosedTicket(pos.trade, trade, closeQty, pnl, ticketId++))
+            pos.remaining -= closeQty
+            remaining -= closeQty
+            if (pos.remaining <= 0) { openPositions.splice(i, 1); i-- }
+          }
+        }
+        if (remaining > 0) openPositions.push({ trade, remaining, isCredit: false })
+      }
+    }
+
+    for (const pos of openPositions) {
+      if (pos.remaining > 0) {
+        tickets.push(createOpenTicket(pos.trade, pos.remaining, ticketId++))
+      }
+    }
+  }
+
+  return tickets
+}
+
+function matchSingleOptions(tradesList, startTicketId) {
+  const tickets = []
+  let ticketId = startTicketId
+
+  // Group by symbol
+  const symbolGroups = {}
+  for (const t of tradesList) {
+    const sym = t.ticketName
+    if (!symbolGroups[sym]) symbolGroups[sym] = []
+    symbolGroups[sym].push(t)
+  }
+
+  for (const [symbol, group] of Object.entries(symbolGroups)) {
+    group.sort((a, b) => compareDates(a.filledTime, b.filledTime))
+
+    const openPositions = []
+
+    for (const trade of group) {
+      const isLong = trade.side === 'Buy'
+      const qty = trade.legs[0].quantity
+      let remaining = qty
+
+      // Try to close opposite positions
+      for (let i = 0; i < openPositions.length && remaining > 0; i++) {
+        const pos = openPositions[i]
+        if (pos.isLong !== isLong && pos.remaining > 0) {
+          const closeQty = Math.min(remaining, pos.remaining)
+          let pnl = 0
+          if (pos.isLong) {
+            pnl = (trade.legs[0].premium - pos.trade.legs[0].premium) * closeQty * 100
+          } else {
+            pnl = (pos.trade.legs[0].premium - trade.legs[0].premium) * closeQty * 100
+          }
+          tickets.push(createClosedTicket(pos.trade, trade, closeQty, pnl, ticketId++))
+          pos.remaining -= closeQty
+          remaining -= closeQty
+          if (pos.remaining <= 0) { openPositions.splice(i, 1); i-- }
+        }
+      }
+
+      if (remaining > 0) {
+        openPositions.push({ trade, remaining, isLong })
+      }
+    }
+
+    for (const pos of openPositions) {
+      if (pos.remaining > 0) {
+        tickets.push(createOpenTicket(pos.trade, pos.remaining, ticketId++))
+      }
+    }
+  }
+
+  return tickets
+}
+
+// =====================================================
+// P&L CALCULATION
+// =====================================================
+
+function calcPnL(open, close, qty) {
+  let pnl = 0
+  for (const ol of open.legs) {
+    const cl = close.legs.find(l => l.strike === ol.strike && l.type === ol.type && l.date === ol.date)
+    if (cl) {
+      if (ol.side === 'Buy') pnl += (cl.premium - ol.premium) * qty * 100
+      else pnl -= (cl.premium - ol.premium) * qty * 100
+    }
+  }
+  return pnl
+}
+
+// =====================================================
+// TICKET CREATION
+// =====================================================
+
+function createClosedTicket(openTrade, closeTrade, qty, pnl, num) {
+  const isOpen = compareDates(openTrade.filledTime, closeTrade.filledTime) < 0
+  const first = isOpen ? openTrade : closeTrade
+  const second = isOpen ? closeTrade : openTrade
+  const legs = []
+
+  for (const l of first.legs) legs.push({ type: l.type, strike: l.strike, expiry: l.date, premium: l.premium, quantity: qty, action: l.side.toLowerCase() })
+  for (const l of second.legs) legs.push({ type: l.type, strike: l.strike, expiry: l.date, premium: l.premium, quantity: qty, action: l.side.toLowerCase() })
+
+  return { ticket: num, date: formatDate(first.filledTime), symbol: first.legs[0]?.underlying || first.ticketName.split(' ')[0], status: pnl >= 0 ? 'WIN' : 'LOSS', exit_date: formatDate(second.filledTime), pnl: Math.round(pnl), strategies: [{ name: first.ticketName, legs, entry_time: first.filledTime || first.placedTime || '', entry_price: null, exit_time: second.filledTime || second.placedTime || '', exit_price: null }], notes: first.ticketName }
+}
+
+function createOpenTicket(trade, qty, num) {
+  const legs = trade.legs.map(l => ({ type: l.type, strike: l.strike, expiry: l.date, premium: l.premium, quantity: qty, action: l.side.toLowerCase() }))
+  return { ticket: num, date: formatDate(trade.filledTime), symbol: trade.legs[0]?.underlying || trade.ticketName.split(' ')[0], status: 'OPEN', exit_date: null, pnl: 0, strategies: [{ name: trade.ticketName, legs, entry_time: trade.filledTime || trade.placedTime || '', entry_price: null, exit_time: '', exit_price: null }], notes: trade.ticketName }
+}
+
+// =====================================================
+// STRATEGY PARSING FUNCTIONS
+// =====================================================
+
+function parseVerticalSpreads(verticalSpreadArray, startTicketId) {
+  const tradesData = []
+
+  for (const header of verticalSpreadArray) {
+    if (!header.legs || header.legs.length < 2) continue
+
+    const parsedLegs = header.legs.map(l => {
+      const opt = parseOptionSymbol(l.symbol)
+      return { ...opt, side: l.side, quantity: l.filled, premium: l.avgPrice, filledTime: l.filledTime }
+    }).filter(l => l.underlying)
+
+    if (parsedLegs.length >= 2) {
+      tradesData.push({
+        ticketName: header.name,
+        side: header.side,
+        status: header.status,
+        filledTime: header.filledTime,
+        legs: parsedLegs
+      })
+    }
+  }
+
+  return matchMultiLeg(tradesData, startTicketId)
+}
+
+function parseIronCondors(ironCondorArray, startTicketId) {
+  const tradesData = []
+
+  for (const header of ironCondorArray) {
+    if (!header.legs || header.legs.length < 4) continue
+
+    const parsedLegs = header.legs.map(l => {
+      const opt = parseOptionSymbol(l.symbol)
+      return { ...opt, side: l.side, quantity: l.filled, premium: l.avgPrice, filledTime: l.filledTime }
+    }).filter(l => l.underlying)
+
+    if (parsedLegs.length >= 4) {
+      tradesData.push({
+        ticketName: header.name,
+        side: header.side,
+        status: header.status,
+        filledTime: header.filledTime,
+        legs: parsedLegs
+      })
+    }
+  }
+
+  return matchMultiLeg(tradesData, startTicketId)
+}
+
+function parseStraddles(straddleArray, startTicketId) {
+  const tradesData = []
+
+  for (const header of straddleArray) {
+    if (!header.legs || header.legs.length < 2) continue
+
+    const parsedLegs = header.legs.map(l => {
+      const opt = parseOptionSymbol(l.symbol)
+      return { ...opt, side: l.side, quantity: l.filled, premium: l.avgPrice, filledTime: l.filledTime }
+    }).filter(l => l.underlying)
+
+    if (parsedLegs.length >= 2) {
+      tradesData.push({
+        ticketName: header.name,
+        side: header.side,
+        status: header.status,
+        filledTime: header.filledTime,
+        legs: parsedLegs
+      })
+    }
+  }
+
+  return matchMultiLeg(tradesData, startTicketId)
+}
+
+function parseStrangles(strangleArray, startTicketId) {
+  const tradesData = []
+
+  for (const header of strangleArray) {
+    if (!header.legs || header.legs.length < 2) continue
+
+    const parsedLegs = header.legs.map(l => {
+      const opt = parseOptionSymbol(l.symbol)
+      return { ...opt, side: l.side, quantity: l.filled, premium: l.avgPrice, filledTime: l.filledTime }
+    }).filter(l => l.underlying)
+
+    if (parsedLegs.length >= 2) {
+      tradesData.push({
+        ticketName: header.name,
+        side: header.side,
+        status: header.status,
+        filledTime: header.filledTime,
+        legs: parsedLegs
+      })
+    }
+  }
+
+  return matchMultiLeg(tradesData, startTicketId)
+}
+
+function parseSingleOptions(longArray, shortArray, startTicketId) {
+  const longTrades = longArray.map(row => {
+    const opt = parseOptionSymbol(row.symbol)
+    if (!opt) return null
+    return {
+      ticketName: generateSingleOptionName(opt),
+      side: row.side,
+      status: row.status,
+      filledTime: row.filledTime,
+      legs: [{ ...opt, side: row.side, quantity: row.filled, premium: row.avgPrice, filledTime: row.filledTime }]
+    }
+  }).filter(t => t !== null)
+
+  const shortTrades = shortArray.map(row => {
+    const opt = parseOptionSymbol(row.symbol)
+    if (!opt) return null
+    return {
+      ticketName: generateSingleOptionName(opt),
+      side: row.side,
+      status: row.status,
+      filledTime: row.filledTime,
+      legs: [{ ...opt, side: row.side, quantity: row.filled, premium: row.avgPrice, filledTime: row.filledTime }]
+    }
+  }).filter(t => t !== null)
+
+  return matchSingleOptions([...longTrades, ...shortTrades], startTicketId)
+}
+
+// =====================================================
+// EXPIRED POSITION HANDLING
+// =====================================================
+
+// Finnhub API for historical prices
+const PRICE_CACHE_KEY = 'trading_journal_price_cache'
+
+// Symbol mapping for Finnhub (uses $ for indices)
+const SYMBOL_MAP = {
+  'VIXW': '$VIX',
+  'SPXW': '$SPX',
+  'VIX': '$VIX',
+  'SPX': '$SPX',
+  'NDX': '$NDX',
+  'RUT': '$RUT'
+}
+
+function getFinnhubSymbol(symbol) {
+  return SYMBOL_MAP[symbol] || symbol
+}
+
+// Get price from localStorage cache
+function getCachedPrice(symbol, date) {
+  try {
+    const cache = JSON.parse(localStorage.getItem(PRICE_CACHE_KEY) || '{}')
+    return cache[`${symbol}_${date}`] || null
+  } catch {
+    return null
+  }
+}
+
+// Save price to localStorage cache
+function setCachedPrice(symbol, date, price) {
+  try {
+    const cache = JSON.parse(localStorage.getItem(PRICE_CACHE_KEY) || '{}')
+    cache[`${symbol}_${date}`] = price
+    localStorage.setItem(PRICE_CACHE_KEY, JSON.stringify(cache))
+  } catch {
+    // Ignore cache errors
+  }
+}
+
+// Fetch historical price from Finnhub API
+async function getHistoricalPrice(symbol, dateStr) {
+  // Check cache first
+  const cached = getCachedPrice(symbol, dateStr)
+  if (cached !== null) {
+    return cached
+  }
+
+  // Check if API key is configured
+  if (!settings.value.apiKey) {
+    console.warn('No Finnhub API key configured')
+    setCachedPrice(symbol, dateStr, null)
+    return null
+  }
+
+  const finnhubSymbol = getFinnhubSymbol(symbol)
+
+  // Convert date string to timestamps
+  const targetDate = new Date(dateStr)
+  const from = Math.floor(new Date(targetDate.getTime() - 7 * 24 * 60 * 60 * 1000).getTime() / 1000)
+  const to = Math.floor(new Date(targetDate.getTime() + 7 * 24 * 60 * 60 * 1000).getTime() / 1000)
+
+  const url = `https://finnhub.io/api/v1/stock/candle?symbol=${finnhubSymbol}&resolution=D&from=${from}&to=${to}&token=${settings.value.apiKey}`
+
+  try {
+    const response = await fetch(url)
+    const data = await response.json()
+
+    // Check for API error (index data not available on free tier)
+    if (data.error) {
+      console.warn(`Finnhub API error for ${symbol}: ${data.error}`)
+      setCachedPrice(symbol, dateStr, null)
+      return null
+    }
+
+    if (data.s === 'ok' && data.c && data.c.length > 0 && data.t && data.t.length > 0) {
+      // Find closest date
+      const targetTimestamp = Math.floor(targetDate.getTime() / 1000)
+      let closestDiff = Infinity
+      let closestPrice = null
+
+      for (let i = 0; i < data.t.length; i++) {
+        const diff = Math.abs(data.t[i] - targetTimestamp)
+        if (diff < closestDiff && data.c[i] !== null) {
+          closestDiff = diff
+          closestPrice = data.c[i]
+        }
+      }
+
+      if (closestPrice !== null) {
+        const priceInCents = Math.round(closestPrice * 100)
+        setCachedPrice(symbol, dateStr, priceInCents)
+        return priceInCents
+      }
+    }
+
+    setCachedPrice(symbol, dateStr, null)
+    return null
+  } catch (error) {
+    console.error(`Error fetching price for ${symbol} on ${dateStr}:`, error.message)
+    setCachedPrice(symbol, dateStr, null)
+    return null
+  }
+}
+
+function calculateIntrinsicValue(type, strike, stockPrice) {
+  if (!stockPrice) return null
+  stockPrice = stockPrice / 100
+  if (type === 'call') return Math.max(0, stockPrice - strike)
+  else return Math.max(0, strike - stockPrice)
+}
+
+async function processExpiredTickets(tickets, startTicketId) {
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+
+  const expiredTickets = []
+  const stillOpenTickets = []
+  let ticketId = startTicketId
+
+  for (const ticket of tickets) {
+    if (ticket.status !== 'OPEN') {
+      continue
+    }
+
+    const legs = ticket.strategies[0].legs
+    if (legs.length === 0) {
+      stillOpenTickets.push(ticket)
+      continue
+    }
+
+    const expiryDateStr = legs[0].expiry
+    if (!expiryDateStr) {
+      stillOpenTickets.push(ticket)
+      continue
+    }
+
+    const expiryDate = new Date(expiryDateStr)
+    expiryDate.setHours(0, 0, 0, 0)
+
+    if (expiryDate < today) {
+      const symbol = ticket.symbol
+      const stockPrice = await getHistoricalPrice(symbol, expiryDateStr)
+
+      let pnl = 0
+      let hasValidPrices = stockPrice !== null
+
+      for (const leg of legs) {
+        const intrinsicValue = calculateIntrinsicValue(leg.type, leg.strike, stockPrice)
+        if (intrinsicValue === null) {
+          hasValidPrices = false
+          break
+        }
+        if (leg.action === 'buy') pnl += (intrinsicValue - leg.premium) * leg.quantity * 100
+        else pnl += (leg.premium - intrinsicValue) * leg.quantity * 100
+      }
+
+      if (!hasValidPrices) {
+        // Fallback: assume expired worthless
+        pnl = 0
+        for (const leg of legs) {
+          if (leg.action === 'buy') pnl -= leg.premium * leg.quantity * 100
+          else pnl += leg.premium * leg.quantity * 100
+        }
+      }
+
+      expiredTickets.push({
+        ticket: ticketId++,
+        date: ticket.date,
+        symbol: ticket.symbol,
+        status: pnl >= 0 ? 'WIN' : 'LOSS',
+        exit_date: expiryDateStr,
+        pnl: Math.round(pnl),
+        strategies: [{
+          name: ticket.strategies[0].name,
+          legs: legs.map(l => ({ ...l })),
+          entry_time: ticket.strategies[0].entry_time,
+          entry_price: null,
+          exit_time: '',
+          exit_price: stockPrice !== null ? (stockPrice / 100).toFixed(2) : null
+        }],
+        notes: ticket.notes + (stockPrice !== null ? ` (Expired @ $${(stockPrice / 100).toFixed(2)})` : ' (Expired - no price data)')
+      })
+    } else {
+      stillOpenTickets.push(ticket)
+    }
+  }
+
+  return { expired: expiredTickets, open: stillOpenTickets, nextTicketId: ticketId }
+}
+
+// =====================================================
+// MAIN ENTRY POINT - Parse Webull CSV
+// =====================================================
+
+// Browser-compatible CSV row parser (same as parseCsvRow in parse-webull.js)
+function parseCsvRow(row) {
+  const result = []
+  let current = ''
+  let inQuotes = false
+  for (let i = 0; i < row.length; i++) {
+    const char = row[i]
+    if (char === '"') { inQuotes = !inQuotes }
+    else if (char === ',' && !inQuotes) { result.push(current || null); current = '' }
+    else { current += char }
+  }
+  result.push(current || null)
+  return result
+}
+
+const parseCSV = async (csvText) => {
+  const lines = csvText.split('\n').filter(line => line.trim())
+
+  // Parse all rows using the same logic as parse-webull.js
+  const rows = []
+  for (let i = 1; i < lines.length; i++) {
+    const parsed = parseCsvRow(lines[i])
+    if (parsed && parsed.length >= 11) {
+      const [name, symbol, side, status, filled, totalQty, price, avgPrice, tif, placedTime, filledTime] = parsed
+      rows.push({ name: name?.trim() || null, symbol: symbol?.trim() || null, side: side?.trim() || null, status: status?.trim() || null, filled: status === 'Filled' ? parseInt(filled) || 0 : 0, totalQty: parseInt(totalQty) || 0, price: price ? parseFloat(price.replace('@', '')) || 0 : 0, avgPrice: parseFloat(avgPrice) || 0, placedTime: placedTime?.trim() || null, filledTime: filledTime?.trim() || null })
+    }
+  }
+
+  console.log(`Loaded ${rows.length} rows from CSV`)
+
+  // STEP 1: Categorize into strategy arrays
+  const categorized = categorizeAllRows(rows)
+
+  console.log('Categorization:')
+  for (const [bucket, data] of Object.entries(categorized)) {
+    if (data.length > 0) {
+      const count = bucket.includes('_') ? data.filter(d => d.name).length : data.length
+      console.log(`  ${bucket}: ${count}`)
+    }
+  }
+
+  // STEP 2: Process each strategy array independently
+  const allTickets = []
+  let currentTicketId = 1000
+
+  // Multi-leg strategies
+  console.log('\nProcessing:')
+  const vt = parseVerticalSpreads(categorized.vertical_spread, currentTicketId)
+  console.log(`  Vertical Spreads: ${vt.length} tickets`)
+  allTickets.push(...vt)
+  currentTicketId += vt.length
+
+  const ic = parseIronCondors(categorized.iron_condor, currentTicketId)
+  console.log(`  Iron Condors: ${ic.length} tickets`)
+  allTickets.push(...ic)
+  currentTicketId += ic.length
+
+  const sd = parseStraddles(categorized.straddle, currentTicketId)
+  console.log(`  Straddles: ${sd.length} tickets`)
+  allTickets.push(...sd)
+  currentTicketId += sd.length
+
+  const sg = parseStrangles(categorized.strangle, currentTicketId)
+  console.log(`  Strangles: ${sg.length} tickets`)
+  allTickets.push(...sg)
+  currentTicketId += sg.length
+
+  // Single options - combine long/short for proper matching
+  const calls = parseSingleOptions(categorized.long_call, categorized.short_call, currentTicketId)
+  console.log(`  Calls (long+short): ${calls.length} tickets`)
+  allTickets.push(...calls)
+  currentTicketId += calls.length
+
+  const puts = parseSingleOptions(categorized.long_put, categorized.short_put, currentTicketId)
+  console.log(`  Puts (long+short): ${puts.length} tickets`)
+  allTickets.push(...puts)
+  currentTicketId += puts.length
+
+  // STEP 3: Process expired positions
+  const { expired, open: stillOpen } = await processExpiredTickets(allTickets, currentTicketId)
+
+  if (expired.length > 0) {
+    console.log(`\nExpired Positions: ${expired.length} tickets`)
+  }
+
+  // Combine closed, expired, and still-open tickets
+  const finalTickets = [...allTickets.filter(t => t.status !== 'OPEN'), ...expired, ...stillOpen]
+
+  // Sort by ticket number
+  finalTickets.sort((a, b) => a.ticket - b.ticket)
+
+  console.log(`\n✅ Complete! Total tickets: ${finalTickets.length}`)
+  console.log('  Wins:', allTickets.filter(t => t.status === 'WIN').length)
+  console.log('  Losses:', allTickets.filter(t => t.status === 'LOSS').length)
+  console.log('  Open:', allTickets.filter(t => t.status === 'OPEN').length)
+  console.log('  P&L: $' + allTickets.reduce((s, t) => s + (t.pnl || 0), 0).toFixed(0))
+
+  return allTickets
 }
 
 // Clear all data
@@ -732,15 +1518,9 @@ const dateRange = ref({
 // Trade view date picker state
 const datePickerInput = ref(null)
 
-// Set default to current month
-const now = new Date()
-const year = now.getFullYear()
-const month = now.getMonth()
-const startOfMonth = new Date(year, month, 1)
-const endOfMonth = new Date(year, month + 1, 0)
-
-const tradeDateRangeStart = ref(startOfMonth.toISOString().split('T')[0])
-const tradeDateRangeEnd = ref(endOfMonth.toISOString().split('T')[0])
+// No default filter - show all trades initially
+const tradeDateRangeStart = ref(null)
+const tradeDateRangeEnd = ref(null)
 
 // Store pending date to set after flatpickr initializes
 const pendingDatePickerValue = ref(null)
@@ -841,6 +1621,7 @@ const groupedOpenPositions = computed(() => {
 })
 
 onMounted(() => {
+  loadSettings()
   loadTicketsFromStorage()
 })
 
@@ -872,6 +1653,7 @@ const filteredTickets = computed(() => {
     return matchSymbol && matchStatus && matchDate && matchSelectedDate && matchTradeDateFilter
   })
 
+  console.log('Total tickets:', tickets.value.length, 'Filtered tickets:', filtered.length)
   return filtered
 })
 
