@@ -309,9 +309,32 @@
             <i class="fas fa-list text-lg"></i>
             <div class="text-xs">Trades</div>
           </button>
+          <button
+            @click="openCsvPicker"
+            :disabled="isUploading"
+            :class="[
+              'flex-1 py-2 text-center transition-colors relative',
+              isUploading ? 'text-gray-600 cursor-wait' : 'text-gray-400 hover:text-gray-300'
+            ]"
+          >
+            <i class="fas fa-upload text-lg"></i>
+            <div class="text-xs">Upload ({{ tickets.length }})</div>
+            <div v-if="uploadMessage" class="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-700 text-white text-xs px-2 py-1 rounded whitespace-nowrap z-10">
+              {{ uploadMessage }}
+            </div>
+          </button>
         </div>
       </div>
     </nav>
+
+    <!-- Hidden file input for CSV upload -->
+    <input
+      ref="csvInputRef"
+      type="file"
+      accept=".csv"
+      @change="handleCsvUpload"
+      class="hidden"
+    >
 
     <!-- Add Trade Modal -->
     <TradeFormModal v-if="showAddModal" @close="showAddModal = false" @save="saveTrade" />
@@ -449,7 +472,6 @@
 
 <script setup>
 import { ref, computed, onMounted, nextTick, watch } from 'vue'
-import { tradesData } from './data/trades.js'
 import SummaryCards from './components/SummaryCards.vue'
 import TradeFormModal from './components/TradeFormModal.vue'
 import MiniCalendarDots from './components/MiniCalendarDots.vue'
@@ -458,8 +480,237 @@ import flatpickr from 'flatpickr'
 import 'flatpickr/dist/flatpickr.css'
 import 'flatpickr/dist/themes/dark.css'
 
+// Local storage key
+const STORAGE_KEY = 'trading_journal_tickets'
+
 const tickets = ref([])
 const showAddModal = ref(false)
+const csvInputRef = ref(null)
+const isUploading = ref(false)
+const uploadMessage = ref('')
+
+// Load tickets from localStorage on mount
+const loadTicketsFromStorage = () => {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY)
+    if (stored) {
+      tickets.value = JSON.parse(stored)
+    }
+  } catch (e) {
+    console.error('Error loading tickets from storage:', e)
+  }
+}
+
+// Save tickets to localStorage
+const saveTicketsToStorage = () => {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(tickets.value))
+  } catch (e) {
+    console.error('Error saving tickets to storage:', e)
+  }
+}
+
+// Open file picker
+const openCsvPicker = () => {
+  csvInputRef.value?.click()
+}
+
+// Handle CSV file upload
+const handleCsvUpload = async (event) => {
+  const file = event.target.files?.[0]
+  if (!file) return
+
+  isUploading.value = true
+  uploadMessage.value = 'Processing...'
+
+  try {
+    const text = await file.text()
+    const parsedTickets = parseCSV(text)
+
+    if (parsedTickets.length === 0) {
+      uploadMessage.value = 'No valid tickets found in CSV'
+      setTimeout(() => uploadMessage.value = '', 3000)
+      return
+    }
+
+    // Merge with existing tickets, avoiding duplicates by ticket number
+    const existingTicketNumbers = new Set(tickets.value.map(t => t.ticket))
+    let addedCount = 0
+    let duplicateCount = 0
+
+    parsedTickets.forEach(ticket => {
+      if (!existingTicketNumbers.has(ticket.ticket)) {
+        tickets.value.push(ticket)
+        existingTicketNumbers.add(ticket.ticket)
+        addedCount++
+      } else {
+        duplicateCount++
+      }
+    })
+
+    // Sort by ticket number
+    tickets.value.sort((a, b) => a.ticket - b.ticket)
+
+    // Save to storage
+    saveTicketsToStorage()
+
+    // Show message
+    if (addedCount > 0) {
+      uploadMessage.value = `Added ${addedCount} ticket${addedCount > 1 ? 's' : ''}`
+      if (duplicateCount > 0) {
+        uploadMessage.value += ` (${duplicateCount} duplicate${duplicateCount > 1 ? 's' : ''} skipped)`
+      }
+    } else {
+      uploadMessage.value = `All ${duplicateCount} ticket${duplicateCount > 1 ? 's were' : ' was'} duplicates`
+    }
+    setTimeout(() => uploadMessage.value = '', 3000)
+
+  } catch (e) {
+    console.error('Error parsing CSV:', e)
+    uploadMessage.value = 'Error parsing CSV file'
+    setTimeout(() => uploadMessage.value = '', 3000)
+  } finally {
+    isUploading.value = false
+    // Reset input
+    if (csvInputRef.value) {
+      csvInputRef.value.value = ''
+    }
+  }
+}
+
+// Parse CSV data (Webull format)
+const parseCSV = (csvText) => {
+  const lines = csvText.trim().split('\n')
+  if (lines.length < 2) return []
+
+  // Parse header
+  const headers = parseCSVLine(lines[0]).map(h => h.trim().toLowerCase())
+
+  const ticketMap = new Map() // Use ticket number to group legs
+
+  // Skip header row and parse data
+  for (let i = 1; i < lines.length; i++) {
+    const values = parseCSVLine(lines[i])
+    if (values.length < headers.length) continue
+
+    const row = {}
+    headers.forEach((h, idx) => row[h] = values[idx]?.trim() || '')
+
+    // Skip empty rows
+    if (!row['symbol'] && !row['ticker']) continue
+
+    // Extract ticket number from various possible column names
+    const ticketNum = parseInt(row['ticket'] || row['ticket#'] || row['order id'] || row['id'] || Date.now())
+    const symbol = (row['symbol'] || row['ticker'] || '').toUpperCase()
+
+    // Create or get ticket
+    if (!ticketMap.has(ticketNum)) {
+      ticketMap.set(ticketNum, {
+        ticket: ticketNum,
+        date: parseWebullDate(row['date'] || row['entry date'] || row['open date'] || new Date().toISOString().split('T')[0]),
+        symbol: symbol,
+        status: row['status'] || (row['exit price'] && row['exit price'] !== '' ? 'CLOSED' : 'OPEN'),
+        exit_date: parseWebullDate(row['exit date'] || row['close date'] || '') || null,
+        pnl: parseFloat(row['p&l'] || row['pnl'] || row['profit loss'] || 0),
+        strategies: [{
+          name: row['strategy'] || row['strategy name'] || `${symbol} Strategy`,
+          legs: [],
+          entry_time: row['entry time'] || '',
+          entry_price: parseFloat(row['entry price']) || null,
+          exit_time: row['exit time'] || '',
+          exit_price: parseFloat(row['exit price']) || null
+        }],
+        notes: row['notes'] || ''
+      })
+    }
+
+    const ticket = ticketMap.get(ticketNum)
+
+    // Add leg
+    const leg = {
+      type: (row['type'] || row['option type'] || '').toLowerCase(),
+      strike: parseFloat(row['strike'] || row['strike price'] || 0),
+      expiry: parseWebullDate(row['expiry'] || row['expiration'] || row['exp date'] || '') || '',
+      premium: parseFloat(row['premium'] || row['price'] || row['debit'] || row['credit'] || 0),
+      quantity: parseInt(row['quantity'] || row['qty'] || row['contracts'] || 1),
+      action: (row['action'] || row['side'] || '').toLowerCase()
+    }
+
+    // Validate leg
+    if (leg.type && (leg.type === 'call' || leg.type === 'put') && leg.strike > 0) {
+      ticket.strategies[0].legs.push(leg)
+    }
+  }
+
+  // Update status for tickets with exit dates but no explicit status
+  ticketMap.forEach(ticket => {
+    if (ticket.exit_date && ticket.status === 'OPEN') {
+      ticket.status = 'CLOSED'
+    }
+    // Determine WIN/LOSS based on P&L
+    if (ticket.status === 'CLOSED') {
+      ticket.status = ticket.pnl >= 0 ? 'WIN' : 'LOSS'
+    }
+  })
+
+  return Array.from(ticketMap.values())
+}
+
+// Parse CSV line (handles quoted values)
+const parseCSVLine = (line) => {
+  const result = []
+  let current = ''
+  let inQuotes = false
+
+  for (let i = 0; i < line.length; i++) {
+    const char = line[i]
+
+    if (char === '"') {
+      inQuotes = !inQuotes
+    } else if (char === ',' && !inQuotes) {
+      result.push(current)
+      current = ''
+    } else {
+      current += char
+    }
+  }
+  result.push(current)
+
+  return result.map(v => v.replace(/^"|"$/g, '').trim())
+}
+
+// Parse Webull date format (MM/DD/YYYY or YYYY-MM-DD)
+const parseWebullDate = (dateStr) => {
+  if (!dateStr || dateStr === '' || dateStr === 'N/A') return null
+
+  // Try MM/DD/YYYY format
+  const parts = dateStr.split('/')
+  if (parts.length === 3) {
+    const [month, day, year] = parts
+    const date = new Date(year, month - 1, day)
+    if (!isNaN(date.getTime())) {
+      return date.toISOString().split('T')[0]
+    }
+  }
+
+  // Try YYYY-MM-DD format
+  const date = new Date(dateStr)
+  if (!isNaN(date.getTime())) {
+    return date.toISOString().split('T')[0]
+  }
+
+  return null
+}
+
+// Clear all data
+const clearAllData = () => {
+  if (confirm('Are you sure you want to clear all trading data?')) {
+    tickets.value = []
+    localStorage.removeItem(STORAGE_KEY)
+    uploadMessage.value = 'All data cleared'
+    setTimeout(() => uploadMessage.value = '', 2000)
+  }
+}
 const activeTab = ref('calendar')
 const currentMonth = ref(new Date(2026, 2, 1)) // March 2026
 const openPositionsCollapsed = ref(true)
@@ -587,7 +838,7 @@ const groupedOpenPositions = computed(() => {
 })
 
 onMounted(() => {
-  tickets.value = [...tradesData]
+  loadTicketsFromStorage()
 })
 
 // Watch for trades tab to initialize date picker
@@ -1461,6 +1712,7 @@ const nextMonth = () => {
 const saveTrade = (trade) => {
   trade.ticket = Date.now()
   tickets.value.unshift(trade)
+  saveTicketsToStorage()
   showAddModal.value = false
 }
 </script>
