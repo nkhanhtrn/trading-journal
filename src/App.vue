@@ -177,72 +177,76 @@
             <option value="date">Date</option>
           </select>
           <button @click="resetFilters" class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded text-sm">Clear</button>
+          <button @click="toggleAllSymbols" class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded text-sm">
+            {{ allSymbolsExpanded ? 'Collapse All' : 'Expand All' }}
+          </button>
         </div>
 
-        <!-- Tickets List grouped by Position -->
+        <!-- Tickets List grouped by Symbol -->
         <div class="space-y-2">
-          <div v-for="group in groupedTrades" :key="group.symbol + group.strategyName + group.strikes + group.expiry" class="bg-gray-800 rounded-lg overflow-hidden">
-            <!-- Main Row -->
-            <div class="px-4 py-3 flex items-center justify-between cursor-pointer hover:bg-gray-700" @click="togglePosition(group)">
+          <div v-for="symbolGroup in groupedBySymbol" :key="symbolGroup.symbol" class="bg-gray-800 rounded-lg overflow-hidden">
+            <!-- Symbol Header -->
+            <div class="px-4 py-3 flex items-center justify-between cursor-pointer hover:bg-gray-700" @click="toggleSymbol(symbolGroup.symbol)">
               <div class="flex items-center gap-3">
-                <i class="fas fa-chevron-right text-gray-500 text-xs transition-transform" :class="{ 'rotate-90': expandedPositionKeys.has(group.symbol + group.strategyName + group.strikes + group.expiry) }"></i>
-                <span class="text-lg font-bold text-white">{{ group.symbol }}</span>
-                <span class="text-sm text-gray-400">{{ group.strategyName }} {{ group.strikes }}</span>
-                <span class="text-xs px-1.5 py-0.5 rounded" :class="getAverageEntryPrice(group) >= 0 ? 'bg-cyan-900/30 text-cyan-400' : 'bg-orange-900/30 text-orange-400'">
-                  {{ getAverageEntryPrice(group) >= 0 ? 'credit' : 'debit' }}
-                </span>
-                <span class="text-xs text-gray-500">{{ group.totalQuantity }}c</span>
+                <i class="fas fa-chevron-right text-gray-500 text-xs transition-transform" :class="{ 'rotate-90': expandedSymbols.has(symbolGroup.symbol) }"></i>
+                <span class="text-lg font-bold text-white">{{ symbolGroup.symbol }}</span>
+                <span class="text-xs text-gray-500">{{ symbolGroup.groups.length }} position{{ symbolGroup.groups.length > 1 ? 's' : '' }}</span>
               </div>
               <div class="flex items-center gap-3">
-                <MiniCalendarDots :entry-dates="getEntryDates(group)" :exit-dates="getExitDates(group)" />
-                <span v-if="group.openCount === 0" class="text-base font-bold" :class="group.totalPnL >= 0 ? 'text-green-400' : 'text-red-400'">
-                  {{ group.totalPnL >= 0 ? '+' : '' }}${{ group.totalPnL.toFixed(0) }}
+                <span class="text-base font-bold" :class="symbolGroup.totalPnL >= 0 ? 'text-green-400' : 'text-red-400'">
+                  {{ symbolGroup.totalPnL >= 0 ? '+' : '' }}${{ symbolGroup.totalPnL.toFixed(0) }}
                 </span>
-                <span v-else class="text-sm px-2 py-1 rounded bg-yellow-900 text-yellow-300">{{ group.openCount }} OPEN</span>
               </div>
             </div>
 
-            <!-- Expanded Details -->
-            <div v-show="expandedPositionKeys.has(group.symbol + group.strategyName + group.strikes + group.expiry)" class="px-4 py-3 bg-gray-750 border-t border-gray-700">
-              <div class="flex items-center justify-between mb-3">
-                <div class="flex items-center gap-4 text-xs text-gray-500">
-                  <span>{{ group.tickets.length }} ticket{{ group.tickets.length > 1 ? 's' : '' }}</span>
-                  <span>{{ group.totalQuantity }} contracts</span>
-                  <span>{{ group.expiry }}</span>
-                </div>
-                <button @click.stop="selectedPositionGroup = group" class="text-xs bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded">Details >></button>
-              </div>
-
-              <div v-if="group.openCount === 0" class="mb-3 pb-3 border-b border-gray-700">
-                <div class="grid grid-cols-3 gap-4 text-sm">
-                  <div>
-                    <div class="text-gray-500 text-xs mb-1">Sold (credit)</div>
-                    <div class="text-white font-mono text-lg">${{ Math.abs(getAverageEntryPrice(group)).toFixed(2) }}</div>
-                  </div>
-                  <div v-if="hasClosingLegs(group)">
-                    <div class="text-gray-500 text-xs mb-1">Bought back (debit)</div>
-                    <div class="text-white font-mono text-lg">${{ Math.abs(getAverageExitPrice(group)).toFixed(2) }}</div>
-                  </div>
-                  <div v-else>
-                    <div class="text-gray-500 text-xs mb-1">Expired value</div>
-                    <div class="text-yellow-400 font-mono text-lg">${{ getImpliedExitPrice(group).toFixed(2) }}</div>
-                  </div>
-                  <div>
-                    <div class="text-gray-500 text-xs mb-1">P&L</div>
-                    <div class="font-mono text-lg font-bold" :class="group.totalPnL >= 0 ? 'text-green-400' : 'text-red-400'">
-                      {{ group.totalPnL >= 0 ? '+' : '' }}${{ group.totalPnL.toFixed(0) }}
+            <!-- Positions under symbol -->
+            <div v-show="expandedSymbols.has(symbolGroup.symbol)" class="border-t border-gray-700">
+              <div v-for="group in symbolGroup.groups" :key="group.symbol + group.strategyName + group.strikes + group.expiry" class="border-b border-gray-700 last:border-0 cursor-pointer hover:bg-gray-700/50" @click="selectedPositionGroup = group">
+                <!-- Position Row with details inline -->
+                <div class="px-4 py-3">
+                  <div class="flex items-center justify-between mb-2">
+                    <div class="flex items-center gap-2">
+                      <span class="text-sm font-medium text-white">{{ group.strategyName }}</span>
+                      <span class="text-sm text-gray-400">{{ group.strikes }}</span>
+                      <span class="text-xs bg-gray-700 text-gray-300 px-2 py-0.5 rounded">{{ group.expiry }}</span>
+                      <span class="text-xs bg-blue-900/30 text-blue-300 px-2 py-0.5 rounded">{{ group.totalQuantity }}c</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                      <MiniCalendarDots :entry-dates="getEntryDates(group)" :exit-dates="getExitDates(group)" :expiry-dates="getExpiryDates(group)" />
                     </div>
                   </div>
-                </div>
-                <div class="mt-2 pt-2 border-t border-gray-700 text-xs text-gray-500 text-center">
-                  <span v-if="hasClosingLegs(group)">({{ Math.abs(getAverageEntryPrice(group)).toFixed(2) }} - {{ Math.abs(getAverageExitPrice(group)).toFixed(2) }}) × {{ group.totalQuantity }} × 100</span>
-                  <span v-else>({{ Math.abs(getAverageEntryPrice(group)).toFixed(2) }} - {{ getImpliedExitPrice(group).toFixed(2) }}) × {{ group.totalQuantity }} × 100 <span class="text-yellow-400 ml-1">(expired ITM)</span></span>
-                </div>
-              </div>
-              <div v-if="group.openCount > 0" class="grid grid-cols-2 gap-4 text-sm">
-                <div>
-                  <span class="text-gray-500">Opening Price:</span>
-                  <span class="text-white ml-2">${{ getAverageEntryPrice(group).toFixed(2) }}</span>
+
+                  <!-- Price details inline -->
+                  <div v-if="group.openCount === 0" class="flex items-center gap-4 text-sm">
+                    <div class="flex items-center gap-1.5">
+                      <span class="text-gray-600 text-xs">Sold</span>
+                      <span class="text-white font-mono font-medium">${{ Math.abs(getAverageEntryPrice(group)).toFixed(2) }}</span>
+                    </div>
+                    <span class="text-gray-700">×</span>
+                    <div v-if="hasClosingLegs(group)" class="flex items-center gap-1.5">
+                      <span class="text-gray-600 text-xs">Bought</span>
+                      <span class="text-white font-mono font-medium">${{ Math.abs(getAverageExitPrice(group)).toFixed(2) }}</span>
+                    </div>
+                    <div v-else class="flex items-center gap-1.5">
+                      <span class="text-gray-600 text-xs">Expired</span>
+                      <span class="text-yellow-400 font-mono font-medium">${{ getImpliedExitPrice(group).toFixed(2) }}</span>
+                    </div>
+                    <span class="text-gray-700">=</span>
+                    <div class="flex items-center gap-1.5">
+                      <span class="text-gray-600 text-xs">P&L</span>
+                      <span class="font-mono font-bold" :class="group.totalPnL >= 0 ? 'text-green-400' : 'text-red-400'">
+                        {{ group.totalPnL >= 0 ? '+' : '' }}${{ group.totalPnL.toFixed(0) }}
+                      </span>
+                    </div>
+                    <span class="text-xs text-gray-600 bg-gray-800 px-2 py-0.5 rounded ml-auto">
+                      {{ group.totalQuantity }} × 100
+                    </span>
+                  </div>
+                  <div v-else class="flex items-center gap-2 text-sm">
+                    <span class="text-gray-500 text-xs">Opening Price:</span>
+                    <span class="text-white font-mono">${{ getAverageEntryPrice(group).toFixed(2) }}</span>
+                    <span class="text-xs px-2 py-1 rounded bg-yellow-900 text-yellow-300 ml-auto">{{ group.openCount }} OPEN</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -347,35 +351,66 @@
               </div>
 
               <!-- P&L Breakdown for closed trades -->
-              <div v-if="pos.exit_date" class="border-t border-gray-700 pt-2 mt-2">
-                <div class="text-xs text-gray-500 mb-1">P&L Breakdown</div>
-                <div class="grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
-                  <div class="flex items-center gap-2">
-                    <span class="text-gray-400">Type:</span>
-                    <span class="font-mono text-[10px] px-1 py-0.5 rounded" :class="getTicketEntryPrice(pos) >= 0 ? 'bg-cyan-900/30 text-cyan-300' : 'bg-orange-900/30 text-orange-300'">
-                      {{ getTicketEntryPrice(pos) >= 0 ? 'CREDIT' : 'DEBIT' }}
+              <div v-if="pos.exit_date" class="border-t border-gray-700 pt-3 mt-3">
+                <div class="text-xs text-gray-500 mb-2">P&L Breakdown</div>
+                <div class="flex items-center gap-3 text-sm">
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-gray-600 text-xs">Sold</span>
+                    <span class="text-white font-mono font-medium">${{ Math.abs(getTicketEntryPrice(pos)).toFixed(2) }}</span>
+                  </div>
+                  <span class="text-gray-700">×</span>
+                  <div v-if="ticketHasClosingLegs(pos)" class="flex items-center gap-1.5">
+                    <span class="text-gray-600 text-xs">Bought</span>
+                    <span class="text-white font-mono font-medium">${{ Math.abs(getTicketExitPrice(pos)).toFixed(2) }}</span>
+                  </div>
+                  <div v-else class="flex items-center gap-1.5">
+                    <span class="text-gray-600 text-xs">Expired</span>
+                    <span class="text-yellow-400 font-mono font-medium">${{ getTicketImpliedExitPrice(pos).toFixed(2) }}</span>
+                  </div>
+                  <span class="text-gray-700">=</span>
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-gray-600 text-xs">P&L</span>
+                    <span class="font-mono font-bold" :class="pos.pnl >= 0 ? 'text-green-400' : 'text-red-400'">
+                      {{ pos.pnl >= 0 ? '+' : '' }}${{ pos.pnl }}
                     </span>
                   </div>
-                  <div class="flex items-center gap-2">
-                    <span class="text-gray-400">Opening:</span>
-                    <span class="text-white font-mono">${{ getTicketEntryPrice(pos).toFixed(2) }}</span>
-                  </div>
-                  <div class="flex items-center gap-2">
-                    <span class="text-gray-400">Closing:</span>
-                    <span v-if="ticketHasClosingLegs(pos)" class="text-white font-mono">${{ getTicketExitPrice(pos).toFixed(2) }}</span>
-                    <span v-else class="text-yellow-400 font-mono text-[10px]">Expired ITM</span>
-                  </div>
-                  <div v-if="ticketHasClosingLegs(pos)" class="flex items-center gap-2">
-                    <span class="text-gray-400">Math:</span>
-                    <span class="font-mono text-gray-300">
-                      {{ getTicketEntryPrice(pos) >= 0 ? '(' + getTicketEntryPrice(pos).toFixed(2) + ' - ' + getTicketExitPrice(pos).toFixed(2) + ')' : '(' + getTicketExitPrice(pos).toFixed(2) + ' - ' + getTicketEntryPrice(pos).toFixed(2) + ')' }} × {{ getTicketContracts(pos) }} × 100
-                    </span>
-                  </div>
-                  <div class="col-span-2 flex items-center gap-2 mt-1">
-                    <span class="text-gray-400">P&L:</span>
-                    <span class="font-bold font-mono" :class="pos.pnl >= 0 ? 'text-green-400' : 'text-red-400'">{{ pos.pnl >= 0 ? '+' : '' }}${{ pos.pnl }}</span>
-                  </div>
+                  <span class="text-xs text-gray-600 bg-gray-800 px-2 py-0.5 rounded ml-auto">
+                    {{ getTicketContracts(pos) }} × 100
+                  </span>
                 </div>
+              </div>
+
+              <!-- P&L Graph -->
+              <div class="border-t border-gray-700 pt-3 mt-3">
+                <div class="text-xs text-gray-400 mb-3">Theoretical P&L at Expiration</div>
+                <svg viewBox="0 0 320 120" class="w-full h-28 bg-gray-900/50 rounded-lg">
+                  <!-- P&L Fill area -->
+                  <polygon :points="getPnLGraphArea(pos)" fill="#9ca3af" fill-opacity="0.1" />
+
+                  <!-- Zero line (breakeven) -->
+                  <line x1="20" y1="60" x2="300" y2="60" stroke="#6b7280" stroke-width="1" />
+
+                  <!-- P&L Line -->
+                  <polyline :points="getPnLGraphPoints(pos)" fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+
+                  <!-- Max Profit/Loss Labels -->
+                  <g v-if="getPnLGraphData(pos).maxProfit > 0">
+                    <text :x="isProfitOnLeft(pos) ? 25 : 295" y="10" :text-anchor="isProfitOnLeft(pos) ? 'start' : 'end'" class="text-[11px]" fill="#4ade80" font-family="monospace" font-weight="600">
+                      +${{ formatDollarAmount(getPnLGraphData(pos).maxProfit) }}
+                    </text>
+                  </g>
+                  <g v-if="getPnLGraphData(pos).maxLoss < 0">
+                    <text :x="isProfitOnLeft(pos) ? 295 : 25" y="116" :text-anchor="isProfitOnLeft(pos) ? 'end' : 'start'" class="text-[11px]" fill="#f87171" font-family="monospace" font-weight="600">
+                      -${{ formatDollarAmount(Math.abs(getPnLGraphData(pos).maxLoss)) }}
+                    </text>
+                  </g>
+
+                  <!-- Strikes markers -->
+                  <g v-for="strike in getPnLGraphData(pos).strikes" :key="strike">
+                    <line :x1="getStrikeX(strike, getPnLGraphData(pos))" y1="20" :x2="getStrikeX(strike, getPnLGraphData(pos))" y2="100" stroke="#4b5563" stroke-width="1" stroke-dasharray="4" />
+                    <text :x="getStrikeX(strike, getPnLGraphData(pos))" y="115" text-anchor="middle" class="text-[9px]" fill="#9ca3af" font-family="monospace">{{ strike }}</text>
+                  </g>
+                </svg>
               </div>
             </div>
           </div>
@@ -399,6 +434,7 @@ const activeTab = ref('calendar')
 const currentMonth = ref(new Date(2026, 2, 1)) // March 2026
 const openPositionsCollapsed = ref(false)
 const expandedPositionKeys = ref(new Set())
+const expandedSymbols = ref(new Set())
 const equityPrices = ref({})
 const loadingPrices = ref(false)
 
@@ -463,7 +499,8 @@ const filteredTickets = computed(() => {
     const matchSymbol = !filters.value.symbol || ticket.symbol.toLowerCase().includes(filters.value.symbol.toLowerCase())
     const matchStatus = !filters.value.status || ticket.status === filters.value.status
     const matchDate = isTicketInDateRange(ticket)
-    const matchSelectedDate = !selectedTradeDate.value || ticket.date === selectedTradeDate.value
+    // Match like calendar: entry or exit date matches
+    const matchSelectedDate = !selectedTradeDate.value || ticket.date === selectedTradeDate.value || ticket.exit_date === selectedTradeDate.value
     return matchSymbol && matchStatus && matchDate && matchSelectedDate
   })
 
@@ -580,6 +617,140 @@ const getStatusClass = (status) => {
   return classes[status] || 'bg-gray-700 text-gray-300'
 }
 
+// Calculate P&L at expiration for a given underlying price
+const calculatePnLAtPrice = (ticket, price) => {
+  const legs = ticket.strategies?.[0]?.legs || []
+  if (legs.length === 0) return 0
+
+  // For closed positions, only use the opening legs (first 2 for vertical spreads)
+  // The data includes both opening and closing legs for closed trades
+  const legsForCalculation = legs.length > 2 ? legs.slice(0, 2) : legs
+
+  let totalPnL = 0
+  legsForCalculation.forEach(leg => {
+    const intrinsicValue = leg.type === 'call'
+      ? Math.max(0, price - leg.strike)
+      : Math.max(0, leg.strike - price)
+
+    const valueAtExpiry = (leg.action === 'sell' ? -1 : 1) * intrinsicValue * leg.quantity * 100
+    const premiumCollected = (leg.action === 'sell' ? 1 : -1) * leg.premium * leg.quantity * 100
+    totalPnL += premiumCollected + valueAtExpiry
+  })
+
+  return totalPnL
+}
+
+// Check if profit occurs on the left side (lower prices) of the graph
+const isProfitOnLeft = (ticket) => {
+  const data = getPnLGraphData(ticket)
+  if (!data.minPrice || !data.maxPrice) return true
+
+  const pnlAtMin = calculatePnLAtPrice(ticket, data.minPrice)
+  const pnlAtMax = calculatePnLAtPrice(ticket, data.maxPrice)
+
+  // If P&L at min price is higher than at max price, profit is on left
+  return pnlAtMin > pnlAtMax
+}
+
+// Get P&L graph data
+const getPnLGraphData = (ticket) => {
+  const legs = ticket.strategies?.[0]?.legs || []
+  if (legs.length === 0) return { strikes: [], maxProfit: 0, maxLoss: 0, breakeven: null, minPrice: 0, maxPrice: 0 }
+
+  // For closed positions, only use the opening legs (first 2 for vertical spreads)
+  const legsForCalculation = legs.length > 2 ? legs.slice(0, 2) : legs
+
+  // Get all strikes including duplicates for display
+  const allStrikes = legsForCalculation.map(l => l.strike)
+  const uniqueStrikes = [...new Set(allStrikes)].sort((a, b) => a - b)
+  const minStrike = uniqueStrikes[0]
+  const maxStrike = uniqueStrikes[uniqueStrikes.length - 1]
+
+  // Calculate price range (wider than just strikes)
+  const strikeRange = maxStrike - minStrike || 100
+  const minPrice = Math.floor(minStrike - strikeRange * 0.5)
+  const maxPrice = Math.ceil(maxStrike + strikeRange * 0.5)
+
+  // Sample P&L across the range to find actual max/min
+  let maxPnL = -Infinity
+  let minPnL = Infinity
+  for (let price = minPrice; price <= maxPrice; price += 1) {
+    const pnl = calculatePnLAtPrice(ticket, price)
+    maxPnL = Math.max(maxPnL, pnl)
+    minPnL = Math.min(minPnL, pnl)
+  }
+
+  const maxProfit = Math.max(maxPnL, 0)
+  const maxLoss = Math.min(minPnL, 0)
+
+  // Find breakeven point(s)
+  let breakeven = null
+  for (let p = minStrike; p <= maxStrike; p += 0.1) {
+    if (Math.abs(calculatePnLAtPrice(ticket, p)) < 10) {
+      breakeven = Math.round(p)
+      break
+    }
+  }
+
+  return { strikes: uniqueStrikes, maxProfit, maxLoss, breakeven, minPrice, maxPrice }
+}
+
+// Convert strike to X coordinate
+const getStrikeX = (strike, data) => {
+  const range = data.maxPrice - data.minPrice || 1
+  return ((strike - data.minPrice) / range) * 280 + 20
+}
+
+// Generate SVG polyline points
+const getPnLGraphPoints = (ticket) => {
+  const data = getPnLGraphData(ticket)
+  if (!data.strikes.length || data.strikes.length < 2) return '20,60 300,60'
+
+  const range = data.maxPrice - data.minPrice || 1
+  const pnlRange = Math.max(Math.abs(data.maxProfit), Math.abs(data.maxLoss), 100)
+
+  const points = []
+  for (let px = 20; px <= 300; px += 3) {
+    const price = (px - 20) / 280 * range + data.minPrice
+    const pnl = calculatePnLAtPrice(ticket, price)
+    const py = 60 - (pnl / pnlRange) * 40
+    points.push(`${px},${Math.max(20, Math.min(100, py))}`)
+  }
+
+  return points.join(' ')
+}
+
+// Generate SVG polygon area (for fill under the curve)
+const getPnLGraphArea = (ticket) => {
+  const linePoints = getPnLGraphPoints(ticket)
+  return `20,60 ${linePoints} 300,60`
+}
+
+// Format dollar amounts for display
+const formatDollarAmount = (amount) => {
+  if (Math.abs(amount) >= 1000) {
+    return (amount / 1000).toFixed(1) + 'k'
+  }
+  return amount.toFixed(0)
+}
+
+// Get X coordinate for exit point (based on the strikes that define the spread)
+const getExitPointX = (ticket, data) => {
+  // For vertical spreads, exit typically happens near or between strikes
+  // Use the average strike as a reasonable approximation
+  if (data.strikes.length >= 2) {
+    return getStrikeX((data.strikes[0] + data.strikes[data.strikes.length - 1]) / 2, data)
+  }
+  return 150
+}
+
+// Get Y coordinate for exit point (based on actual P&L)
+const getExitPointY = (ticket, data) => {
+  const pnl = ticket.pnl || 0
+  const maxAbsPnL = Math.max(Math.abs(data.maxProfit), Math.abs(data.maxLoss), 100)
+  return 50 - (pnl / maxAbsPnL) * 40
+}
+
 const getHoldTime = (entryTime, exitTime = null) => {
   if (!entryTime) return '-'
   const entry = new Date(entryTime)
@@ -620,32 +791,58 @@ const togglePosition = (group) => {
   }
 }
 
+const toggleSymbol = (symbol) => {
+  if (expandedSymbols.value.has(symbol)) {
+    expandedSymbols.value.delete(symbol)
+  } else {
+    expandedSymbols.value.add(symbol)
+  }
+}
+
+const allSymbolsExpanded = computed(() => {
+  return expandedSymbols.value.size === groupedBySymbol.value.length && groupedBySymbol.value.length > 0
+})
+
+const toggleAllSymbols = () => {
+  if (allSymbolsExpanded.value) {
+    expandedSymbols.value.clear()
+  } else {
+    groupedBySymbol.value.forEach(group => {
+      expandedSymbols.value.add(group.symbol)
+    })
+  }
+}
+
 const getAverageEntryPrice = (group) => {
   const tickets = group.tickets || group.positions || []
-  let totalEntryPrice = 0
-  let count = 0
+  let weightedSum = 0
+  let totalContracts = 0
 
   tickets.forEach(ticket => {
-    totalEntryPrice += getTicketEntryPrice(ticket)
-    count++
+    const price = getTicketEntryPrice(ticket)
+    const contracts = getTicketContracts(ticket)
+    weightedSum += price * contracts
+    totalContracts += contracts
   })
 
-  return count > 0 ? totalEntryPrice / count : 0
+  return totalContracts > 0 ? weightedSum / totalContracts : 0
 }
 
 const getAverageExitPrice = (group) => {
   const tickets = group.tickets || group.positions || []
-  let totalExitPrice = 0
-  let count = 0
+  let weightedSum = 0
+  let totalContracts = 0
 
   tickets.forEach(ticket => {
     if (ticket.exit_date) {
-      totalExitPrice += getTicketExitPrice(ticket)
-      count++
+      const price = getTicketExitPrice(ticket)
+      const contracts = getTicketContracts(ticket)
+      weightedSum += price * contracts
+      totalContracts += contracts
     }
   })
 
-  return count > 0 ? totalExitPrice / count : 0
+  return totalContracts > 0 ? weightedSum / totalContracts : 0
 }
 
 const getTicketEntryPrice = (ticket) => {
@@ -684,6 +881,11 @@ const getTicketExitPrice = (ticket) => {
   // Use quantity from first leg (all legs in a spread have same quantity)
   const contracts = legs[0].quantity
   return totalNetPremium / contracts
+}
+
+const getTicketImpliedExitPrice = (ticket) => {
+  // For expired ITM positions, implied exit is 0 (full loss of premium)
+  return 0
 }
 
 const getTicketContracts = (ticket) => {
@@ -767,6 +969,18 @@ const getExitDates = (group) => {
   return tickets.map(t => t.exit_date).filter(d => d)
 }
 
+const getExpiryDates = (group) => {
+  const tickets = group.tickets || group.positions || []
+  const expirySet = new Set()
+  tickets.forEach(ticket => {
+    const legs = ticket.strategies?.[0]?.legs || []
+    legs.forEach(leg => {
+      if (leg.expiry) expirySet.add(leg.expiry)
+    })
+  })
+  return Array.from(expirySet)
+}
+
 const selectDate = (date) => {
   if (!date) return
   dateRange.value = {
@@ -775,6 +989,7 @@ const selectDate = (date) => {
     start: null,
     end: null
   }
+  selectedTradeDate.value = date
   activeTab.value = 'trades'
 }
 
@@ -877,38 +1092,38 @@ const resetFilters = () => {
 }
 
 const prevDay = () => {
-  // Get all unique sorted dates
-  const dates = [...new Set(tickets.value.map(t => t.date).filter(d => d))].sort()
+  // Clear date range filter when using day navigation
+  dateRange.value = { mode: null, start: null, end: null, single: null }
 
   if (!selectedTradeDate.value) {
     // Set to latest trade date if no date selected
+    const dates = [...new Set(tickets.value.map(t => t.date).filter(d => d))].sort()
     if (dates.length > 0) {
       selectedTradeDate.value = dates[dates.length - 1]
     }
   } else {
-    // Find the previous date with trades
-    const currentIndex = dates.indexOf(selectedTradeDate.value)
-    if (currentIndex > 0) {
-      selectedTradeDate.value = dates[currentIndex - 1]
-    }
+    // Go to previous calendar day
+    const current = new Date(selectedTradeDate.value)
+    current.setDate(current.getDate() - 1)
+    selectedTradeDate.value = current.toISOString().split('T')[0]
   }
 }
 
 const nextDay = () => {
-  // Get all unique sorted dates
-  const dates = [...new Set(tickets.value.map(t => t.date).filter(d => d))].sort()
+  // Clear date range filter when using day navigation
+  dateRange.value = { mode: null, start: null, end: null, single: null }
 
   if (!selectedTradeDate.value) {
-    // Set to earliest trade date if no date selected
+    // Set to latest trade date if no date selected
+    const dates = [...new Set(tickets.value.map(t => t.date).filter(d => d))].sort()
     if (dates.length > 0) {
-      selectedTradeDate.value = dates[0]
+      selectedTradeDate.value = dates[dates.length - 1]
     }
   } else {
-    // Find the next date with trades
-    const currentIndex = dates.indexOf(selectedTradeDate.value)
-    if (currentIndex < dates.length - 1) {
-      selectedTradeDate.value = dates[currentIndex + 1]
-    }
+    // Go to next calendar day
+    const current = new Date(selectedTradeDate.value)
+    current.setDate(current.getDate() + 1)
+    selectedTradeDate.value = current.toISOString().split('T')[0]
   }
 }
 
@@ -952,6 +1167,26 @@ const groupedTrades = computed(() => {
   })
 
   return Array.from(groups.values()).sort((a, b) => b.totalPnL - a.totalPnL)
+})
+
+// Group trades by symbol for top-level organization
+const groupedBySymbol = computed(() => {
+  const symbolMap = new Map()
+
+  groupedTrades.value.forEach(group => {
+    if (!symbolMap.has(group.symbol)) {
+      symbolMap.set(group.symbol, {
+        symbol: group.symbol,
+        groups: [],
+        totalPnL: 0
+      })
+    }
+    const symbolGroup = symbolMap.get(group.symbol)
+    symbolGroup.groups.push(group)
+    symbolGroup.totalPnL += group.totalPnL
+  })
+
+  return Array.from(symbolMap.values()).sort((a, b) => b.totalPnL - a.totalPnL)
 })
 
 // Split legs into opening (first half) and closing (second half)

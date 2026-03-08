@@ -20,7 +20,8 @@
       "Bash(ss:*)",
       "Bash(kill 11413:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(git reset:*)"
     ]
   }
 }
