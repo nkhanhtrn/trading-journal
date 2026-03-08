@@ -97,6 +97,11 @@ function categorizeRow(row) {
     else return side === 'Buy' ? 'long_put' : 'short_put'
   }
 
+  // Debug: check for GLD260302C00480000 buy transaction
+  if (symbol === 'GLD260302C00480000' && side === 'Buy') {
+    console.log(`  DEBUG BUY: name="${name}", symbol="${symbol}", side="${side}", status="${status}", filled=${filled}`)
+  }
+
   return null
 }
 
@@ -192,7 +197,9 @@ function parseStrangles(strangleArray, startTicketId) {
 // Generate readable name for single option (same for long/short of same option)
 function generateSingleOptionName(opt) {
   const capitalType = opt.type.charAt(0).toUpperCase() + opt.type.slice(1)
-  return `${opt.underlying} ${capitalType} $${opt.strike}`
+  // Include expiry month to distinguish same strike/different expiry
+  const expiryMonth = opt.date.substring(5, 7) + '/' + opt.date.substring(8, 10)
+  return `${opt.underlying} ${capitalType} $${opt.strike} ${expiryMonth}`
 }
 
 // Generate readable name for multi-leg strategy
@@ -329,6 +336,14 @@ function matchSingleOptions(tradesList, startTicketId) {
     const sym = t.ticketName
     if (!symbolGroups[sym]) symbolGroups[sym] = []
     symbolGroups[sym].push(t)
+  }
+
+  // Debug: show group sizes
+  for (const [sym, group] of Object.entries(symbolGroups)) {
+    if (sym === 'GLD Call $480' || sym.includes('GLD260302')) {
+      console.log(`  DEBUG: ${sym} has ${group.length} trades`)
+      group.forEach(t => console.log(`    ${t.side} ${t.filledTime}`))
+    }
   }
 
   for (const [symbol, group] of Object.entries(symbolGroups)) {

@@ -4161,7 +4161,7 @@ export const tradesData = [
     "pnl": -195,
     "strategies": [
       {
-        "name": "XSP Call $691",
+        "name": "XSP Call $691 02/27",
         "legs": [
           {
             "type": "call",
@@ -4186,7 +4186,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "XSP Call $691"
+    "notes": "XSP Call $691 02/27"
   },
   {
     "ticket": 1109,
@@ -4197,7 +4197,7 @@ export const tradesData = [
     "pnl": 300,
     "strategies": [
       {
-        "name": "GLD Call $478",
+        "name": "GLD Call $478 02/27",
         "legs": [
           {
             "type": "call",
@@ -4222,7 +4222,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "GLD Call $478"
+    "notes": "GLD Call $478 02/27"
   },
   {
     "ticket": 1110,
@@ -4233,7 +4233,7 @@ export const tradesData = [
     "pnl": 916,
     "strategies": [
       {
-        "name": "GLD Call $470",
+        "name": "GLD Call $470 02/20",
         "legs": [
           {
             "type": "call",
@@ -4258,7 +4258,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "GLD Call $470"
+    "notes": "GLD Call $470 02/20"
   },
   {
     "ticket": 1111,
@@ -4269,7 +4269,7 @@ export const tradesData = [
     "pnl": 193,
     "strategies": [
       {
-        "name": "GLD Call $481",
+        "name": "GLD Call $481 02/20",
         "legs": [
           {
             "type": "call",
@@ -4294,7 +4294,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "GLD Call $481"
+    "notes": "GLD Call $481 02/20"
   },
   {
     "ticket": 1112,
@@ -4305,7 +4305,7 @@ export const tradesData = [
     "pnl": 1463,
     "strategies": [
       {
-        "name": "FSLY Call $22.5",
+        "name": "FSLY Call $22.5 01/15",
         "legs": [
           {
             "type": "call",
@@ -4330,7 +4330,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "FSLY Call $22.5"
+    "notes": "FSLY Call $22.5 01/15"
   },
   {
     "ticket": 1113,
@@ -4341,7 +4341,7 @@ export const tradesData = [
     "pnl": 0,
     "strategies": [
       {
-        "name": "GLD Call $404",
+        "name": "GLD Call $404 12/31",
         "legs": [
           {
             "type": "call",
@@ -4358,7 +4358,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "GLD Call $404"
+    "notes": "GLD Call $404 12/31"
   },
   {
     "ticket": 1114,
@@ -4369,7 +4369,7 @@ export const tradesData = [
     "pnl": 0,
     "strategies": [
       {
-        "name": "GLD Call $383",
+        "name": "GLD Call $383 12/31",
         "legs": [
           {
             "type": "call",
@@ -4386,7 +4386,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "GLD Call $383"
+    "notes": "GLD Call $383 12/31"
   },
   {
     "ticket": 1115,
@@ -4397,7 +4397,7 @@ export const tradesData = [
     "pnl": 165,
     "strategies": [
       {
-        "name": "GLD Call $480",
+        "name": "GLD Call $480 02/13",
         "legs": [
           {
             "type": "call",
@@ -4422,10 +4422,10 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "GLD Call $480"
+    "notes": "GLD Call $480 02/13"
   },
   {
-    "ticket": 1117,
+    "ticket": 1116,
     "date": "2026-02-04",
     "symbol": "GLD",
     "status": "WIN",
@@ -4433,7 +4433,7 @@ export const tradesData = [
     "pnl": 214,
     "strategies": [
       {
-        "name": "GLD Call $467",
+        "name": "GLD Call $467 02/11",
         "legs": [
           {
             "type": "call",
@@ -4458,10 +4458,10 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "GLD Call $467"
+    "notes": "GLD Call $467 02/11"
   },
   {
-    "ticket": 1118,
+    "ticket": 1117,
     "date": "2026-02-04",
     "symbol": "GLD",
     "status": "OPEN",
@@ -4469,7 +4469,7 @@ export const tradesData = [
     "pnl": 0,
     "strategies": [
       {
-        "name": "GLD Call $391",
+        "name": "GLD Call $391 12/31",
         "legs": [
           {
             "type": "call",
@@ -4486,10 +4486,10 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "GLD Call $391"
+    "notes": "GLD Call $391 12/31"
   },
   {
-    "ticket": 1119,
+    "ticket": 1118,
     "date": "2026-02-02",
     "symbol": "GLD",
     "status": "LOSS",
@@ -4497,7 +4497,7 @@ export const tradesData = [
     "pnl": -169,
     "strategies": [
       {
-        "name": "GLD Call $430",
+        "name": "GLD Call $430 02/02",
         "legs": [
           {
             "type": "call",
@@ -4522,10 +4522,10 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "GLD Call $430"
+    "notes": "GLD Call $430 02/02"
   },
   {
-    "ticket": 1120,
+    "ticket": 1119,
     "date": "2026-01-29",
     "symbol": "GLD",
     "status": "OPEN",
@@ -4533,7 +4533,7 @@ export const tradesData = [
     "pnl": 0,
     "strategies": [
       {
-        "name": "GLD Call $500",
+        "name": "GLD Call $500 12/31",
         "legs": [
           {
             "type": "call",
@@ -4550,10 +4550,10 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "GLD Call $500"
+    "notes": "GLD Call $500 12/31"
   },
   {
-    "ticket": 1121,
+    "ticket": 1120,
     "date": "2026-01-29",
     "symbol": "GLD",
     "status": "OPEN",
@@ -4561,7 +4561,7 @@ export const tradesData = [
     "pnl": 0,
     "strategies": [
       {
-        "name": "GLD Call $500",
+        "name": "GLD Call $500 12/31",
         "legs": [
           {
             "type": "call",
@@ -4578,46 +4578,10 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "GLD Call $500"
+    "notes": "GLD Call $500 12/31"
   },
   {
-    "ticket": 1122,
-    "date": "2025-12-05",
-    "symbol": "VIXW",
-    "status": "LOSS",
-    "exit_date": "2025-12-08",
-    "pnl": -90,
-    "strategies": [
-      {
-        "name": "VIXW Call $17",
-        "legs": [
-          {
-            "type": "call",
-            "strike": 17,
-            "expiry": "2025-12-10",
-            "premium": 0.56,
-            "quantity": 10,
-            "action": "buy"
-          },
-          {
-            "type": "call",
-            "strike": 17,
-            "expiry": "2025-12-10",
-            "premium": 0.47,
-            "quantity": 10,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "12/05/2025 14:39:30 EST",
-        "entry_price": null,
-        "exit_time": "12/08/2025 10:36:03 EST",
-        "exit_price": null
-      }
-    ],
-    "notes": "VIXW Call $17"
-  },
-  {
-    "ticket": 1123,
+    "ticket": 1121,
     "date": "2025-12-19",
     "symbol": "VIXW",
     "status": "LOSS",
@@ -4625,7 +4589,7 @@ export const tradesData = [
     "pnl": -405,
     "strategies": [
       {
-        "name": "VIXW Call $17",
+        "name": "VIXW Call $17 12/24",
         "legs": [
           {
             "type": "call",
@@ -4650,46 +4614,10 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "VIXW Call $17"
+    "notes": "VIXW Call $17 12/24"
   },
   {
-    "ticket": 1124,
-    "date": "2025-11-26",
-    "symbol": "VIXW",
-    "status": "LOSS",
-    "exit_date": "2025-11-28",
-    "pnl": -200,
-    "strategies": [
-      {
-        "name": "VIXW Call $20",
-        "legs": [
-          {
-            "type": "call",
-            "strike": 20,
-            "expiry": "2025-12-03",
-            "premium": 0.45,
-            "quantity": 10,
-            "action": "buy"
-          },
-          {
-            "type": "call",
-            "strike": 20,
-            "expiry": "2025-12-03",
-            "premium": 0.25,
-            "quantity": 10,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "11/26/2025 13:28:00 EST",
-        "entry_price": null,
-        "exit_time": "11/28/2025 11:35:44 EST",
-        "exit_price": null
-      }
-    ],
-    "notes": "VIXW Call $20"
-  },
-  {
-    "ticket": 1125,
+    "ticket": 1122,
     "date": "2025-12-17",
     "symbol": "VIXW",
     "status": "LOSS",
@@ -4697,7 +4625,7 @@ export const tradesData = [
     "pnl": -360,
     "strategies": [
       {
-        "name": "VIXW Call $20",
+        "name": "VIXW Call $20 12/24",
         "legs": [
           {
             "type": "call",
@@ -4722,10 +4650,82 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "VIXW Call $20"
+    "notes": "VIXW Call $20 12/24"
   },
   {
-    "ticket": 1126,
+    "ticket": 1123,
+    "date": "2025-12-05",
+    "symbol": "VIXW",
+    "status": "LOSS",
+    "exit_date": "2025-12-08",
+    "pnl": -90,
+    "strategies": [
+      {
+        "name": "VIXW Call $17 12/10",
+        "legs": [
+          {
+            "type": "call",
+            "strike": 17,
+            "expiry": "2025-12-10",
+            "premium": 0.56,
+            "quantity": 10,
+            "action": "buy"
+          },
+          {
+            "type": "call",
+            "strike": 17,
+            "expiry": "2025-12-10",
+            "premium": 0.47,
+            "quantity": 10,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "12/05/2025 14:39:30 EST",
+        "entry_price": null,
+        "exit_time": "12/08/2025 10:36:03 EST",
+        "exit_price": null
+      }
+    ],
+    "notes": "VIXW Call $17 12/10"
+  },
+  {
+    "ticket": 1124,
+    "date": "2025-11-26",
+    "symbol": "VIXW",
+    "status": "LOSS",
+    "exit_date": "2025-11-28",
+    "pnl": -200,
+    "strategies": [
+      {
+        "name": "VIXW Call $20 12/03",
+        "legs": [
+          {
+            "type": "call",
+            "strike": 20,
+            "expiry": "2025-12-03",
+            "premium": 0.45,
+            "quantity": 10,
+            "action": "buy"
+          },
+          {
+            "type": "call",
+            "strike": 20,
+            "expiry": "2025-12-03",
+            "premium": 0.25,
+            "quantity": 10,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "11/26/2025 13:28:00 EST",
+        "entry_price": null,
+        "exit_time": "11/28/2025 11:35:44 EST",
+        "exit_price": null
+      }
+    ],
+    "notes": "VIXW Call $20 12/03"
+  },
+  {
+    "ticket": 1125,
     "date": "2025-10-17",
     "symbol": "SPY",
     "status": "LOSS",
@@ -4733,7 +4733,7 @@ export const tradesData = [
     "pnl": -9,
     "strategies": [
       {
-        "name": "SPY Call $670",
+        "name": "SPY Call $670 10/24",
         "legs": [
           {
             "type": "call",
@@ -4758,10 +4758,10 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "SPY Call $670"
+    "notes": "SPY Call $670 10/24"
   },
   {
-    "ticket": 1129,
+    "ticket": 1128,
     "date": "2025-05-19",
     "symbol": "HD",
     "status": "LOSS",
@@ -4769,7 +4769,7 @@ export const tradesData = [
     "pnl": -36,
     "strategies": [
       {
-        "name": "HD Call $390",
+        "name": "HD Call $390 05/23",
         "legs": [
           {
             "type": "call",
@@ -4794,10 +4794,10 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "HD Call $390"
+    "notes": "HD Call $390 05/23"
   },
   {
-    "ticket": 1130,
+    "ticket": 1129,
     "date": "2025-04-11",
     "symbol": "SPXW",
     "status": "WIN",
@@ -4805,7 +4805,7 @@ export const tradesData = [
     "pnl": 180,
     "strategies": [
       {
-        "name": "SPXW Call $5400",
+        "name": "SPXW Call $5400 04/11",
         "legs": [
           {
             "type": "call",
@@ -4830,10 +4830,10 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "SPXW Call $5400"
+    "notes": "SPXW Call $5400 04/11"
   },
   {
-    "ticket": 1131,
+    "ticket": 1130,
     "date": "2025-04-09",
     "symbol": "SPY",
     "status": "LOSS",
@@ -4841,7 +4841,7 @@ export const tradesData = [
     "pnl": -104,
     "strategies": [
       {
-        "name": "SPY Call $545",
+        "name": "SPY Call $545 04/23",
         "legs": [
           {
             "type": "call",
@@ -4866,10 +4866,10 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "SPY Call $545"
+    "notes": "SPY Call $545 04/23"
   },
   {
-    "ticket": 1132,
+    "ticket": 1131,
     "date": "2025-01-28",
     "symbol": "TSM",
     "status": "WIN",
@@ -4877,7 +4877,7 @@ export const tradesData = [
     "pnl": 25,
     "strategies": [
       {
-        "name": "TSM Call $200",
+        "name": "TSM Call $200 03/21",
         "legs": [
           {
             "type": "call",
@@ -4902,7 +4902,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "TSM Call $200"
+    "notes": "TSM Call $200 03/21"
   },
   {
     "ticket": 1137,
@@ -4913,7 +4913,7 @@ export const tradesData = [
     "pnl": 263,
     "strategies": [
       {
-        "name": "GLD Put $471",
+        "name": "GLD Put $471 03/13",
         "legs": [
           {
             "type": "put",
@@ -4938,7 +4938,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "GLD Put $471"
+    "notes": "GLD Put $471 03/13"
   },
   {
     "ticket": 1138,
@@ -4949,7 +4949,7 @@ export const tradesData = [
     "pnl": 1100,
     "strategies": [
       {
-        "name": "GLD Put $471",
+        "name": "GLD Put $471 03/13",
         "legs": [
           {
             "type": "put",
@@ -4974,7 +4974,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "GLD Put $471"
+    "notes": "GLD Put $471 03/13"
   },
   {
     "ticket": 1139,
@@ -4985,7 +4985,7 @@ export const tradesData = [
     "pnl": 1125,
     "strategies": [
       {
-        "name": "GLD Put $470",
+        "name": "GLD Put $470 03/11",
         "legs": [
           {
             "type": "put",
@@ -5010,7 +5010,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "GLD Put $470"
+    "notes": "GLD Put $470 03/11"
   },
   {
     "ticket": 1140,
@@ -5021,7 +5021,7 @@ export const tradesData = [
     "pnl": 80,
     "strategies": [
       {
-        "name": "VIXW Put $22",
+        "name": "VIXW Put $22 03/11",
         "legs": [
           {
             "type": "put",
@@ -5046,7 +5046,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "VIXW Put $22"
+    "notes": "VIXW Put $22 03/11"
   },
   {
     "ticket": 1141,
@@ -5057,7 +5057,7 @@ export const tradesData = [
     "pnl": -180,
     "strategies": [
       {
-        "name": "XSP Put $680",
+        "name": "XSP Put $680 02/23",
         "legs": [
           {
             "type": "put",
@@ -5082,46 +5082,10 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "XSP Put $680"
+    "notes": "XSP Put $680 02/23"
   },
   {
     "ticket": 1142,
-    "date": "2025-05-19",
-    "symbol": "VIX",
-    "status": "LOSS",
-    "exit_date": "2025-05-20",
-    "pnl": -40,
-    "strategies": [
-      {
-        "name": "VIX Put $18",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 18,
-            "expiry": "2025-05-21",
-            "premium": 0.2,
-            "quantity": 20,
-            "action": "buy"
-          },
-          {
-            "type": "put",
-            "strike": 18,
-            "expiry": "2025-05-21",
-            "premium": 0.18,
-            "quantity": 20,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "05/19/2025 09:48:34 EDT",
-        "entry_price": null,
-        "exit_time": "05/20/2025 15:53:40 EDT",
-        "exit_price": null
-      }
-    ],
-    "notes": "VIX Put $18"
-  },
-  {
-    "ticket": 1143,
     "date": "2026-02-12",
     "symbol": "VIX",
     "status": "LOSS",
@@ -5129,7 +5093,7 @@ export const tradesData = [
     "pnl": -140,
     "strategies": [
       {
-        "name": "VIX Put $18",
+        "name": "VIX Put $18 02/18",
         "legs": [
           {
             "type": "put",
@@ -5154,168 +5118,24 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "VIX Put $18"
+    "notes": "VIX Put $18 02/18"
   },
   {
-    "ticket": 1145,
-    "date": "2025-06-30",
-    "symbol": "VIXW",
-    "status": "LOSS",
-    "exit_date": "2025-07-01",
-    "pnl": -300,
-    "strategies": [
-      {
-        "name": "VIXW Put $17",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 17,
-            "expiry": "2025-07-02",
-            "premium": 0.22,
-            "quantity": 50,
-            "action": "buy"
-          },
-          {
-            "type": "put",
-            "strike": 17,
-            "expiry": "2025-07-02",
-            "premium": 0.16,
-            "quantity": 50,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "06/30/2025 10:01:32 EDT",
-        "entry_price": null,
-        "exit_time": "07/01/2025 12:02:35 EDT",
-        "exit_price": null
-      }
-    ],
-    "notes": "VIXW Put $17"
-  },
-  {
-    "ticket": 1146,
-    "date": "2025-06-30",
-    "symbol": "VIXW",
-    "status": "LOSS",
-    "exit_date": "2025-07-22",
-    "pnl": -492,
-    "strategies": [
-      {
-        "name": "VIXW Put $17",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 17,
-            "expiry": "2025-07-02",
-            "premium": 0.22,
-            "quantity": 50,
-            "action": "buy"
-          },
-          {
-            "type": "put",
-            "strike": 17,
-            "expiry": "2025-07-23",
-            "premium": 0.1215333333,
-            "quantity": 50,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "06/30/2025 10:01:32 EDT",
-        "entry_price": null,
-        "exit_time": "07/22/2025 10:29:27 EDT",
-        "exit_price": null
-      }
-    ],
-    "notes": "VIXW Put $17"
-  },
-  {
-    "ticket": 1147,
-    "date": "2025-07-16",
-    "symbol": "VIXW",
-    "status": "LOSS",
-    "exit_date": "2025-07-22",
-    "pnl": -1712,
-    "strategies": [
-      {
-        "name": "VIXW Put $17",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 17,
-            "expiry": "2025-07-23",
-            "premium": 0.19,
-            "quantity": 250,
-            "action": "buy"
-          },
-          {
-            "type": "put",
-            "strike": 17,
-            "expiry": "2025-07-23",
-            "premium": 0.1215333333,
-            "quantity": 250,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "07/16/2025 12:36:32 EDT",
-        "entry_price": null,
-        "exit_time": "07/22/2025 10:29:27 EDT",
-        "exit_price": null
-      }
-    ],
-    "notes": "VIXW Put $17"
-  },
-  {
-    "ticket": 1148,
-    "date": "2025-07-16",
-    "symbol": "VIXW",
-    "status": "WIN",
-    "exit_date": "2025-12-02",
-    "pnl": 216,
-    "strategies": [
-      {
-        "name": "VIXW Put $17",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 17,
-            "expiry": "2025-07-23",
-            "premium": 0.19,
-            "quantity": 9,
-            "action": "buy"
-          },
-          {
-            "type": "put",
-            "strike": 17,
-            "expiry": "2025-12-03",
-            "premium": 0.43,
-            "quantity": 9,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "07/16/2025 12:36:32 EDT",
-        "entry_price": null,
-        "exit_time": "12/02/2025 10:26:15 EST",
-        "exit_price": null
-      }
-    ],
-    "notes": "VIXW Put $17"
-  },
-  {
-    "ticket": 1149,
-    "date": "2025-07-16",
+    "ticket": 1144,
+    "date": "2026-01-29",
     "symbol": "VIXW",
     "status": "WIN",
     "exit_date": "2026-01-30",
-    "pnl": 255,
+    "pnl": 68,
     "strategies": [
       {
-        "name": "VIXW Put $17",
+        "name": "VIXW Put $17 02/04",
         "legs": [
           {
             "type": "put",
             "strike": 17,
-            "expiry": "2025-07-23",
-            "premium": 0.19,
+            "expiry": "2026-02-04",
+            "premium": 0.3,
             "quantity": 17,
             "action": "buy"
           },
@@ -5328,16 +5148,16 @@ export const tradesData = [
             "action": "sell"
           }
         ],
-        "entry_time": "07/16/2025 12:36:32 EDT",
+        "entry_time": "01/29/2026 11:16:47 EST",
         "entry_price": null,
         "exit_time": "01/30/2026 11:54:35 EST",
         "exit_price": null
       }
     ],
-    "notes": "VIXW Put $17"
+    "notes": "VIXW Put $17 02/04"
   },
   {
-    "ticket": 1153,
+    "ticket": 1145,
     "date": "2026-01-28",
     "symbol": "GLD",
     "status": "WIN",
@@ -5345,7 +5165,7 @@ export const tradesData = [
     "pnl": 0,
     "strategies": [
       {
-        "name": "GLD Put $475",
+        "name": "GLD Put $475 01/30",
         "legs": [
           {
             "type": "put",
@@ -5370,10 +5190,10 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "GLD Put $475"
+    "notes": "GLD Put $475 01/30"
   },
   {
-    "ticket": 1154,
+    "ticket": 1146,
     "date": "2026-01-27",
     "symbol": "GLD",
     "status": "WIN",
@@ -5381,7 +5201,7 @@ export const tradesData = [
     "pnl": 161,
     "strategies": [
       {
-        "name": "GLD Put $459",
+        "name": "GLD Put $459 01/28",
         "legs": [
           {
             "type": "put",
@@ -5406,10 +5226,10 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "GLD Put $459"
+    "notes": "GLD Put $459 01/28"
   },
   {
-    "ticket": 1155,
+    "ticket": 1147,
     "date": "2026-01-22",
     "symbol": "GLD",
     "status": "WIN",
@@ -5417,7 +5237,7 @@ export const tradesData = [
     "pnl": 206,
     "strategies": [
       {
-        "name": "GLD Put $445",
+        "name": "GLD Put $445 01/23",
         "legs": [
           {
             "type": "put",
@@ -5442,10 +5262,10 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "GLD Put $445"
+    "notes": "GLD Put $445 01/23"
   },
   {
-    "ticket": 1157,
+    "ticket": 1149,
     "date": "2026-01-02",
     "symbol": "VIXW",
     "status": "LOSS",
@@ -5453,7 +5273,7 @@ export const tradesData = [
     "pnl": -210,
     "strategies": [
       {
-        "name": "VIXW Put $14.5",
+        "name": "VIXW Put $14.5 01/07",
         "legs": [
           {
             "type": "put",
@@ -5478,24 +5298,24 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "VIXW Put $14.5"
+    "notes": "VIXW Put $14.5 01/07"
   },
   {
-    "ticket": 1158,
-    "date": "2025-07-24",
+    "ticket": 1150,
+    "date": "2025-12-17",
     "symbol": "VIXW",
     "status": "WIN",
     "exit_date": "2025-12-18",
-    "pnl": 120,
+    "pnl": 0,
     "strategies": [
       {
-        "name": "VIXW Put $15",
+        "name": "VIXW Put $15 12/24",
         "legs": [
           {
             "type": "put",
             "strike": 15,
-            "expiry": "2025-07-30",
-            "premium": 0.06,
+            "expiry": "2025-12-24",
+            "premium": 0.08,
             "quantity": 60,
             "action": "buy"
           },
@@ -5508,16 +5328,16 @@ export const tradesData = [
             "action": "sell"
           }
         ],
-        "entry_time": "07/24/2025 10:42:06 EDT",
+        "entry_time": "12/17/2025 13:23:31 EST",
         "entry_price": null,
         "exit_time": "12/18/2025 09:36:16 EST",
         "exit_price": null
       }
     ],
-    "notes": "VIXW Put $15"
+    "notes": "VIXW Put $15 12/24"
   },
   {
-    "ticket": 1162,
+    "ticket": 1151,
     "date": "2025-12-05",
     "symbol": "SOFI",
     "status": "LOSS",
@@ -5525,7 +5345,7 @@ export const tradesData = [
     "pnl": -100,
     "strategies": [
       {
-        "name": "SOFI Put $28",
+        "name": "SOFI Put $28 01/16",
         "legs": [
           {
             "type": "put",
@@ -5550,10 +5370,10 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "SOFI Put $28"
+    "notes": "SOFI Put $28 01/16"
   },
   {
-    "ticket": 1163,
+    "ticket": 1152,
     "date": "2025-12-15",
     "symbol": "SOFI",
     "status": "LOSS",
@@ -5561,7 +5381,7 @@ export const tradesData = [
     "pnl": -20,
     "strategies": [
       {
-        "name": "SOFI Put $28",
+        "name": "SOFI Put $28 01/16",
         "legs": [
           {
             "type": "put",
@@ -5586,10 +5406,10 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "SOFI Put $28"
+    "notes": "SOFI Put $28 01/16"
   },
   {
-    "ticket": 1164,
+    "ticket": 1153,
     "date": "2025-12-12",
     "symbol": "VIX",
     "status": "LOSS",
@@ -5597,7 +5417,7 @@ export const tradesData = [
     "pnl": -50,
     "strategies": [
       {
-        "name": "VIX Put $15.5",
+        "name": "VIX Put $15.5 12/17",
         "legs": [
           {
             "type": "put",
@@ -5622,10 +5442,10 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "VIX Put $15.5"
+    "notes": "VIX Put $15.5 12/17"
   },
   {
-    "ticket": 1165,
+    "ticket": 1154,
     "date": "2025-12-12",
     "symbol": "VIX",
     "status": "WIN",
@@ -5633,7 +5453,7 @@ export const tradesData = [
     "pnl": 0,
     "strategies": [
       {
-        "name": "VIX Put $15.5",
+        "name": "VIX Put $15.5 12/17",
         "legs": [
           {
             "type": "put",
@@ -5658,82 +5478,46 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "VIX Put $15.5"
+    "notes": "VIX Put $15.5 12/17"
   },
   {
-    "ticket": 1166,
-    "date": "2025-09-23",
+    "ticket": 1156,
+    "date": "2025-11-26",
     "symbol": "VIXW",
     "status": "WIN",
-    "exit_date": "2025-09-29",
-    "pnl": 189,
+    "exit_date": "2025-12-02",
+    "pnl": 216,
     "strategies": [
       {
-        "name": "VIXW Put $16",
+        "name": "VIXW Put $17 12/03",
         "legs": [
           {
             "type": "put",
-            "strike": 16,
-            "expiry": "2025-10-01",
-            "premium": 0.2,
-            "quantity": 27,
+            "strike": 17,
+            "expiry": "2025-12-03",
+            "premium": 0.19,
+            "quantity": 9,
             "action": "buy"
           },
           {
             "type": "put",
-            "strike": 16,
-            "expiry": "2025-10-01",
-            "premium": 0.27,
-            "quantity": 27,
+            "strike": 17,
+            "expiry": "2025-12-03",
+            "premium": 0.43,
+            "quantity": 9,
             "action": "sell"
           }
         ],
-        "entry_time": "09/23/2025 10:51:34 EDT",
+        "entry_time": "11/26/2025 13:36:10 EST",
         "entry_price": null,
-        "exit_time": "09/29/2025 11:50:40 EDT",
+        "exit_time": "12/02/2025 10:26:15 EST",
         "exit_price": null
       }
     ],
-    "notes": "VIXW Put $16"
+    "notes": "VIXW Put $17 12/03"
   },
   {
-    "ticket": 1168,
-    "date": "2025-11-07",
-    "symbol": "SOFI",
-    "status": "WIN",
-    "exit_date": "2025-11-10",
-    "pnl": 1500,
-    "strategies": [
-      {
-        "name": "SOFI Put $30",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 30,
-            "expiry": "2025-12-19",
-            "premium": 4.2,
-            "quantity": 10,
-            "action": "sell"
-          },
-          {
-            "type": "put",
-            "strike": 30,
-            "expiry": "2025-12-19",
-            "premium": 2.7,
-            "quantity": 10,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "11/07/2025 13:32:03 EST",
-        "entry_price": null,
-        "exit_time": "11/10/2025 10:19:53 EST",
-        "exit_price": null
-      }
-    ],
-    "notes": "SOFI Put $30"
-  },
-  {
-    "ticket": 1169,
+    "ticket": 1158,
     "date": "2025-11-20",
     "symbol": "SOFI",
     "status": "WIN",
@@ -5741,7 +5525,7 @@ export const tradesData = [
     "pnl": 4400,
     "strategies": [
       {
-        "name": "SOFI Put $30",
+        "name": "SOFI Put $30 01/02",
         "legs": [
           {
             "type": "put",
@@ -5766,10 +5550,10 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "SOFI Put $30"
+    "notes": "SOFI Put $30 01/02"
   },
   {
-    "ticket": 1170,
+    "ticket": 1159,
     "date": "2025-11-21",
     "symbol": "SPY",
     "status": "LOSS",
@@ -5777,7 +5561,7 @@ export const tradesData = [
     "pnl": -134,
     "strategies": [
       {
-        "name": "SPY Put $650",
+        "name": "SPY Put $650 11/28",
         "legs": [
           {
             "type": "put",
@@ -5802,96 +5586,24 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "SPY Put $650"
+    "notes": "SPY Put $650 11/28"
   },
   {
-    "ticket": 1171,
-    "date": "2025-05-08",
-    "symbol": "VIXW",
-    "status": "WIN",
-    "exit_date": "2025-05-12",
-    "pnl": 620,
-    "strategies": [
-      {
-        "name": "VIXW Put $20",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 20,
-            "expiry": "2025-05-14",
-            "premium": 0.09,
-            "quantity": 10,
-            "action": "buy"
-          },
-          {
-            "type": "put",
-            "strike": 20,
-            "expiry": "2025-05-14",
-            "premium": 0.71,
-            "quantity": 10,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "05/08/2025 12:21:25 EDT",
-        "entry_price": null,
-        "exit_time": "05/12/2025 11:32:34 EDT",
-        "exit_price": null
-      }
-    ],
-    "notes": "VIXW Put $20"
-  },
-  {
-    "ticket": 1172,
-    "date": "2025-05-08",
-    "symbol": "VIXW",
-    "status": "WIN",
-    "exit_date": "2025-11-10",
-    "pnl": 1650,
-    "strategies": [
-      {
-        "name": "VIXW Put $20",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 20,
-            "expiry": "2025-05-14",
-            "premium": 0.09,
-            "quantity": 10,
-            "action": "buy"
-          },
-          {
-            "type": "put",
-            "strike": 20,
-            "expiry": "2025-11-12",
-            "premium": 1.74,
-            "quantity": 10,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "05/08/2025 12:21:25 EDT",
-        "entry_price": null,
-        "exit_time": "11/10/2025 10:03:29 EST",
-        "exit_price": null
-      }
-    ],
-    "notes": "VIXW Put $20"
-  },
-  {
-    "ticket": 1173,
-    "date": "2025-05-08",
+    "ticket": 1160,
+    "date": "2025-11-19",
     "symbol": "VIXW",
     "status": "WIN",
     "exit_date": "2025-11-20",
-    "pnl": 1864,
+    "pnl": 971,
     "strategies": [
       {
-        "name": "VIXW Put $20",
+        "name": "VIXW Put $20 11/26",
         "legs": [
           {
             "type": "put",
             "strike": 20,
-            "expiry": "2025-05-14",
-            "premium": 0.09,
+            "expiry": "2025-11-26",
+            "premium": 0.56,
             "quantity": 19,
             "action": "buy"
           },
@@ -5904,30 +5616,30 @@ export const tradesData = [
             "action": "sell"
           }
         ],
-        "entry_time": "05/08/2025 12:21:25 EDT",
+        "entry_time": "11/19/2025 16:03:14 EST",
         "entry_price": null,
         "exit_time": "11/20/2025 10:01:24 EST",
         "exit_price": null
       }
     ],
-    "notes": "VIXW Put $20"
+    "notes": "VIXW Put $20 11/26"
   },
   {
-    "ticket": 1174,
-    "date": "2025-05-08",
+    "ticket": 1161,
+    "date": "2025-11-19",
     "symbol": "VIXW",
     "status": "WIN",
     "exit_date": "2025-11-20",
-    "pnl": 99,
+    "pnl": 52,
     "strategies": [
       {
-        "name": "VIXW Put $20",
+        "name": "VIXW Put $20 11/26",
         "legs": [
           {
             "type": "put",
             "strike": 20,
-            "expiry": "2025-05-14",
-            "premium": 0.09,
+            "expiry": "2025-11-26",
+            "premium": 0.56,
             "quantity": 1,
             "action": "buy"
           },
@@ -5940,16 +5652,16 @@ export const tradesData = [
             "action": "sell"
           }
         ],
-        "entry_time": "05/08/2025 12:21:25 EDT",
+        "entry_time": "11/19/2025 16:03:14 EST",
         "entry_price": null,
         "exit_time": "11/20/2025 10:17:35 EST",
         "exit_price": null
       }
     ],
-    "notes": "VIXW Put $20"
+    "notes": "VIXW Put $20 11/26"
   },
   {
-    "ticket": 1178,
+    "ticket": 1162,
     "date": "2025-11-17",
     "symbol": "VIX",
     "status": "LOSS",
@@ -5957,7 +5669,7 @@ export const tradesData = [
     "pnl": -8,
     "strategies": [
       {
-        "name": "VIX Put $20",
+        "name": "VIX Put $20 11/19",
         "legs": [
           {
             "type": "put",
@@ -5982,10 +5694,10 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "VIX Put $20"
+    "notes": "VIX Put $20 11/19"
   },
   {
-    "ticket": 1179,
+    "ticket": 1163,
     "date": "2025-11-13",
     "symbol": "VIX",
     "status": "LOSS",
@@ -5993,7 +5705,7 @@ export const tradesData = [
     "pnl": -60,
     "strategies": [
       {
-        "name": "VIX Put $19",
+        "name": "VIX Put $19 11/19",
         "legs": [
           {
             "type": "put",
@@ -6018,82 +5730,82 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "VIX Put $19"
+    "notes": "VIX Put $19 11/19"
   },
   {
-    "ticket": 1180,
-    "date": "2025-07-14",
-    "symbol": "VIXW",
-    "status": "LOSS",
-    "exit_date": "2025-08-04",
-    "pnl": -280,
+    "ticket": 1164,
+    "date": "2025-11-07",
+    "symbol": "SOFI",
+    "status": "WIN",
+    "exit_date": "2025-11-10",
+    "pnl": 1500,
     "strategies": [
       {
-        "name": "VIXW Put $18",
+        "name": "SOFI Put $30 12/19",
         "legs": [
           {
             "type": "put",
-            "strike": 18,
-            "expiry": "2025-07-23",
-            "premium": 0.8,
+            "strike": 30,
+            "expiry": "2025-12-19",
+            "premium": 4.2,
+            "quantity": 10,
+            "action": "sell"
+          },
+          {
+            "type": "put",
+            "strike": 30,
+            "expiry": "2025-12-19",
+            "premium": 2.7,
+            "quantity": 10,
+            "action": "buy"
+          }
+        ],
+        "entry_time": "11/07/2025 13:32:03 EST",
+        "entry_price": null,
+        "exit_time": "11/10/2025 10:19:53 EST",
+        "exit_price": null
+      }
+    ],
+    "notes": "SOFI Put $30 12/19"
+  },
+  {
+    "ticket": 1165,
+    "date": "2025-11-07",
+    "symbol": "VIXW",
+    "status": "WIN",
+    "exit_date": "2025-11-10",
+    "pnl": 1280,
+    "strategies": [
+      {
+        "name": "VIXW Put $20 11/12",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 20,
+            "expiry": "2025-11-12",
+            "premium": 0.46,
             "quantity": 10,
             "action": "buy"
           },
           {
             "type": "put",
-            "strike": 18,
-            "expiry": "2025-08-06",
-            "premium": 0.52,
+            "strike": 20,
+            "expiry": "2025-11-12",
+            "premium": 1.74,
             "quantity": 10,
             "action": "sell"
           }
         ],
-        "entry_time": "07/14/2025 13:13:12 EDT",
+        "entry_time": "11/07/2025 12:42:06 EST",
         "entry_price": null,
-        "exit_time": "08/04/2025 13:19:49 EDT",
+        "exit_time": "11/10/2025 10:03:29 EST",
         "exit_price": null
       }
     ],
-    "notes": "VIXW Put $18"
+    "notes": "VIXW Put $20 11/12"
   },
   {
-    "ticket": 1181,
-    "date": "2025-07-14",
-    "symbol": "VIXW",
-    "status": "LOSS",
-    "exit_date": "2025-10-10",
-    "pnl": -410,
-    "strategies": [
-      {
-        "name": "VIXW Put $18",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 18,
-            "expiry": "2025-07-23",
-            "premium": 0.8,
-            "quantity": 10,
-            "action": "buy"
-          },
-          {
-            "type": "put",
-            "strike": 18,
-            "expiry": "2025-10-15",
-            "premium": 0.39,
-            "quantity": 10,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "07/14/2025 13:13:12 EDT",
-        "entry_price": null,
-        "exit_time": "10/10/2025 13:18:27 EDT",
-        "exit_price": null
-      }
-    ],
-    "notes": "VIXW Put $18"
-  },
-  {
-    "ticket": 1186,
+    "ticket": 1167,
     "date": "2025-09-24",
     "symbol": "SOFI",
     "status": "WIN",
@@ -6101,7 +5813,7 @@ export const tradesData = [
     "pnl": 100,
     "strategies": [
       {
-        "name": "SOFI Put $39",
+        "name": "SOFI Put $39 11/21",
         "legs": [
           {
             "type": "put",
@@ -6126,10 +5838,10 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "SOFI Put $39"
+    "notes": "SOFI Put $39 11/21"
   },
   {
-    "ticket": 1187,
+    "ticket": 1168,
     "date": "2025-09-24",
     "symbol": "SOFI",
     "status": "LOSS",
@@ -6137,7 +5849,7 @@ export const tradesData = [
     "pnl": -100,
     "strategies": [
       {
-        "name": "SOFI Put $39",
+        "name": "SOFI Put $39 11/21",
         "legs": [
           {
             "type": "put",
@@ -6162,10 +5874,10 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "SOFI Put $39"
+    "notes": "SOFI Put $39 11/21"
   },
   {
-    "ticket": 1188,
+    "ticket": 1169,
     "date": "2025-10-17",
     "symbol": "SPY",
     "status": "LOSS",
@@ -6173,7 +5885,7 @@ export const tradesData = [
     "pnl": -261,
     "strategies": [
       {
-        "name": "SPY Put $654",
+        "name": "SPY Put $654 10/24",
         "legs": [
           {
             "type": "put",
@@ -6198,10 +5910,10 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "SPY Put $654"
+    "notes": "SPY Put $654 10/24"
   },
   {
-    "ticket": 1189,
+    "ticket": 1170,
     "date": "2025-10-14",
     "symbol": "VIX",
     "status": "LOSS",
@@ -6209,7 +5921,7 @@ export const tradesData = [
     "pnl": -340,
     "strategies": [
       {
-        "name": "VIX Put $18.5",
+        "name": "VIX Put $18.5 10/22",
         "legs": [
           {
             "type": "put",
@@ -6234,205 +5946,25 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "VIX Put $18.5"
+    "notes": "VIX Put $18.5 10/22"
   },
   {
-    "ticket": 1190,
-    "date": "2025-05-23",
-    "symbol": "VIXW",
-    "status": "LOSS",
-    "exit_date": "2025-05-27",
-    "pnl": -200,
-    "strategies": [
-      {
-        "name": "VIXW Put $19",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 19,
-            "expiry": "2025-05-28",
-            "premium": 0.06,
-            "quantity": 100,
-            "action": "buy"
-          },
-          {
-            "type": "put",
-            "strike": 19,
-            "expiry": "2025-05-28",
-            "premium": 0.04,
-            "quantity": 100,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "05/23/2025 12:42:36 EDT",
-        "entry_price": null,
-        "exit_time": "05/27/2025 09:40:32 EDT",
-        "exit_price": null
-      }
-    ],
-    "notes": "VIXW Put $19"
-  },
-  {
-    "ticket": 1191,
-    "date": "2025-05-30",
-    "symbol": "VIXW",
-    "status": "WIN",
-    "exit_date": "2025-06-02",
-    "pnl": 3239,
-    "strategies": [
-      {
-        "name": "VIXW Put $19",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 19,
-            "expiry": "2025-06-03",
-            "premium": 0.12,
-            "quantity": 79,
-            "action": "buy"
-          },
-          {
-            "type": "put",
-            "strike": 19,
-            "expiry": "2025-06-03",
-            "premium": 0.53,
-            "quantity": 79,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "05/30/2025 12:59:43 EDT",
-        "entry_price": null,
-        "exit_time": "06/02/2025 16:13:42 EDT",
-        "exit_price": null
-      }
-    ],
-    "notes": "VIXW Put $19"
-  },
-  {
-    "ticket": 1192,
-    "date": "2025-05-30",
-    "symbol": "VIXW",
-    "status": "WIN",
-    "exit_date": "2025-06-06",
-    "pnl": 124,
-    "strategies": [
-      {
-        "name": "VIXW Put $19",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 19,
-            "expiry": "2025-06-03",
-            "premium": 0.12,
-            "quantity": 1,
-            "action": "buy"
-          },
-          {
-            "type": "put",
-            "strike": 19,
-            "expiry": "2025-06-11",
-            "premium": 1.36,
-            "quantity": 1,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "05/30/2025 12:59:43 EDT",
-        "entry_price": null,
-        "exit_time": "06/06/2025 15:31:02 EDT",
-        "exit_price": null
-      }
-    ],
-    "notes": "VIXW Put $19"
-  },
-  {
-    "ticket": 1193,
-    "date": "2025-06-05",
-    "symbol": "VIXW",
-    "status": "WIN",
-    "exit_date": "2025-06-06",
-    "pnl": 459,
-    "strategies": [
-      {
-        "name": "VIXW Put $19",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 19,
-            "expiry": "2025-06-11",
-            "premium": 0.85,
-            "quantity": 9,
-            "action": "buy"
-          },
-          {
-            "type": "put",
-            "strike": 19,
-            "expiry": "2025-06-11",
-            "premium": 1.36,
-            "quantity": 9,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "06/05/2025 15:50:08 EDT",
-        "entry_price": null,
-        "exit_time": "06/06/2025 15:31:02 EDT",
-        "exit_price": null
-      }
-    ],
-    "notes": "VIXW Put $19"
-  },
-  {
-    "ticket": 1194,
-    "date": "2025-06-05",
-    "symbol": "VIXW",
-    "status": "LOSS",
-    "exit_date": "2025-10-13",
-    "pnl": -132,
-    "strategies": [
-      {
-        "name": "VIXW Put $19",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 19,
-            "expiry": "2025-06-11",
-            "premium": 0.85,
-            "quantity": 6,
-            "action": "buy"
-          },
-          {
-            "type": "put",
-            "strike": 19,
-            "expiry": "2025-10-15",
-            "premium": 0.63,
-            "quantity": 6,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "06/05/2025 15:50:08 EDT",
-        "entry_price": null,
-        "exit_time": "10/13/2025 13:22:26 EDT",
-        "exit_price": null
-      }
-    ],
-    "notes": "VIXW Put $19"
-  },
-  {
-    "ticket": 1195,
+    "ticket": 1171,
     "date": "2025-10-10",
     "symbol": "VIXW",
     "status": "LOSS",
     "exit_date": "2025-10-13",
-    "pnl": -8,
+    "pnl": -20,
     "strategies": [
       {
-        "name": "VIXW Put $19",
+        "name": "VIXW Put $19 10/15",
         "legs": [
           {
             "type": "put",
             "strike": 19,
             "expiry": "2025-10-15",
             "premium": 0.65,
-            "quantity": 4,
+            "quantity": 10,
             "action": "buy"
           },
           {
@@ -6440,7 +5972,7 @@ export const tradesData = [
             "strike": 19,
             "expiry": "2025-10-15",
             "premium": 0.63,
-            "quantity": 4,
+            "quantity": 10,
             "action": "sell"
           }
         ],
@@ -6450,10 +5982,82 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "VIXW Put $19"
+    "notes": "VIXW Put $19 10/15"
   },
   {
-    "ticket": 1197,
+    "ticket": 1172,
+    "date": "2025-10-10",
+    "symbol": "VIXW",
+    "status": "LOSS",
+    "exit_date": "2025-10-10",
+    "pnl": -150,
+    "strategies": [
+      {
+        "name": "VIXW Put $18 10/15",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 18,
+            "expiry": "2025-10-15",
+            "premium": 0.54,
+            "quantity": 10,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 18,
+            "expiry": "2025-10-15",
+            "premium": 0.39,
+            "quantity": 10,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "10/10/2025 11:45:07 EDT",
+        "entry_price": null,
+        "exit_time": "10/10/2025 13:18:27 EDT",
+        "exit_price": null
+      }
+    ],
+    "notes": "VIXW Put $18 10/15"
+  },
+  {
+    "ticket": 1173,
+    "date": "2025-09-23",
+    "symbol": "VIXW",
+    "status": "WIN",
+    "exit_date": "2025-09-29",
+    "pnl": 189,
+    "strategies": [
+      {
+        "name": "VIXW Put $16 10/01",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 16,
+            "expiry": "2025-10-01",
+            "premium": 0.2,
+            "quantity": 27,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 16,
+            "expiry": "2025-10-01",
+            "premium": 0.27,
+            "quantity": 27,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "09/23/2025 10:51:34 EDT",
+        "entry_price": null,
+        "exit_time": "09/29/2025 11:50:40 EDT",
+        "exit_price": null
+      }
+    ],
+    "notes": "VIXW Put $16 10/01"
+  },
+  {
+    "ticket": 1175,
     "date": "2025-08-18",
     "symbol": "VIX",
     "status": "LOSS",
@@ -6461,7 +6065,7 @@ export const tradesData = [
     "pnl": -300,
     "strategies": [
       {
-        "name": "VIX Put $15",
+        "name": "VIX Put $15 08/20",
         "legs": [
           {
             "type": "put",
@@ -6486,10 +6090,10 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "VIX Put $15"
+    "notes": "VIX Put $15 08/20"
   },
   {
-    "ticket": 1198,
+    "ticket": 1176,
     "date": "2025-08-15",
     "symbol": "VIX",
     "status": "LOSS",
@@ -6497,7 +6101,7 @@ export const tradesData = [
     "pnl": -100,
     "strategies": [
       {
-        "name": "VIX Put $14.5",
+        "name": "VIX Put $14.5 08/20",
         "legs": [
           {
             "type": "put",
@@ -6522,10 +6126,46 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "VIX Put $14.5"
+    "notes": "VIX Put $14.5 08/20"
   },
   {
-    "ticket": 1199,
+    "ticket": 1177,
+    "date": "2025-08-01",
+    "symbol": "VIXW",
+    "status": "WIN",
+    "exit_date": "2025-08-04",
+    "pnl": 90,
+    "strategies": [
+      {
+        "name": "VIXW Put $18 08/06",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 18,
+            "expiry": "2025-08-06",
+            "premium": 0.43,
+            "quantity": 10,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 18,
+            "expiry": "2025-08-06",
+            "premium": 0.52,
+            "quantity": 10,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "08/01/2025 10:18:57 EDT",
+        "entry_price": null,
+        "exit_time": "08/04/2025 13:19:49 EDT",
+        "exit_price": null
+      }
+    ],
+    "notes": "VIXW Put $18 08/06"
+  },
+  {
+    "ticket": 1178,
     "date": "2025-07-28",
     "symbol": "UPS",
     "status": "WIN",
@@ -6533,7 +6173,7 @@ export const tradesData = [
     "pnl": 448,
     "strategies": [
       {
-        "name": "UPS Put $99",
+        "name": "UPS Put $99 08/01",
         "legs": [
           {
             "type": "put",
@@ -6558,10 +6198,10 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "UPS Put $99"
+    "notes": "UPS Put $99 08/01"
   },
   {
-    "ticket": 1200,
+    "ticket": 1179,
     "date": "2025-07-28",
     "symbol": "SBUX",
     "status": "WIN",
@@ -6569,7 +6209,7 @@ export const tradesData = [
     "pnl": 6,
     "strategies": [
       {
-        "name": "SBUX Put $90",
+        "name": "SBUX Put $90 08/01",
         "legs": [
           {
             "type": "put",
@@ -6594,10 +6234,46 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "SBUX Put $90"
+    "notes": "SBUX Put $90 08/01"
   },
   {
-    "ticket": 1201,
+    "ticket": 1181,
+    "date": "2025-07-16",
+    "symbol": "VIXW",
+    "status": "LOSS",
+    "exit_date": "2025-07-22",
+    "pnl": -2054,
+    "strategies": [
+      {
+        "name": "VIXW Put $17 07/23",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 17,
+            "expiry": "2025-07-23",
+            "premium": 0.19,
+            "quantity": 300,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 17,
+            "expiry": "2025-07-23",
+            "premium": 0.1215333333,
+            "quantity": 300,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "07/16/2025 12:36:32 EDT",
+        "entry_price": null,
+        "exit_time": "07/22/2025 10:29:27 EDT",
+        "exit_price": null
+      }
+    ],
+    "notes": "VIXW Put $17 07/23"
+  },
+  {
+    "ticket": 1182,
     "date": "2025-07-14",
     "symbol": "VIX",
     "status": "LOSS",
@@ -6605,7 +6281,7 @@ export const tradesData = [
     "pnl": -150,
     "strategies": [
       {
-        "name": "VIX Put $16.5",
+        "name": "VIX Put $16.5 07/16",
         "legs": [
           {
             "type": "put",
@@ -6630,10 +6306,154 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "VIX Put $16.5"
+    "notes": "VIX Put $16.5 07/16"
   },
   {
-    "ticket": 1203,
+    "ticket": 1184,
+    "date": "2025-06-30",
+    "symbol": "VIXW",
+    "status": "LOSS",
+    "exit_date": "2025-07-01",
+    "pnl": -300,
+    "strategies": [
+      {
+        "name": "VIXW Put $17 07/02",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 17,
+            "expiry": "2025-07-02",
+            "premium": 0.22,
+            "quantity": 50,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 17,
+            "expiry": "2025-07-02",
+            "premium": 0.16,
+            "quantity": 50,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "06/30/2025 10:01:32 EDT",
+        "entry_price": null,
+        "exit_time": "07/01/2025 12:02:35 EDT",
+        "exit_price": null
+      }
+    ],
+    "notes": "VIXW Put $17 07/02"
+  },
+  {
+    "ticket": 1187,
+    "date": "2025-06-05",
+    "symbol": "VIXW",
+    "status": "WIN",
+    "exit_date": "2025-06-06",
+    "pnl": 510,
+    "strategies": [
+      {
+        "name": "VIXW Put $19 06/11",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 19,
+            "expiry": "2025-06-11",
+            "premium": 0.85,
+            "quantity": 10,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 19,
+            "expiry": "2025-06-11",
+            "premium": 1.36,
+            "quantity": 10,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "06/05/2025 15:50:08 EDT",
+        "entry_price": null,
+        "exit_time": "06/06/2025 15:31:02 EDT",
+        "exit_price": null
+      }
+    ],
+    "notes": "VIXW Put $19 06/11"
+  },
+  {
+    "ticket": 1189,
+    "date": "2025-05-30",
+    "symbol": "VIXW",
+    "status": "WIN",
+    "exit_date": "2025-06-02",
+    "pnl": 3239,
+    "strategies": [
+      {
+        "name": "VIXW Put $19 06/03",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 19,
+            "expiry": "2025-06-03",
+            "premium": 0.12,
+            "quantity": 79,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 19,
+            "expiry": "2025-06-03",
+            "premium": 0.53,
+            "quantity": 79,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "05/30/2025 12:59:43 EDT",
+        "entry_price": null,
+        "exit_time": "06/02/2025 16:13:42 EDT",
+        "exit_price": null
+      }
+    ],
+    "notes": "VIXW Put $19 06/03"
+  },
+  {
+    "ticket": 1191,
+    "date": "2025-05-23",
+    "symbol": "VIXW",
+    "status": "LOSS",
+    "exit_date": "2025-05-27",
+    "pnl": -200,
+    "strategies": [
+      {
+        "name": "VIXW Put $19 05/28",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 19,
+            "expiry": "2025-05-28",
+            "premium": 0.06,
+            "quantity": 100,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 19,
+            "expiry": "2025-05-28",
+            "premium": 0.04,
+            "quantity": 100,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "05/23/2025 12:42:36 EDT",
+        "entry_price": null,
+        "exit_time": "05/27/2025 09:40:32 EDT",
+        "exit_price": null
+      }
+    ],
+    "notes": "VIXW Put $19 05/28"
+  },
+  {
+    "ticket": 1192,
     "date": "2025-05-20",
     "symbol": "PANW",
     "status": "WIN",
@@ -6641,7 +6461,7 @@ export const tradesData = [
     "pnl": 260,
     "strategies": [
       {
-        "name": "PANW Put $182.5",
+        "name": "PANW Put $182.5 05/23",
         "legs": [
           {
             "type": "put",
@@ -6666,10 +6486,10 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "PANW Put $182.5"
+    "notes": "PANW Put $182.5 05/23"
   },
   {
-    "ticket": 1204,
+    "ticket": 1193,
     "date": "2025-05-19",
     "symbol": "HD",
     "status": "LOSS",
@@ -6677,7 +6497,7 @@ export const tradesData = [
     "pnl": -253,
     "strategies": [
       {
-        "name": "HD Put $370",
+        "name": "HD Put $370 05/23",
         "legs": [
           {
             "type": "put",
@@ -6702,10 +6522,46 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "HD Put $370"
+    "notes": "HD Put $370 05/23"
   },
   {
-    "ticket": 1206,
+    "ticket": 1194,
+    "date": "2025-05-19",
+    "symbol": "VIX",
+    "status": "LOSS",
+    "exit_date": "2025-05-20",
+    "pnl": -40,
+    "strategies": [
+      {
+        "name": "VIX Put $18 05/21",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 18,
+            "expiry": "2025-05-21",
+            "premium": 0.2,
+            "quantity": 20,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 18,
+            "expiry": "2025-05-21",
+            "premium": 0.18,
+            "quantity": 20,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "05/19/2025 09:48:34 EDT",
+        "entry_price": null,
+        "exit_time": "05/20/2025 15:53:40 EDT",
+        "exit_price": null
+      }
+    ],
+    "notes": "VIX Put $18 05/21"
+  },
+  {
+    "ticket": 1196,
     "date": "2025-05-15",
     "symbol": "VIX",
     "status": "LOSS",
@@ -6713,7 +6569,7 @@ export const tradesData = [
     "pnl": -494,
     "strategies": [
       {
-        "name": "VIX Put $17",
+        "name": "VIX Put $17 05/21",
         "legs": [
           {
             "type": "put",
@@ -6738,10 +6594,46 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "VIX Put $17"
+    "notes": "VIX Put $17 05/21"
   },
   {
-    "ticket": 1208,
+    "ticket": 1198,
+    "date": "2025-05-08",
+    "symbol": "VIXW",
+    "status": "WIN",
+    "exit_date": "2025-05-12",
+    "pnl": 620,
+    "strategies": [
+      {
+        "name": "VIXW Put $20 05/14",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 20,
+            "expiry": "2025-05-14",
+            "premium": 0.09,
+            "quantity": 10,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 20,
+            "expiry": "2025-05-14",
+            "premium": 0.71,
+            "quantity": 10,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "05/08/2025 12:21:25 EDT",
+        "entry_price": null,
+        "exit_time": "05/12/2025 11:32:34 EDT",
+        "exit_price": null
+      }
+    ],
+    "notes": "VIXW Put $20 05/14"
+  },
+  {
+    "ticket": 1200,
     "date": "2025-04-11",
     "symbol": "SPY",
     "status": "LOSS",
@@ -6749,7 +6641,7 @@ export const tradesData = [
     "pnl": -27,
     "strategies": [
       {
-        "name": "SPY Put $530",
+        "name": "SPY Put $530 04/11",
         "legs": [
           {
             "type": "put",
@@ -6774,10 +6666,10 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "SPY Put $530"
+    "notes": "SPY Put $530 04/11"
   },
   {
-    "ticket": 1209,
+    "ticket": 1201,
     "date": "2025-04-09",
     "symbol": "SPY",
     "status": "LOSS",
@@ -6785,7 +6677,7 @@ export const tradesData = [
     "pnl": -175,
     "strategies": [
       {
-        "name": "SPY Put $500",
+        "name": "SPY Put $500 04/23",
         "legs": [
           {
             "type": "put",
@@ -6810,10 +6702,10 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "SPY Put $500"
+    "notes": "SPY Put $500 04/23"
   },
   {
-    "ticket": 1211,
+    "ticket": 1203,
     "date": "2026-03-06",
     "symbol": "GLD",
     "status": "OPEN",
@@ -6821,7 +6713,7 @@ export const tradesData = [
     "pnl": 0,
     "strategies": [
       {
-        "name": "GLD Put $466",
+        "name": "GLD Put $466 03/09",
         "legs": [
           {
             "type": "put",
@@ -6838,10 +6730,10 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "GLD Put $466"
+    "notes": "GLD Put $466 03/09"
   },
   {
-    "ticket": 1215,
+    "ticket": 1207,
     "date": "2026-03-02",
     "symbol": "VIXW",
     "status": "LOSS",
@@ -6877,7 +6769,7 @@ export const tradesData = [
     "notes": "VIXW Vertical (Expired @ $23.57)"
   },
   {
-    "ticket": 1216,
+    "ticket": 1208,
     "date": "2026-03-02",
     "symbol": "VIXW",
     "status": "LOSS",
@@ -6913,7 +6805,7 @@ export const tradesData = [
     "notes": "VIXW Vertical (Expired @ $23.57)"
   },
   {
-    "ticket": 1217,
+    "ticket": 1209,
     "date": "2025-10-23",
     "symbol": "SPXW",
     "status": "LOSS",
@@ -6949,7 +6841,7 @@ export const tradesData = [
     "notes": "SPXW Vertical (Expired @ $6738.44)"
   },
   {
-    "ticket": 1218,
+    "ticket": 1210,
     "date": "2025-08-22",
     "symbol": "DJT",
     "status": "WIN",
@@ -6985,7 +6877,7 @@ export const tradesData = [
     "notes": "DJT Vertical (Expired @ $17.95)"
   },
   {
-    "ticket": 1219,
+    "ticket": 1211,
     "date": "2025-07-16",
     "symbol": "VIXW",
     "status": "WIN",
@@ -7021,7 +6913,7 @@ export const tradesData = [
     "notes": "VIXW Vertical (Expired @ $15.37)"
   },
   {
-    "ticket": 1220,
+    "ticket": 1212,
     "date": "2025-07-23",
     "symbol": "DJT",
     "status": "LOSS",
@@ -7057,7 +6949,7 @@ export const tradesData = [
     "notes": "DJT Vertical (Expired @ $19.11)"
   },
   {
-    "ticket": 1221,
+    "ticket": 1213,
     "date": "2025-07-10",
     "symbol": "VIXW",
     "status": "LOSS",
@@ -7093,7 +6985,7 @@ export const tradesData = [
     "notes": "VIXW Vertical (Expired @ $15.37)"
   },
   {
-    "ticket": 1222,
+    "ticket": 1214,
     "date": "2025-05-28",
     "symbol": "DJT",
     "status": "LOSS",
@@ -7129,7 +7021,7 @@ export const tradesData = [
     "notes": "DJT Vertical (Expired @ $19.16)"
   },
   {
-    "ticket": 1223,
+    "ticket": 1215,
     "date": "2025-06-27",
     "symbol": "DJT",
     "status": "LOSS",
@@ -7165,7 +7057,7 @@ export const tradesData = [
     "notes": "DJT Vertical (Expired @ $17.82)"
   },
   {
-    "ticket": 1224,
+    "ticket": 1216,
     "date": "2025-06-24",
     "symbol": "VIXW",
     "status": "LOSS",
@@ -7201,7 +7093,7 @@ export const tradesData = [
     "notes": "VIXW Vertical (Expired @ $15.37)"
   },
   {
-    "ticket": 1225,
+    "ticket": 1217,
     "date": "2025-06-24",
     "symbol": "VIXW",
     "status": "LOSS",
@@ -7237,7 +7129,7 @@ export const tradesData = [
     "notes": "VIXW Vertical (Expired @ $15.37)"
   },
   {
-    "ticket": 1226,
+    "ticket": 1218,
     "date": "2025-06-02",
     "symbol": "VIXW",
     "status": "LOSS",
@@ -7273,7 +7165,7 @@ export const tradesData = [
     "notes": "VIXW Vertical (Expired @ $17.69)"
   },
   {
-    "ticket": 1227,
+    "ticket": 1219,
     "date": "2025-04-17",
     "symbol": "VIXW",
     "status": "LOSS",
@@ -7309,7 +7201,7 @@ export const tradesData = [
     "notes": "VIXW Vertical (Expired @ $28.45)"
   },
   {
-    "ticket": 1228,
+    "ticket": 1220,
     "date": "2025-04-17",
     "symbol": "VIX",
     "status": "LOSS",
@@ -7345,7 +7237,7 @@ export const tradesData = [
     "notes": "VIX Vertical (Expired @ $17.16)"
   },
   {
-    "ticket": 1229,
+    "ticket": 1221,
     "date": "2025-04-17",
     "symbol": "VIX",
     "status": "LOSS",
@@ -7381,7 +7273,7 @@ export const tradesData = [
     "notes": "VIX Vertical (Expired @ $17.16)"
   },
   {
-    "ticket": 1230,
+    "ticket": 1222,
     "date": "2025-04-17",
     "symbol": "VIX",
     "status": "LOSS",
@@ -7417,7 +7309,7 @@ export const tradesData = [
     "notes": "VIX Vertical (Expired @ $17.16)"
   },
   {
-    "ticket": 1231,
+    "ticket": 1223,
     "date": "2025-04-17",
     "symbol": "VIX",
     "status": "LOSS",
@@ -7453,7 +7345,7 @@ export const tradesData = [
     "notes": "VIX Vertical (Expired @ $17.16)"
   },
   {
-    "ticket": 1232,
+    "ticket": 1224,
     "date": "2025-04-17",
     "symbol": "VIX",
     "status": "LOSS",
@@ -7489,7 +7381,7 @@ export const tradesData = [
     "notes": "VIX Vertical (Expired @ $17.16)"
   },
   {
-    "ticket": 1233,
+    "ticket": 1225,
     "date": "2025-04-14",
     "symbol": "SPXW",
     "status": "LOSS",
@@ -7525,7 +7417,7 @@ export const tradesData = [
     "notes": "SPXW Vertical (Expired @ $5405.97)"
   },
   {
-    "ticket": 1234,
+    "ticket": 1226,
     "date": "2025-04-11",
     "symbol": "SPXW",
     "status": "LOSS",
@@ -7561,7 +7453,7 @@ export const tradesData = [
     "notes": "SPXW Vertical (Expired @ $5268.05)"
   },
   {
-    "ticket": 1235,
+    "ticket": 1227,
     "date": "2025-04-10",
     "symbol": "SPXW",
     "status": "LOSS",
@@ -7597,7 +7489,7 @@ export const tradesData = [
     "notes": "SPXW Vertical (Expired @ $5456.90)"
   },
   {
-    "ticket": 1236,
+    "ticket": 1228,
     "date": "2025-03-04",
     "symbol": "VIX",
     "status": "LOSS",
@@ -7633,7 +7525,7 @@ export const tradesData = [
     "notes": "VIX Vertical (Expired @ $32.64)"
   },
   {
-    "ticket": 1237,
+    "ticket": 1229,
     "date": "2025-02-18",
     "symbol": "SPXW",
     "status": "WIN",
@@ -7669,7 +7561,7 @@ export const tradesData = [
     "notes": "SPXW Vertical (Expired @ $6129.58)"
   },
   {
-    "ticket": 1238,
+    "ticket": 1230,
     "date": "2025-02-18",
     "symbol": "SPXW",
     "status": "LOSS",
@@ -7705,7 +7597,7 @@ export const tradesData = [
     "notes": "SPXW Vertical (Expired @ $6129.58)"
   },
   {
-    "ticket": 1239,
+    "ticket": 1231,
     "date": "2025-01-21",
     "symbol": "SOFI",
     "status": "LOSS",
@@ -7741,7 +7633,7 @@ export const tradesData = [
     "notes": "SOFI Vertical (Expired @ $15.56)"
   },
   {
-    "ticket": 1240,
+    "ticket": 1232,
     "date": "2025-01-21",
     "symbol": "SOFI",
     "status": "LOSS",
@@ -7777,35 +7669,7 @@ export const tradesData = [
     "notes": "SOFI Vertical (Expired @ $15.56)"
   },
   {
-    "ticket": 1241,
-    "date": "2026-02-20",
-    "symbol": "GLD",
-    "status": "LOSS",
-    "exit_date": "2026-03-02",
-    "pnl": -565,
-    "strategies": [
-      {
-        "name": "GLD Call $480",
-        "legs": [
-          {
-            "type": "call",
-            "strike": 480,
-            "expiry": "2026-03-02",
-            "premium": 4.35,
-            "quantity": 1,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "02/20/2026 13:59:08 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "490.00"
-      }
-    ],
-    "notes": "GLD Call $480 (Expired @ $490.00)"
-  },
-  {
-    "ticket": 1242,
+    "ticket": 1233,
     "date": "2025-08-07",
     "symbol": "CHYM",
     "status": "LOSS",
@@ -7813,7 +7677,7 @@ export const tradesData = [
     "pnl": -1104,
     "strategies": [
       {
-        "name": "CHYM Call $35",
+        "name": "CHYM Call $35 08/15",
         "legs": [
           {
             "type": "call",
@@ -7830,10 +7694,10 @@ export const tradesData = [
         "exit_price": "29.25"
       }
     ],
-    "notes": "CHYM Call $35 (Expired @ $29.25)"
+    "notes": "CHYM Call $35 08/15 (Expired @ $29.25)"
   },
   {
-    "ticket": 1243,
+    "ticket": 1234,
     "date": "2025-05-20",
     "symbol": "PANW",
     "status": "LOSS",
@@ -7841,7 +7705,7 @@ export const tradesData = [
     "pnl": -1068,
     "strategies": [
       {
-        "name": "PANW Call $207.5",
+        "name": "PANW Call $207.5 05/23",
         "legs": [
           {
             "type": "call",
@@ -7858,10 +7722,38 @@ export const tradesData = [
         "exit_price": "186.14"
       }
     ],
-    "notes": "PANW Call $207.5 (Expired @ $186.14)"
+    "notes": "PANW Call $207.5 05/23 (Expired @ $186.14)"
   },
   {
-    "ticket": 1244,
+    "ticket": 1235,
+    "date": "2026-02-20",
+    "symbol": "GLD",
+    "status": "LOSS",
+    "exit_date": "2026-03-02",
+    "pnl": -565,
+    "strategies": [
+      {
+        "name": "GLD Call $480 03/02",
+        "legs": [
+          {
+            "type": "call",
+            "strike": 480,
+            "expiry": "2026-03-02",
+            "premium": 4.35,
+            "quantity": 1,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "02/20/2026 13:59:08 EST",
+        "entry_price": null,
+        "exit_time": "",
+        "exit_price": "490.00"
+      }
+    ],
+    "notes": "GLD Call $480 03/02 (Expired @ $490.00)"
+  },
+  {
+    "ticket": 1236,
     "date": "2026-02-18",
     "symbol": "GLD",
     "status": "LOSS",
@@ -7869,7 +7761,7 @@ export const tradesData = [
     "pnl": -2896,
     "strategies": [
       {
-        "name": "GLD Call $464",
+        "name": "GLD Call $464 02/23",
         "legs": [
           {
             "type": "call",
@@ -7886,10 +7778,10 @@ export const tradesData = [
         "exit_price": "481.28"
       }
     ],
-    "notes": "GLD Call $464 (Expired @ $481.28)"
+    "notes": "GLD Call $464 02/23 (Expired @ $481.28)"
   },
   {
-    "ticket": 1245,
+    "ticket": 1237,
     "date": "2026-02-05",
     "symbol": "GLD",
     "status": "WIN",
@@ -7897,7 +7789,7 @@ export const tradesData = [
     "pnl": 485,
     "strategies": [
       {
-        "name": "GLD Call $457",
+        "name": "GLD Call $457 02/13",
         "legs": [
           {
             "type": "call",
@@ -7914,10 +7806,10 @@ export const tradesData = [
         "exit_price": "451.39"
       }
     ],
-    "notes": "GLD Call $457 (Expired @ $451.39)"
+    "notes": "GLD Call $457 02/13 (Expired @ $451.39)"
   },
   {
-    "ticket": 1246,
+    "ticket": 1238,
     "date": "2026-02-05",
     "symbol": "GLD",
     "status": "WIN",
@@ -7925,7 +7817,7 @@ export const tradesData = [
     "pnl": 510,
     "strategies": [
       {
-        "name": "GLD Call $463",
+        "name": "GLD Call $463 02/13",
         "legs": [
           {
             "type": "call",
@@ -7942,10 +7834,10 @@ export const tradesData = [
         "exit_price": "451.39"
       }
     ],
-    "notes": "GLD Call $463 (Expired @ $451.39)"
+    "notes": "GLD Call $463 02/13 (Expired @ $451.39)"
   },
   {
-    "ticket": 1247,
+    "ticket": 1239,
     "date": "2026-01-21",
     "symbol": "GLD",
     "status": "LOSS",
@@ -7953,7 +7845,7 @@ export const tradesData = [
     "pnl": -2075,
     "strategies": [
       {
-        "name": "GLD Call $450",
+        "name": "GLD Call $450 01/28",
         "legs": [
           {
             "type": "call",
@@ -7970,10 +7862,10 @@ export const tradesData = [
         "exit_price": "476.10"
       }
     ],
-    "notes": "GLD Call $450 (Expired @ $476.10)"
+    "notes": "GLD Call $450 01/28 (Expired @ $476.10)"
   },
   {
-    "ticket": 1248,
+    "ticket": 1240,
     "date": "2026-02-12",
     "symbol": "VIX",
     "status": "LOSS",
@@ -7981,7 +7873,7 @@ export const tradesData = [
     "pnl": -580,
     "strategies": [
       {
-        "name": "VIX Put $18",
+        "name": "VIX Put $18 02/18",
         "legs": [
           {
             "type": "put",
@@ -7998,94 +7890,10 @@ export const tradesData = [
         "exit_price": "19.62"
       }
     ],
-    "notes": "VIX Put $18 (Expired @ $19.62)"
+    "notes": "VIX Put $18 02/18 (Expired @ $19.62)"
   },
   {
-    "ticket": 1249,
-    "date": "2025-07-16",
-    "symbol": "VIXW",
-    "status": "WIN",
-    "exit_date": "2025-07-23",
-    "pnl": 3456,
-    "strategies": [
-      {
-        "name": "VIXW Put $17",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 17,
-            "expiry": "2025-07-23",
-            "premium": 0.19,
-            "quantity": 24,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "07/16/2025 12:36:32 EDT",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "15.37"
-      }
-    ],
-    "notes": "VIXW Put $17 (Expired @ $15.37)"
-  },
-  {
-    "ticket": 1250,
-    "date": "2025-11-26",
-    "symbol": "VIXW",
-    "status": "WIN",
-    "exit_date": "2025-12-03",
-    "pnl": 730,
-    "strategies": [
-      {
-        "name": "VIXW Put $17",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 17,
-            "expiry": "2025-12-03",
-            "premium": 0.19,
-            "quantity": 10,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "11/26/2025 13:36:10 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "16.08"
-      }
-    ],
-    "notes": "VIXW Put $17 (Expired @ $16.08)"
-  },
-  {
-    "ticket": 1251,
-    "date": "2026-01-29",
-    "symbol": "VIXW",
-    "status": "LOSS",
-    "exit_date": "2026-02-04",
-    "pnl": -510,
-    "strategies": [
-      {
-        "name": "VIXW Put $17",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 17,
-            "expiry": "2026-02-04",
-            "premium": 0.3,
-            "quantity": 17,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "01/29/2026 11:16:47 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "18.64"
-      }
-    ],
-    "notes": "VIXW Put $17 (Expired @ $18.64)"
-  },
-  {
-    "ticket": 1252,
+    "ticket": 1241,
     "date": "2026-01-02",
     "symbol": "VIXW",
     "status": "LOSS",
@@ -8093,7 +7901,7 @@ export const tradesData = [
     "pnl": -200,
     "strategies": [
       {
-        "name": "VIXW Put $13.5",
+        "name": "VIXW Put $13.5 01/07",
         "legs": [
           {
             "type": "put",
@@ -8110,94 +7918,10 @@ export const tradesData = [
         "exit_price": "15.38"
       }
     ],
-    "notes": "VIXW Put $13.5 (Expired @ $15.38)"
+    "notes": "VIXW Put $13.5 01/07 (Expired @ $15.38)"
   },
   {
-    "ticket": 1253,
-    "date": "2025-07-24",
-    "symbol": "VIXW",
-    "status": "LOSS",
-    "exit_date": "2025-07-30",
-    "pnl": -240,
-    "strategies": [
-      {
-        "name": "VIXW Put $15",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 15,
-            "expiry": "2025-07-30",
-            "premium": 0.06,
-            "quantity": 40,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "07/24/2025 10:42:06 EDT",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "15.48"
-      }
-    ],
-    "notes": "VIXW Put $15 (Expired @ $15.48)"
-  },
-  {
-    "ticket": 1254,
-    "date": "2025-09-22",
-    "symbol": "VIXW",
-    "status": "LOSS",
-    "exit_date": "2025-09-24",
-    "pnl": -400,
-    "strategies": [
-      {
-        "name": "VIXW Put $15",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 15,
-            "expiry": "2025-09-24",
-            "premium": 0.04,
-            "quantity": 100,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "09/22/2025 11:52:16 EDT",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "16.18"
-      }
-    ],
-    "notes": "VIXW Put $15 (Expired @ $16.18)"
-  },
-  {
-    "ticket": 1255,
-    "date": "2025-12-17",
-    "symbol": "VIXW",
-    "status": "WIN",
-    "exit_date": "2025-12-24",
-    "pnl": 8700,
-    "strategies": [
-      {
-        "name": "VIXW Put $15",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 15,
-            "expiry": "2025-12-24",
-            "premium": 0.08,
-            "quantity": 60,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "12/17/2025 13:23:31 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "13.47"
-      }
-    ],
-    "notes": "VIXW Put $15 (Expired @ $13.47)"
-  },
-  {
-    "ticket": 1256,
+    "ticket": 1242,
     "date": "2025-12-09",
     "symbol": "VIXW",
     "status": "WIN",
@@ -8205,7 +7929,7 @@ export const tradesData = [
     "pnl": 2200,
     "strategies": [
       {
-        "name": "VIXW Put $16",
+        "name": "VIXW Put $16 12/10",
         "legs": [
           {
             "type": "put",
@@ -8222,178 +7946,38 @@ export const tradesData = [
         "exit_price": "15.77"
       }
     ],
-    "notes": "VIXW Put $16 (Expired @ $15.77)"
+    "notes": "VIXW Put $16 12/10 (Expired @ $15.77)"
   },
   {
-    "ticket": 1257,
-    "date": "2025-05-08",
+    "ticket": 1243,
+    "date": "2025-11-26",
     "symbol": "VIXW",
     "status": "WIN",
-    "exit_date": "2025-05-14",
-    "pnl": 7740,
+    "exit_date": "2025-12-03",
+    "pnl": 73,
     "strategies": [
       {
-        "name": "VIXW Put $20",
+        "name": "VIXW Put $17 12/03",
         "legs": [
           {
             "type": "put",
-            "strike": 20,
-            "expiry": "2025-05-14",
-            "premium": 0.09,
-            "quantity": 60,
+            "strike": 17,
+            "expiry": "2025-12-03",
+            "premium": 0.19,
+            "quantity": 1,
             "action": "buy"
           }
         ],
-        "entry_time": "05/08/2025 12:21:25 EDT",
+        "entry_time": "11/26/2025 13:36:10 EST",
         "entry_price": null,
         "exit_time": "",
-        "exit_price": "18.62"
+        "exit_price": "16.08"
       }
     ],
-    "notes": "VIXW Put $20 (Expired @ $18.62)"
+    "notes": "VIXW Put $17 12/03 (Expired @ $16.08)"
   },
   {
-    "ticket": 1258,
-    "date": "2025-11-07",
-    "symbol": "VIXW",
-    "status": "WIN",
-    "exit_date": "2025-11-12",
-    "pnl": 2030,
-    "strategies": [
-      {
-        "name": "VIXW Put $20",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 20,
-            "expiry": "2025-11-12",
-            "premium": 0.46,
-            "quantity": 10,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "11/07/2025 12:42:06 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "17.51"
-      }
-    ],
-    "notes": "VIXW Put $20 (Expired @ $17.51)"
-  },
-  {
-    "ticket": 1259,
-    "date": "2025-11-19",
-    "symbol": "VIXW",
-    "status": "WIN",
-    "exit_date": "2025-11-26",
-    "pnl": 4500,
-    "strategies": [
-      {
-        "name": "VIXW Put $20",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 20,
-            "expiry": "2025-11-26",
-            "premium": 0.56,
-            "quantity": 20,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "11/19/2025 16:03:14 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "17.19"
-      }
-    ],
-    "notes": "VIXW Put $20 (Expired @ $17.19)"
-  },
-  {
-    "ticket": 1260,
-    "date": "2025-07-14",
-    "symbol": "VIXW",
-    "status": "WIN",
-    "exit_date": "2025-07-23",
-    "pnl": 32940,
-    "strategies": [
-      {
-        "name": "VIXW Put $18",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 18,
-            "expiry": "2025-07-23",
-            "premium": 0.8,
-            "quantity": 180,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "07/14/2025 13:13:12 EDT",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "15.37"
-      }
-    ],
-    "notes": "VIXW Put $18 (Expired @ $15.37)"
-  },
-  {
-    "ticket": 1261,
-    "date": "2025-08-01",
-    "symbol": "VIXW",
-    "status": "WIN",
-    "exit_date": "2025-08-06",
-    "pnl": 800,
-    "strategies": [
-      {
-        "name": "VIXW Put $18",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 18,
-            "expiry": "2025-08-06",
-            "premium": 0.43,
-            "quantity": 10,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "08/01/2025 10:18:57 EDT",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "16.77"
-      }
-    ],
-    "notes": "VIXW Put $18 (Expired @ $16.77)"
-  },
-  {
-    "ticket": 1262,
-    "date": "2025-10-10",
-    "symbol": "VIXW",
-    "status": "LOSS",
-    "exit_date": "2025-10-15",
-    "pnl": -540,
-    "strategies": [
-      {
-        "name": "VIXW Put $18",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 18,
-            "expiry": "2025-10-15",
-            "premium": 0.54,
-            "quantity": 10,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "10/10/2025 11:45:07 EDT",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "20.64"
-      }
-    ],
-    "notes": "VIXW Put $18 (Expired @ $20.64)"
-  },
-  {
-    "ticket": 1263,
+    "ticket": 1244,
     "date": "2025-10-31",
     "symbol": "VIXW",
     "status": "LOSS",
@@ -8401,7 +7985,7 @@ export const tradesData = [
     "pnl": -305,
     "strategies": [
       {
-        "name": "VIXW Put $18",
+        "name": "VIXW Put $18 11/05",
         "legs": [
           {
             "type": "put",
@@ -8418,38 +8002,122 @@ export const tradesData = [
         "exit_price": "18.01"
       }
     ],
-    "notes": "VIXW Put $18 (Expired @ $18.01)"
+    "notes": "VIXW Put $18 11/05 (Expired @ $18.01)"
   },
   {
-    "ticket": 1264,
-    "date": "2025-10-10",
+    "ticket": 1245,
+    "date": "2025-09-22",
     "symbol": "VIXW",
     "status": "LOSS",
-    "exit_date": "2025-10-15",
-    "pnl": -390,
+    "exit_date": "2025-09-24",
+    "pnl": -400,
     "strategies": [
       {
-        "name": "VIXW Put $19",
+        "name": "VIXW Put $15 09/24",
         "legs": [
           {
             "type": "put",
-            "strike": 19,
-            "expiry": "2025-10-15",
-            "premium": 0.65,
-            "quantity": 6,
+            "strike": 15,
+            "expiry": "2025-09-24",
+            "premium": 0.04,
+            "quantity": 100,
             "action": "buy"
           }
         ],
-        "entry_time": "10/10/2025 15:35:17 EDT",
+        "entry_time": "09/22/2025 11:52:16 EDT",
         "entry_price": null,
         "exit_time": "",
-        "exit_price": "20.64"
+        "exit_price": "16.18"
       }
     ],
-    "notes": "VIXW Put $19 (Expired @ $20.64)"
+    "notes": "VIXW Put $15 09/24 (Expired @ $16.18)"
   },
   {
-    "ticket": 1265,
+    "ticket": 1246,
+    "date": "2025-07-24",
+    "symbol": "VIXW",
+    "status": "LOSS",
+    "exit_date": "2025-07-30",
+    "pnl": -600,
+    "strategies": [
+      {
+        "name": "VIXW Put $15 07/30",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 15,
+            "expiry": "2025-07-30",
+            "premium": 0.06,
+            "quantity": 100,
+            "action": "buy"
+          }
+        ],
+        "entry_time": "07/24/2025 10:42:06 EDT",
+        "entry_price": null,
+        "exit_time": "",
+        "exit_price": "15.48"
+      }
+    ],
+    "notes": "VIXW Put $15 07/30 (Expired @ $15.48)"
+  },
+  {
+    "ticket": 1247,
+    "date": "2025-07-14",
+    "symbol": "VIXW",
+    "status": "WIN",
+    "exit_date": "2025-07-23",
+    "pnl": 36600,
+    "strategies": [
+      {
+        "name": "VIXW Put $18 07/23",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 18,
+            "expiry": "2025-07-23",
+            "premium": 0.8,
+            "quantity": 200,
+            "action": "buy"
+          }
+        ],
+        "entry_time": "07/14/2025 13:13:12 EDT",
+        "entry_price": null,
+        "exit_time": "",
+        "exit_price": "15.37"
+      }
+    ],
+    "notes": "VIXW Put $18 07/23 (Expired @ $15.37)"
+  },
+  {
+    "ticket": 1248,
+    "date": "2025-06-30",
+    "symbol": "VIXW",
+    "status": "WIN",
+    "exit_date": "2025-07-02",
+    "pnl": 700,
+    "strategies": [
+      {
+        "name": "VIXW Put $17 07/02",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 17,
+            "expiry": "2025-07-02",
+            "premium": 0.22,
+            "quantity": 50,
+            "action": "buy"
+          }
+        ],
+        "entry_time": "06/30/2025 10:01:32 EDT",
+        "entry_price": null,
+        "exit_time": "",
+        "exit_price": "16.64"
+      }
+    ],
+    "notes": "VIXW Put $17 07/02 (Expired @ $16.64)"
+  },
+  {
+    "ticket": 1249,
     "date": "2025-06-11",
     "symbol": "VIX",
     "status": "LOSS",
@@ -8457,7 +8125,7 @@ export const tradesData = [
     "pnl": -1110,
     "strategies": [
       {
-        "name": "VIX Put $17.5",
+        "name": "VIX Put $17.5 06/18",
         "legs": [
           {
             "type": "put",
@@ -8474,10 +8142,66 @@ export const tradesData = [
         "exit_price": "20.14"
       }
     ],
-    "notes": "VIX Put $17.5 (Expired @ $20.14)"
+    "notes": "VIX Put $17.5 06/18 (Expired @ $20.14)"
   },
   {
-    "ticket": 1266,
+    "ticket": 1250,
+    "date": "2025-06-05",
+    "symbol": "VIXW",
+    "status": "WIN",
+    "exit_date": "2025-06-11",
+    "pnl": 445,
+    "strategies": [
+      {
+        "name": "VIXW Put $19 06/11",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 19,
+            "expiry": "2025-06-11",
+            "premium": 0.85,
+            "quantity": 5,
+            "action": "buy"
+          }
+        ],
+        "entry_time": "06/05/2025 15:50:08 EDT",
+        "entry_price": null,
+        "exit_time": "",
+        "exit_price": "17.26"
+      }
+    ],
+    "notes": "VIXW Put $19 06/11 (Expired @ $17.26)"
+  },
+  {
+    "ticket": 1251,
+    "date": "2025-05-30",
+    "symbol": "VIXW",
+    "status": "WIN",
+    "exit_date": "2025-06-03",
+    "pnl": 119,
+    "strategies": [
+      {
+        "name": "VIXW Put $19 06/03",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 19,
+            "expiry": "2025-06-03",
+            "premium": 0.12,
+            "quantity": 1,
+            "action": "buy"
+          }
+        ],
+        "entry_time": "05/30/2025 12:59:43 EDT",
+        "entry_price": null,
+        "exit_time": "",
+        "exit_price": "17.69"
+      }
+    ],
+    "notes": "VIXW Put $19 06/03 (Expired @ $17.69)"
+  },
+  {
+    "ticket": 1252,
     "date": "2025-05-15",
     "symbol": "VIX",
     "status": "LOSS",
@@ -8485,7 +8209,7 @@ export const tradesData = [
     "pnl": -382,
     "strategies": [
       {
-        "name": "VIX Put $16",
+        "name": "VIX Put $16 05/21",
         "legs": [
           {
             "type": "put",
@@ -8502,10 +8226,10 @@ export const tradesData = [
         "exit_price": "20.87"
       }
     ],
-    "notes": "VIX Put $16 (Expired @ $20.87)"
+    "notes": "VIX Put $16 05/21 (Expired @ $20.87)"
   },
   {
-    "ticket": 1267,
+    "ticket": 1253,
     "date": "2025-05-15",
     "symbol": "VIX",
     "status": "LOSS",
@@ -8513,7 +8237,7 @@ export const tradesData = [
     "pnl": -10,
     "strategies": [
       {
-        "name": "VIX Put $17",
+        "name": "VIX Put $17 05/21",
         "legs": [
           {
             "type": "put",
@@ -8530,10 +8254,38 @@ export const tradesData = [
         "exit_price": "20.87"
       }
     ],
-    "notes": "VIX Put $17 (Expired @ $20.87)"
+    "notes": "VIX Put $17 05/21 (Expired @ $20.87)"
   },
   {
-    "ticket": 1268,
+    "ticket": 1254,
+    "date": "2025-05-08",
+    "symbol": "VIXW",
+    "status": "WIN",
+    "exit_date": "2025-05-14",
+    "pnl": 11610,
+    "strategies": [
+      {
+        "name": "VIXW Put $20 05/14",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 20,
+            "expiry": "2025-05-14",
+            "premium": 0.09,
+            "quantity": 90,
+            "action": "buy"
+          }
+        ],
+        "entry_time": "05/08/2025 12:21:25 EDT",
+        "entry_price": null,
+        "exit_time": "",
+        "exit_price": "18.62"
+      }
+    ],
+    "notes": "VIXW Put $20 05/14 (Expired @ $18.62)"
+  },
+  {
+    "ticket": 1255,
     "date": "2025-04-08",
     "symbol": "SPXW",
     "status": "LOSS",
@@ -8541,7 +8293,7 @@ export const tradesData = [
     "pnl": -2200,
     "strategies": [
       {
-        "name": "SPXW Put $4930",
+        "name": "SPXW Put $4930 04/08",
         "legs": [
           {
             "type": "put",
@@ -8558,10 +8310,10 @@ export const tradesData = [
         "exit_price": "5062.25"
       }
     ],
-    "notes": "SPXW Put $4930 (Expired @ $5062.25)"
+    "notes": "SPXW Put $4930 04/08 (Expired @ $5062.25)"
   },
   {
-    "ticket": 1269,
+    "ticket": 1256,
     "date": "2026-01-28",
     "symbol": "GLD",
     "status": "WIN",
@@ -8569,7 +8321,7 @@ export const tradesData = [
     "pnl": 300,
     "strategies": [
       {
-        "name": "GLD Put $478",
+        "name": "GLD Put $478 01/30",
         "legs": [
           {
             "type": "put",
@@ -8586,10 +8338,10 @@ export const tradesData = [
         "exit_price": "495.90"
       }
     ],
-    "notes": "GLD Put $478 (Expired @ $495.90)"
+    "notes": "GLD Put $478 01/30 (Expired @ $495.90)"
   },
   {
-    "ticket": 1270,
+    "ticket": 1257,
     "date": "2026-01-23",
     "symbol": "GLD",
     "status": "WIN",
@@ -8597,7 +8349,7 @@ export const tradesData = [
     "pnl": 201,
     "strategies": [
       {
-        "name": "GLD Put $453",
+        "name": "GLD Put $453 01/26",
         "legs": [
           {
             "type": "put",
@@ -8614,10 +8366,10 @@ export const tradesData = [
         "exit_price": "464.70"
       }
     ],
-    "notes": "GLD Put $453 (Expired @ $464.70)"
+    "notes": "GLD Put $453 01/26 (Expired @ $464.70)"
   },
   {
-    "ticket": 1271,
+    "ticket": 1258,
     "date": "2025-08-22",
     "symbol": "DJT",
     "status": "WIN",
@@ -8625,7 +8377,7 @@ export const tradesData = [
     "pnl": 1221,
     "strategies": [
       {
-        "name": "DJT Put $19",
+        "name": "DJT Put $19 08/29",
         "legs": [
           {
             "type": "put",
@@ -8642,6 +8394,6 @@ export const tradesData = [
         "exit_price": "17.95"
       }
     ],
-    "notes": "DJT Put $19 (Expired @ $17.95)"
+    "notes": "DJT Put $19 08/29 (Expired @ $17.95)"
   }
 ];
