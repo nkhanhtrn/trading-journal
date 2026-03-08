@@ -1,445 +1,740 @@
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+// Modular CSV Parser for Webull Options
+// Each strategy is categorized into its own array, then processed independently
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import fs from 'fs'
+import path from 'path'
+import { fileURLToPath } from 'url'
 
-// Read the CSV file
-const csvPath = path.join(__dirname, '../Webull_Orders_Records_Options.csv');
-const csvContent = fs.readFileSync(csvPath, 'utf-8');
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
-// Parse CSV - handle quoted fields
+// ============================================
+// UTILITIES
+// ============================================
+
 function parseCsvRow(row) {
-  const result = [];
-  let current = '';
-  let inQuotes = false;
-
+  const result = []
+  let current = ''
+  let inQuotes = false
   for (let i = 0; i < row.length; i++) {
-    const char = row[i];
-    const nextChar = row[i + 1];
-
-    if (char === '"') {
-      inQuotes = !inQuotes;
-    } else if (char === ',' && !inQuotes) {
-      result.push(current || null);
-      current = '';
-    } else {
-      current += char;
-    }
+    const char = row[i]
+    if (char === '"') { inQuotes = !inQuotes }
+    else if (char === ',' && !inQuotes) { result.push(current || null); current = '' }
+    else { current += char }
   }
-  result.push(current || null);
-  return result;
+  result.push(current || null)
+  return result
 }
 
 function formatDate(dateStr) {
-  // Convert MM/DD/YYYY to YYYY-MM-DD
-  if (!dateStr) return null;
-  const parts = dateStr.split(' ')[0].split('/');
-  if (parts.length === 3) {
-    return `${parts[2]}-${parts[0].padStart(2, '0')}-${parts[1].padStart(2, '0')}`;
-  }
-  return dateStr;
-}
-
-function parseDateTime(dateStr) {
-  // Parse MM/DD/YYYY HH:MM:SS for comparison
-  if (!dateStr) return new Date(0);
-  const parts = dateStr.split(' ')[0].split('/');
-  if (parts.length === 3) {
-    return new Date(`${parts[2]}-${parts[0]}-${parts[1]}`);
-  }
-  return new Date(0);
+  if (!dateStr) return null
+  const parts = dateStr.split(' ')[0].split('/')
+  if (parts.length === 3) return `${parts[2]}-${parts[0].padStart(2, '0')}-${parts[1].padStart(2, '0')}`
+  return dateStr
 }
 
 function compareDates(timeA, timeB) {
-  const dateA = parseDateTime(timeA);
-  const dateB = parseDateTime(timeB);
-  return dateA.getTime() - dateB.getTime();
+  const dateA = timeA ? new Date(timeA) : new Date(0)
+  const dateB = timeB ? new Date(timeB) : new Date(0)
+  return dateA.getTime() - dateB.getTime()
 }
 
 function parseOptionSymbol(symbol) {
-  if (!symbol) return null;
-  // Format: GLD260320P00457000
-  // YYMMDD or YYMM + Type(CE/PE) + Strike
-  const match = symbol.match(/^([A-Z]+)2?(\d{2})(\d{2})(\d{2})([CP])(\d+)$/);
-  if (!match) return null;
-
-  const [, underlying, year, month, day, type, strike] = match;
-  const strikePrice = parseInt(strike) / 1000;
-  const dateStr = `20${year}-${month}-${day}`;
-
-  return {
-    underlying,
-    year: `20${year}`,
-    month,
-    day,
-    date: dateStr,
-    type: type === 'C' ? 'call' : 'put',
-    strike: strikePrice,
-    rawSymbol: symbol
-  };
-}
-
-// Parse all rows
-const lines = csvContent.split('\n').filter(line => line.trim());
-const allRows = [];
-
-for (let i = 1; i < lines.length; i++) {
-  const row = parseCsvRow(lines[i]);
-  if (row && row.length >= 11) {
-    const [name, symbol, side, status, filled, totalQty, price, avgPrice, tif, placedTime, filledTime] = row;
-    allRows.push({
-      name,
-      symbol,
-      side,
-      status,
-      filled: status === 'Filled' ? parseInt(filled) || 0 : 0,
-      totalQty: parseInt(totalQty) || 0,
-      price: price ? parseFloat(price.replace('@', '')) || 0 : 0,
-      avgPrice: parseFloat(avgPrice) || 0,
-      placedTime,
-      filledTime,
-      rowIndex: i
-    });
+  if (!symbol) return null
+  const match = symbol.match(/^([A-Z]+)2?(\d{2})(\d{2})(\d{2})([CP])(\d+)$/)
+  if (match) {
+    const [, underlying, year, month, day, type, strike] = match
+    return { underlying, year: `20${year}`, month, day, date: `20${year}-${month}-${day}`, type: type === 'C' ? 'call' : 'put', strike: parseInt(strike) / 1000 }
   }
+  return null
 }
 
-// Group rows by trade - a trade consists of a header row + leg rows
-const trades = [];
-let i = 0;
+// ============================================
+// CATEGORIZATION
+// Divide CSV rows into arrays for each strategy
+// ============================================
 
-while (i < allRows.length) {
-  const row = allRows[i];
+const strategyBuckets = {
+  vertical_spread: [],
+  iron_condor: [],
+  straddle: [],
+  strangle: [],
+  long_call: [],
+  short_call: [],
+  long_put: [],
+  short_put: []
+}
 
-  // Check if this is a Vertical trade header (has "Vertical" in name, no symbol)
-  if (row.name && row.name.includes('Vertical') && !row.symbol) {
-    const trade = {
-      ticketName: row.name,
+function categorizeRow(row) {
+  const { name, symbol, side, status, filled } = row
+
+  // Skip cancelled orders
+  if (status !== 'Filled' || filled === 0) return null
+
+  // Multi-leg strategies (header row: has name, no symbol)
+  if (name && !symbol) {
+    const nameLower = name.toLowerCase()
+    if (nameLower.includes('vertical') || nameLower.includes('spread')) return 'vertical_spread'
+    if (nameLower.includes('iron condor') || nameLower.includes('condor')) return 'iron_condor'
+    if (nameLower.includes('straddle')) return 'straddle'
+    if (nameLower.includes('strangle')) return 'strangle'
+    return 'vertical_spread' // Default multi-leg to vertical
+  }
+
+  // Single options (has symbol, no name)
+  if (symbol && !name) {
+    const opt = parseOptionSymbol(symbol)
+    if (!opt) return null
+    if (opt.type === 'call') return side === 'Buy' ? 'long_call' : 'short_call'
+    else return side === 'Buy' ? 'long_put' : 'short_put'
+  }
+
+  return null
+}
+
+function categorizeAllRows(rows) {
+  const categorized = { vertical_spread: [], iron_condor: [], straddle: [], strangle: [], long_call: [], short_call: [], long_put: [], short_put: [] }
+  let currentHeader = null
+
+  for (let i = 0; i < rows.length; i++) {
+    const row = rows[i]
+
+    // Header row (has name, no symbol)
+    if (row.name && !row.symbol) {
+      currentHeader = { ...row, legs: [] }
+      const bucket = categorizeRow(row)
+      if (bucket) categorized[bucket].push(currentHeader)
+      continue
+    }
+
+    // Leg row (has symbol, no name, and we have a header)
+    if (row.symbol && !row.name && currentHeader) {
+      currentHeader.legs.push(row)
+      continue
+    }
+
+    // Single option (no header, has symbol)
+    if (row.symbol && !row.name) {
+      const bucket = categorizeRow(row)
+      if (bucket) categorized[bucket].push(row)
+    }
+  }
+
+  return categorized
+}
+
+// ============================================
+// STRATEGY PARSING FUNCTIONS
+// Each function takes its categorized array and returns tickets
+// ============================================
+
+// Vertical Spread Parser
+function parseVerticalSpreads(verticalSpreadArray, startTicketId) {
+  const tradesData = []
+
+  for (const header of verticalSpreadArray) {
+    if (!header.legs || header.legs.length < 2) continue
+
+    const parsedLegs = header.legs.map(l => {
+      const opt = parseOptionSymbol(l.symbol)
+      return { ...opt, side: l.side, quantity: l.filled, premium: l.avgPrice, filledTime: l.filledTime }
+    }).filter(l => l.underlying)
+
+    if (parsedLegs.length >= 2) {
+      tradesData.push({
+        ticketName: header.name,
+        side: header.side,
+        status: header.status,
+        filledTime: header.filledTime,
+        legs: parsedLegs
+      })
+    }
+  }
+
+  return matchMultiLeg(tradesData, startTicketId)
+}
+
+// Iron Condor Parser
+function parseIronCondors(ironCondorArray, startTicketId) {
+  console.log(`  Iron Condors: ${ironCondorArray.length} headers (not yet implemented)`)
+  return []
+}
+
+// Straddle Parser
+function parseStraddles(straddleArray, startTicketId) {
+  console.log(`  Straddles: ${straddleArray.length} headers (not yet implemented)`)
+  return []
+}
+
+// Strangle Parser
+function parseStrangles(strangleArray, startTicketId) {
+  console.log(`  Strangles: ${strangleArray.length} headers (not yet implemented)`)
+  return []
+}
+
+// Long Call Parser
+function parseLongCalls(longCallArray, startTicketId) {
+  const tradesData = longCallArray.map(row => {
+    const opt = parseOptionSymbol(row.symbol)
+    if (!opt) return null
+    return {
+      ticketName: row.symbol,
       side: row.side,
-      quantity: row.filled,
-      price: row.avgPrice,
-      placedTime: row.placedTime,
-      filledTime: row.filledTime,
       status: row.status,
-      legs: []
-    };
-
-    // Collect leg rows (rows with empty name but have symbol)
-    i++;
-    while (i < allRows.length) {
-      const legRow = allRows[i];
-      // Stop if we hit another header or non-leg row
-      if (legRow.name || !legRow.symbol) break;
-
-      const optionInfo = parseOptionSymbol(legRow.symbol);
-      if (optionInfo) {
-        trade.legs.push({
-          ...optionInfo,
-          side: legRow.side,
-          quantity: legRow.filled,
-          premium: legRow.avgPrice,
-          filledTime: legRow.filledTime
-        });
-      }
-      i++;
+      filledTime: row.filledTime,
+      legs: [{ ...opt, side: row.side, quantity: row.filled, premium: row.avgPrice, filledTime: row.filledTime }]
     }
+  }).filter(t => t !== null)
 
-    // Only include filled trades with legs
-    if (trade.status === 'Filled' && trade.legs.length > 0) {
-      trades.push(trade);
-    }
-  } else {
-    i++;
-  }
+  return matchSingleOptions(tradesData, startTicketId)
 }
 
-// Group by ticket name
-const ticketGroups = {};
+// Short Call Parser
+function parseShortCalls(shortCallArray, startTicketId) {
+  const tradesData = shortCallArray.map(row => {
+    const opt = parseOptionSymbol(row.symbol)
+    if (!opt) return null
+    return {
+      ticketName: row.symbol,
+      side: row.side,
+      status: row.status,
+      filledTime: row.filledTime,
+      legs: [{ ...opt, side: row.side, quantity: row.filled, premium: row.avgPrice, filledTime: row.filledTime }]
+    }
+  }).filter(t => t !== null)
 
-for (const trade of trades) {
-  const key = trade.ticketName;
-  trade.ticketName = key; // Ensure ticketName is set
-  if (!ticketGroups[key]) {
-    ticketGroups[key] = [];
-  }
-  ticketGroups[key].push(trade);
+  return matchSingleOptions(tradesData, startTicketId)
 }
 
-// Match opening and closing trades (with proper consumption tracking)
-const matchedTrades = [];
-let ticketCounter = 1000;
-
-for (const [ticketName, tradesList] of Object.entries(ticketGroups)) {
-  // Sort by filled time
-  tradesList.sort((a, b) => {
-    const timeA = a.filledTime || a.placedTime || '';
-    const timeB = b.filledTime || b.placedTime || '';
-    return compareDates(timeA, timeB);
-  });
-
-  // Group trades by their leg signatures for matching
-  const tradeGroups = [];
-  const used = new Set();
-
-  for (let i = 0; i < tradesList.length; i++) {
-    if (used.has(i)) continue;
-
-    const trade = tradesList[i];
-    const legSignature = trade.legs.map(l => `${l.strike}-${l.type}-${l.date}`).sort().join('|');
-
-    // Find all trades with matching leg signature
-    const matchingTrades = [trade];
-    used.add(i);
-
-    for (let j = i + 1; j < tradesList.length; j++) {
-      if (used.has(j)) continue;
-      const candidate = tradesList[j];
-      const candidateSig = candidate.legs.map(l => `${l.strike}-${l.type}-${l.date}`).sort().join('|');
-
-      if (legSignature === candidateSig) {
-        matchingTrades.push(candidate);
-        used.add(j);
-      }
+// Long Put Parser
+function parseLongPuts(longPutArray, startTicketId) {
+  const tradesData = longPutArray.map(row => {
+    const opt = parseOptionSymbol(row.symbol)
+    if (!opt) return null
+    return {
+      ticketName: row.symbol,
+      side: row.side,
+      status: row.status,
+      filledTime: row.filledTime,
+      legs: [{ ...opt, side: row.side, quantity: row.filled, premium: row.avgPrice, filledTime: row.filledTime }]
     }
+  }).filter(t => t !== null)
 
-    if (matchingTrades.length > 0) {
-      tradeGroups.push(matchingTrades);
+  return matchSingleOptions(tradesData, startTicketId)
+}
+
+// Short Put Parser
+function parseShortPuts(shortPutArray, startTicketId) {
+  const tradesData = shortPutArray.map(row => {
+    const opt = parseOptionSymbol(row.symbol)
+    if (!opt) return null
+    return {
+      ticketName: row.symbol,
+      side: row.side,
+      status: row.status,
+      filledTime: row.filledTime,
+      legs: [{ ...opt, side: row.side, quantity: row.filled, premium: row.avgPrice, filledTime: row.filledTime }]
     }
+  }).filter(t => t !== null)
+
+  return matchSingleOptions(tradesData, startTicketId)
+}
+
+// ============================================
+// MATCHING FUNCTIONS
+// ============================================
+
+function matchMultiLeg(tradesList, startTicketId) {
+  const tickets = []
+  let ticketId = startTicketId
+
+  // Group by leg signature
+  const sigGroups = {}
+  for (const t of tradesList) {
+    const sig = t.legs.map(l => `${l.strike}-${l.type}-${l.date}`).sort().join('|')
+    if (!sigGroups[sig]) sigGroups[sig] = []
+    sigGroups[sig].push(t)
   }
 
-  // Process each group of matching trades
-  for (const group of tradeGroups) {
-    // Sort by time
-    group.sort((a, b) => {
-      const timeA = a.filledTime || a.placedTime || '';
-      const timeB = b.filledTime || b.placedTime || '';
-      return compareDates(timeA, timeB);
-    });
-
-    // Separate into credit (Sell to open) and debit (Buy to open) spreads
-    // Credit spreads: first leg is Sell (higher strike for calls, lower for puts)
-    // Debit spreads: first leg is Buy (lower strike for calls, higher for puts)
-    const creditTrades = [];
-    const debitTrades = [];
+  for (const group of Object.values(sigGroups)) {
+    group.sort((a, b) => compareDates(a.filledTime, b.filledTime))
+    const openPositions = []
 
     for (const trade of group) {
-      const isCredit = trade.side === 'Sell';
-      if (isCredit) {
-        creditTrades.push(trade);
-      } else {
-        debitTrades.push(trade);
-      }
-    }
-
-    // Match credits (short) with debits (long) in FIFO order
-    // Credits are closed by buying back (debit transaction)
-    // Debits are closed by selling back (credit transaction)
-    let creditIdx = 0;
-    let debitIdx = 0;
-    const usedCredits = new Set();
-    const usedDebits = new Set();
-
-    // Process all trades in time order
-    const allTrades = [...group].sort((a, b) => compareDates(a.filledTime || a.placedTime, b.filledTime || b.placedTime));
-    const openPositions = []; // Tracks open positions with their quantities
-
-    for (const trade of allTrades) {
-      const isCredit = trade.side === 'Sell';
-      const tradeQty = trade.legs[0].quantity;
+      const isCredit = trade.side === 'Sell'
+      const qty = trade.legs[0].quantity
 
       if (isCredit) {
-        // Check if this closes an existing debit position
-        let remainingCreditQty = tradeQty;
-        let matched = false;
-
-        // Try to close as many debit positions as possible
-        for (let i = 0; i < openPositions.length && remainingCreditQty > 0; i++) {
-          const openPos = openPositions[i];
-          if (!openPos.isCredit && openPos.remaining > 0) {
-            // This credit closes (part of) the debit position
-            const closeQty = Math.min(remainingCreditQty, openPos.remaining);
-            const pnl = calculatePnL(openPos.trade, trade, closeQty);
-
-            matchedTrades.push(createTicket(openPos.trade, trade, closeQty, pnl, ticketCounter++, ticketName, closeQty));
-            openPos.remaining -= closeQty;
-            remainingCreditQty -= closeQty;
-            matched = true;
-
-            if (openPos.remaining <= 0) {
-              openPositions.splice(i, 1);
-              i--; // Adjust index after removal
-            }
+        let remaining = qty
+        for (let i = 0; i < openPositions.length && remaining > 0; i++) {
+          const pos = openPositions[i]
+          if (!pos.isCredit && pos.remaining > 0) {
+            const closeQty = Math.min(remaining, pos.remaining)
+            const pnl = calcPnL(pos.trade, trade, closeQty)
+            tickets.push(createClosedTicket(pos.trade, trade, closeQty, pnl, ticketId++))
+            pos.remaining -= closeQty
+            remaining -= closeQty
+            if (pos.remaining <= 0) { openPositions.splice(i, 1); i-- }
           }
         }
-
-        // If this credit has remaining quantity, it becomes an open position
-        if (remainingCreditQty > 0) {
-          openPositions.push({ trade, remaining: remainingCreditQty, isCredit: true });
-        }
+        if (remaining > 0) openPositions.push({ trade, remaining, isCredit: true })
       } else {
-        // This is a debit trade
-        let remainingDebitQty = tradeQty;
-        let matched = false;
-
-        // Try to close as many credit positions as possible
-        for (let i = 0; i < openPositions.length && remainingDebitQty > 0; i++) {
-          const openPos = openPositions[i];
-          if (openPos.isCredit && openPos.remaining > 0) {
-            // This debit closes (part of) the credit position
-            const closeQty = Math.min(remainingDebitQty, openPos.remaining);
-            const pnl = calculatePnL(openPos.trade, trade, closeQty);
-
-            matchedTrades.push(createTicket(openPos.trade, trade, closeQty, pnl, ticketCounter++, ticketName, closeQty));
-            openPos.remaining -= closeQty;
-            remainingDebitQty -= closeQty;
-            matched = true;
-
-            if (openPos.remaining <= 0) {
-              openPositions.splice(i, 1);
-              i--; // Adjust index after removal
-            }
+        let remaining = qty
+        for (let i = 0; i < openPositions.length && remaining > 0; i++) {
+          const pos = openPositions[i]
+          if (pos.isCredit && pos.remaining > 0) {
+            const closeQty = Math.min(remaining, pos.remaining)
+            const pnl = calcPnL(pos.trade, trade, closeQty)
+            tickets.push(createClosedTicket(pos.trade, trade, closeQty, pnl, ticketId++))
+            pos.remaining -= closeQty
+            remaining -= closeQty
+            if (pos.remaining <= 0) { openPositions.splice(i, 1); i-- }
           }
         }
+        if (remaining > 0) openPositions.push({ trade, remaining, isCredit: false })
+      }
+    }
 
-        // If this debit has remaining quantity, it becomes an open position
-        if (remainingDebitQty > 0) {
-          openPositions.push({ trade, remaining: remainingDebitQty, isCredit: false });
+    for (const pos of openPositions) {
+      if (pos.remaining > 0) {
+        tickets.push(createOpenTicket(pos.trade, pos.remaining, ticketId++))
+      }
+    }
+  }
+
+  return tickets
+}
+
+function matchSingleOptions(tradesList, startTicketId) {
+  const tickets = []
+  let ticketId = startTicketId
+
+  // Group by symbol
+  const symbolGroups = {}
+  for (const t of tradesList) {
+    const sym = t.ticketName
+    if (!symbolGroups[sym]) symbolGroups[sym] = []
+    symbolGroups[sym].push(t)
+  }
+
+  for (const [symbol, group] of Object.entries(symbolGroups)) {
+    group.sort((a, b) => compareDates(a.filledTime, b.filledTime))
+
+    const longPositions = []
+    const shortPositions = []
+
+    for (const trade of group) {
+      const isLong = trade.side === 'Buy'
+      const pos = { trade, remaining: trade.legs[0].quantity, isLong }
+
+      if (isLong) longPositions.push(pos)
+      else shortPositions.push(pos)
+    }
+
+    // Match longs with shorts
+    for (const longPos of longPositions) {
+      let remaining = longPos.remaining
+
+      for (let i = 0; i < shortPositions.length && remaining > 0; i++) {
+        const shortPos = shortPositions[i]
+        if (shortPos.remaining > 0) {
+          const closeQty = Math.min(remaining, shortPos.remaining)
+          const pnl = (shortPos.trade.legs[0].premium - longPos.trade.legs[0].premium) * closeQty * 100
+          tickets.push(createClosedTicket(longPos.trade, shortPos.trade, closeQty, pnl, ticketId++))
+          longPos.remaining -= closeQty
+          shortPos.remaining -= closeQty
+          remaining -= closeQty
+          if (shortPos.remaining <= 0) { shortPositions.splice(i, 1); i-- }
         }
       }
-    }
 
-    // Add remaining open positions
-    for (const openPos of openPositions) {
-      if (openPos.remaining > 0) {
-        matchedTrades.push(createOpenTicket(openPos.trade, openPos.remaining, ticketCounter++, ticketName));
+      if (longPos.remaining > 0) {
+        tickets.push(createOpenTicket(longPos.trade, longPos.remaining, ticketId++))
       }
     }
+
+    for (const shortPos of shortPositions) {
+      if (shortPos.remaining > 0) {
+        tickets.push(createOpenTicket(shortPos.trade, shortPos.remaining, ticketId++))
+      }
+    }
+  }
+
+  return tickets
+}
+
+// ============================================
+// TICKET CREATION
+// ============================================
+
+function calcPnL(open, close, qty) {
+  let pnl = 0
+  for (const ol of open.legs) {
+    const cl = close.legs.find(l => l.strike === ol.strike && l.type === ol.type && l.date === ol.date)
+    if (cl) {
+      if (ol.side === 'Buy') pnl += (cl.premium - ol.premium) * qty * 100
+      else pnl -= (cl.premium - ol.premium) * qty * 100
+    }
+  }
+  return pnl
+}
+
+function createClosedTicket(openTrade, closeTrade, qty, pnl, num) {
+  const isOpen = compareDates(openTrade.filledTime, closeTrade.filledTime) < 0
+  const first = isOpen ? openTrade : closeTrade
+  const second = isOpen ? closeTrade : openTrade
+  const legs = []
+
+  for (const l of first.legs) legs.push({ type: l.type, strike: l.strike, expiry: l.date, premium: l.premium, quantity: qty, action: l.side.toLowerCase() })
+  for (const l of second.legs) legs.push({ type: l.type, strike: l.strike, expiry: l.date, premium: l.premium, quantity: qty, action: l.side.toLowerCase() })
+
+  return { ticket: num, date: formatDate(first.filledTime), symbol: first.legs[0]?.underlying || first.ticketName.split(' ')[0], status: pnl >= 0 ? 'WIN' : 'LOSS', exit_date: formatDate(second.filledTime), pnl: Math.round(pnl), strategies: [{ name: first.ticketName, legs, entry_time: first.filledTime || first.placedTime || '', entry_price: null, exit_time: second.filledTime || second.placedTime || '', exit_price: null }], notes: first.ticketName }
+}
+
+function createOpenTicket(trade, qty, num) {
+  const legs = trade.legs.map(l => ({ type: l.type, strike: l.strike, expiry: l.date, premium: l.premium, quantity: qty, action: l.side.toLowerCase() }))
+  return { ticket: num, date: formatDate(trade.filledTime), symbol: trade.legs[0]?.underlying || trade.ticketName.split(' ')[0], status: 'OPEN', exit_date: null, pnl: 0, strategies: [{ name: trade.ticketName, legs, entry_time: trade.filledTime || trade.placedTime || '', entry_price: null, exit_time: '', exit_price: null }], notes: trade.ticketName }
+}
+
+// Symbol mapping for Yahoo Finance
+const SYMBOL_MAP = {
+  'VIXW': '^VIX',
+  'SPXW': '^GSPC',
+  'VIX': '^VIX',
+  'SPX': '^GSPC',
+  'NDX': '^NDX',
+  'RUT': '^RUT'
+}
+
+function getYahooSymbol(symbol) {
+  return SYMBOL_MAP[symbol] || symbol
+}
+
+// In-memory price cache
+const priceCache = {}
+
+// Get historical price from cache or fetch from Yahoo Finance
+// Returns price in cents or null if not found
+async function getHistoricalPrice(symbol, dateStr) {
+  const cacheKey = `${symbol}_${dateStr}`
+
+  // Check memory cache first
+  if (priceCache[cacheKey] !== undefined) {
+    return priceCache[cacheKey]
+  }
+
+  // Check file cache
+  try {
+    const cachePath = path.join(__dirname, '../historical-prices.json')
+    if (fs.existsSync(cachePath)) {
+      const cache = JSON.parse(fs.readFileSync(cachePath, 'utf-8'))
+      // Check both original symbol and Yahoo symbol
+      const yahooSymbol = getYahooSymbol(symbol).replace('^', '')
+      const price = cache[symbol]?.[dateStr] || cache[yahooSymbol]?.[dateStr] || cache[`${symbol}|${dateStr}`]
+      if (price) {
+        priceCache[cacheKey] = price
+        return price
+      }
+    }
+  } catch (e) {
+    // Fall through to fetch
+  }
+
+  // Fetch from Yahoo Finance using chart endpoint (works better from Node.js)
+  try {
+    const yahooSymbol = getYahooSymbol(symbol)
+    const targetDate = new Date(dateStr)
+    const startDate = new Date(targetDate)
+    startDate.setDate(startDate.getDate() - 5)
+    const endDate = new Date(targetDate)
+    endDate.setDate(endDate.getDate() + 5)
+
+    const start = Math.floor(startDate.getTime() / 1000)
+    const end = Math.floor(endDate.getTime() / 1000)
+
+    // Use the chart endpoint - more reliable for historical data
+    const url = `https://query1.finance.yahoo.com/v8/finance/chart/${yahooSymbol}?period1=${start}&period2=${end}&interval=1d`
+
+    const response = await fetch(url, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+      }
+    })
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`)
+    }
+
+    const data = await response.json()
+
+    if (data.chart?.result?.[0]?.timestamp) {
+      const timestamps = data.chart.result[0].timestamp
+      const closes = data.chart.result[0].indicators.quote[0].close
+
+      // Find the closest date to our target
+      const targetTimestamp = Math.floor(targetDate.getTime() / 1000)
+      let closestTimestamp = null
+      let closestDiff = Infinity
+      let closestPrice = null
+
+      for (let i = 0; i < timestamps.length; i++) {
+        const diff = Math.abs(timestamps[i] - targetTimestamp)
+        if (diff < closestDiff) {
+          closestDiff = diff
+          closestTimestamp = timestamps[i]
+          closestPrice = closes[i]
+        }
+      }
+
+      if (closestPrice !== null && closestPrice !== undefined) {
+        const priceInCents = Math.round(closestPrice * 100)
+        priceCache[cacheKey] = priceInCents
+        savePriceToFile(symbol, dateStr, priceInCents)
+        return priceInCents
+      }
+    }
+
+    priceCache[cacheKey] = null
+    return null
+  } catch (error) {
+    console.error(`  Error fetching price for ${symbol} on ${dateStr}: ${error.message}`)
+    priceCache[cacheKey] = null
+    return null
   }
 }
 
-function calculatePnL(openTrade, closeTrade, qty) {
-  let pnl = 0;
-  for (const openLeg of openTrade.legs) {
-    const closeLeg = closeTrade.legs.find(l =>
-      l.strike === openLeg.strike &&
-      l.type === openLeg.type &&
-      l.date === openLeg.date
-    );
-
-    if (closeLeg) {
-      if (openLeg.side === 'Buy') {
-        pnl += (closeLeg.premium - openLeg.premium) * qty * 100;
-      } else {
-        pnl -= (closeLeg.premium - openLeg.premium) * qty * 100;
-      }
+function savePriceToFile(symbol, dateStr, price) {
+  try {
+    const cachePath = path.join(__dirname, '../historical-prices.json')
+    let cache = {}
+    if (fs.existsSync(cachePath)) {
+      cache = JSON.parse(fs.readFileSync(cachePath, 'utf-8'))
     }
+    if (!cache[symbol]) cache[symbol] = {}
+    cache[symbol][dateStr] = price
+    fs.writeFileSync(cachePath, JSON.stringify(cache, null, 2))
+  } catch (e) {
+    // Ignore save errors
   }
-  return pnl;
 }
 
-function createTicket(openTrade, closeTrade, qty, pnl, ticketNum, ticketName, closeQty) {
-  const openState = compareDates(openTrade.filledTime, closeTrade.filledTime) < 0 ? openTrade : closeTrade;
-  const closeState = compareDates(openTrade.filledTime, closeTrade.filledTime) < 0 ? closeTrade : openTrade;
+// Calculate intrinsic value of an option at expiration
+function calculateIntrinsicValue(type, strike, stockPrice) {
+  if (!stockPrice) return null
 
-  const legs = [];
-  for (const leg of openState.legs) {
-    legs.push({
-      type: leg.type,
-      strike: leg.strike,
-      expiry: leg.date,
-      premium: leg.premium,
-      quantity: closeQty, // Use the actual closed quantity
-      action: leg.side.toLowerCase()
-    });
+  stockPrice = stockPrice / 100 // Convert from cents to dollars
+
+  if (type === 'call') {
+    return Math.max(0, stockPrice - strike)
+  } else {
+    return Math.max(0, strike - stockPrice)
   }
-  for (const leg of closeState.legs) {
-    legs.push({
-      type: leg.type,
-      strike: leg.strike,
-      expiry: leg.date,
-      premium: leg.premium,
-      quantity: closeQty, // Use the actual closed quantity
-      action: leg.side.toLowerCase()
-    });
+}
+
+// Create a ticket for an expired position with actual P&L calculation
+async function createExpiredTicket(ticket, expiryDate, num) {
+  const legs = ticket.strategies[0].legs
+  const symbol = ticket.symbol
+
+  // Get historical stock price at expiration
+  const stockPrice = await getHistoricalPrice(symbol, expiryDate)
+
+  let pnl = 0
+  let hasValidPrices = stockPrice !== null
+
+  // Calculate P&L at expiration using actual stock price
+  for (const leg of legs) {
+    const intrinsicValue = calculateIntrinsicValue(leg.type, leg.strike, stockPrice)
+
+    if (intrinsicValue === null) {
+      hasValidPrices = false
+      break
+    }
+
+    if (leg.action === 'buy') {
+      // Long option: (intrinsic value at expiration - premium paid) * qty * 100
+      pnl += (intrinsicValue - leg.premium) * leg.quantity * 100
+    } else {
+      // Short option: (premium received - intrinsic value at expiration) * qty * 100
+      pnl += (leg.premium - intrinsicValue) * leg.quantity * 100
+    }
+  }
+
+  // If no price data available, fall back to worthless calculation
+  if (!hasValidPrices) {
+    pnl = 0
+    for (const leg of legs) {
+      if (leg.action === 'buy') {
+        pnl -= leg.premium * leg.quantity * 100
+      } else {
+        pnl += leg.premium * leg.quantity * 100
+      }
+    }
   }
 
   return {
-    ticket: ticketNum,
-    date: formatDate(openState.filledTime),
-    symbol: openState.legs[0]?.underlying || ticketName.split(' ')[0],
+    ticket: num,
+    date: ticket.date,
+    symbol: ticket.symbol,
     status: pnl >= 0 ? 'WIN' : 'LOSS',
-    exit_date: formatDate(closeState.filledTime),
+    exit_date: expiryDate,
     pnl: Math.round(pnl),
     strategies: [{
-      name: ticketName,
-      legs,
-      entry_time: openState.filledTime || openState.placedTime || '',
-      entry_price: null,
-      exit_time: closeState.filledTime || closeState.placedTime || '',
-      exit_price: null
-    }],
-    notes: ticketName
-  };
-}
-
-function createOpenTicket(trade, remainingQty, ticketNum, ticketName) {
-  const legs = [];
-  for (const leg of trade.legs) {
-    legs.push({
-      type: leg.type,
-      strike: leg.strike,
-      expiry: leg.date,
-      premium: leg.premium,
-      quantity: remainingQty, // Use remaining quantity, not original
-      action: leg.side.toLowerCase()
-    });
-  }
-
-  return {
-    ticket: ticketNum,
-    date: formatDate(trade.filledTime),
-    symbol: trade.legs[0]?.underlying || ticketName.split(' ')[0],
-    status: 'OPEN',
-    exit_date: null,
-    pnl: 0,
-    strategies: [{
-      name: ticketName,
-      legs,
-      entry_time: trade.filledTime || trade.placedTime || '',
+      name: ticket.strategies[0].name,
+      legs: legs,
+      entry_time: ticket.strategies[0].entry_time,
       entry_price: null,
       exit_time: '',
-      exit_price: null
+      exit_price: stockPrice !== null ? (stockPrice / 100).toFixed(2) : null
     }],
-    notes: ticketName
-  };
+    notes: ticket.notes + (stockPrice !== null ? ` (Expired @ $${(stockPrice / 100).toFixed(2)})` : ' (Expired - no price data)')
+  }
 }
 
-// Sort by ticket number descending
-matchedTrades.sort((a, b) => b.ticket - a.ticket);
+// Process expired positions
+async function processExpiredTickets(tickets, startTicketId) {
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
 
-// Convert to trades.js format
-const output = `// Options trading data - converted from Webull Vertical trades
-export const tradesData = ${JSON.stringify(matchedTrades, null, 2)};
+  const expiredTickets = []
+  const stillOpenTickets = []
+  let ticketId = startTicketId
 
-console.log('Loaded', tradesData.length, 'trades');
-console.log('Summary:', {
-  total: tradesData.length,
-  wins: tradesData.filter(t => t.status === 'WIN').length,
-  losses: tradesData.filter(t => t.status === 'LOSS').length,
-  open: tradesData.filter(t => t.status === 'OPEN').length,
-  totalPnL: tradesData.reduce((sum, t) => sum + (t.pnl || 0), 0)
-});
-`;
+  for (const ticket of tickets) {
+    if (ticket.status !== 'OPEN') {
+      continue  // Skip already closed tickets
+    }
 
-// Write to trades.js
-fs.writeFileSync(path.join(__dirname, '../src/data/trades.js'), output);
+    // Get expiry date from first leg
+    const legs = ticket.strategies[0].legs
+    if (legs.length === 0) {
+      stillOpenTickets.push(ticket)
+      continue
+    }
 
-console.log('Parsed', matchedTrades.length, 'vertical trades from Webull CSV');
-console.log('Written to src/data/trades.js');
-console.log('\nSummary:');
-console.log('- Total trades:', matchedTrades.length);
-console.log('- Wins:', matchedTrades.filter(t => t.status === 'WIN').length);
-console.log('- Losses:', matchedTrades.filter(t => t.status === 'LOSS').length);
-console.log('- Open:', matchedTrades.filter(t => t.status === 'OPEN').length);
-console.log('- Total P&L: $' + matchedTrades.reduce((sum, t) => sum + (t.pnl || 0), 0).toFixed(0));
+    const expiryDateStr = legs[0].expiry
+    if (!expiryDateStr) {
+      stillOpenTickets.push(ticket)
+      continue
+    }
+
+    const expiryDate = new Date(expiryDateStr)
+    expiryDate.setHours(0, 0, 0, 0)
+
+    // Check if expired
+    if (expiryDate < today) {
+      const expiredTicket = await createExpiredTicket(ticket, expiryDateStr, ticketId++)
+      expiredTickets.push(expiredTicket)
+    } else {
+      stillOpenTickets.push(ticket)
+    }
+  }
+
+  return { expired: expiredTickets, open: stillOpenTickets, nextTicketId: ticketId }
+}
+
+// ============================================
+// MAIN
+// ============================================
+
+async function parseWebullCSV() {
+  const csvPath = path.join(__dirname, '../Webull_Orders_Records_Options.csv')
+  const csvContent = fs.readFileSync(csvPath, 'utf-8')
+  const lines = csvContent.split('\n').filter(line => line.trim())
+
+  // Parse all rows
+  const rows = []
+  for (let i = 1; i < lines.length; i++) {
+    const parsed = parseCsvRow(lines[i])
+    if (parsed && parsed.length >= 11) {
+      const [name, symbol, side, status, filled, totalQty, price, avgPrice, tif, placedTime, filledTime] = parsed
+      rows.push({ name: name?.trim() || null, symbol: symbol?.trim() || null, side: side?.trim() || null, status: status?.trim() || null, filled: status === 'Filled' ? parseInt(filled) || 0 : 0, totalQty: parseInt(totalQty) || 0, price: price ? parseFloat(price.replace('@', '')) || 0 : 0, avgPrice: parseFloat(avgPrice) || 0, placedTime: placedTime?.trim() || null, filledTime: filledTime?.trim() || null })
+    }
+  }
+
+  console.log(`Loaded ${rows.length} rows from CSV`)
+
+  // STEP 1: Categorize into strategy arrays
+  const categorized = categorizeAllRows(rows)
+
+  console.log('Categorization:')
+  for (const [bucket, data] of Object.entries(categorized)) {
+    if (data.length > 0) {
+      const count = bucket.includes('_') ? data.filter(d => d.name).length : data.length
+      console.log(`  ${bucket}: ${count}`)
+    }
+  }
+
+  // STEP 2: Process each strategy array independently
+  const allTickets = []
+  let currentTicketId = 1000
+
+  // Multi-leg strategies
+  console.log('\nProcessing:')
+  const vt = parseVerticalSpreads(categorized.vertical_spread, currentTicketId)
+  console.log(`  Vertical Spreads: ${vt.length} tickets`)
+  allTickets.push(...vt)
+  currentTicketId += vt.length
+
+  const ic = parseIronCondors(categorized.iron_condor, currentTicketId)
+  allTickets.push(...ic)
+  currentTicketId += ic.length
+
+  const st = parseStraddles(categorized.straddle, currentTicketId)
+  allTickets.push(...st)
+  currentTicketId += st.length
+
+  const sg = parseStrangles(categorized.strangle, currentTicketId)
+  allTickets.push(...sg)
+  currentTicketId += sg.length
+
+  // Single options
+  const lc = parseLongCalls(categorized.long_call, currentTicketId)
+  console.log(`  Long Calls: ${lc.length} tickets`)
+  allTickets.push(...lc)
+  currentTicketId += lc.length
+
+  const sc = parseShortCalls(categorized.short_call, currentTicketId)
+  console.log(`  Short Calls: ${sc.length} tickets`)
+  allTickets.push(...sc)
+  currentTicketId += sc.length
+
+  const lp = parseLongPuts(categorized.long_put, currentTicketId)
+  console.log(`  Long Puts: ${lp.length} tickets`)
+  allTickets.push(...lp)
+  currentTicketId += lp.length
+
+  const sp = parseShortPuts(categorized.short_put, currentTicketId)
+  console.log(`  Short Puts: ${sp.length} tickets`)
+  allTickets.push(...sp)
+  currentTicketId += sp.length
+
+  // STEP 3: Process expired positions
+  const { expired, open: stillOpen } = await processExpiredTickets(allTickets, currentTicketId)
+
+  if (expired.length > 0) {
+    console.log(`\nExpired Positions: ${expired.length} tickets`)
+  }
+
+  // Combine closed, expired, and still-open tickets
+  const finalTickets = [...allTickets.filter(t => t.status !== 'OPEN'), ...expired, ...stillOpen]
+
+  // Sort by ticket number
+  finalTickets.sort((a, b) => a.ticket - b.ticket)
+
+  return finalTickets
+}
+
+// Run if called directly
+if (import.meta.url === `file://${process.argv[1]}`) {
+  const tickets = await parseWebullCSV()
+  const output = `// Options trading data from Webull
+export const tradesData = ${JSON.stringify(tickets, null, 2)};`
+  fs.writeFileSync(path.join(__dirname, '../src/data/trades.js'), output)
+
+  console.log('\n✅ Complete! Total tickets:', tickets.length)
+  console.log('  Wins:', tickets.filter(t => t.status === 'WIN').length)
+  console.log('  Losses:', tickets.filter(t => t.status === 'LOSS').length)
+  console.log('  Open:', tickets.filter(t => t.status === 'OPEN').length)
+  console.log('  P&L: $' + tickets.reduce((s, t) => s + (t.pnl || 0), 0).toFixed(0))
+}
