@@ -89,8 +89,7 @@
                 !day.date ? 'pointer-events-none' : '',
                 day.pnl === 0 ? 'text-gray-600' : '',
                 day.pnl > 0 ? 'bg-green-900 hover:bg-green-800 text-green-300' : '',
-                day.pnl < 0 ? 'bg-red-900 hover:bg-red-800 text-red-300' : '',
-                isDateInRange(day.date) ? 'ring-2 ring-blue-500' : ''
+                day.pnl < 0 ? 'bg-red-900 hover:bg-red-800 text-red-300' : ''
               ]"
             >
               <div v-if="day.date" class="font-semibold">{{ day.dayOfMonth }}</div>
@@ -164,52 +163,6 @@
             <option value="date">Date</option>
           </select>
           <button @click="resetFilters" class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded text-sm">Clear</button>
-        </div>
-
-        <!-- P&L Summary -->
-        <div class="bg-gray-800 rounded-lg p-4 mb-6">
-          <div class="flex items-center justify-between mb-3">
-            <h3 class="text-sm font-semibold text-gray-300">
-              <i class="fas fa-chart-pie mr-2"></i>
-              <span v-if="dateRange.mode">P&L Summary</span>
-              <span v-else>Overall P&L Summary</span>
-            </h3>
-            <div class="text-xs text-gray-500">{{ filteredSummary.count }} tickets</div>
-          </div>
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div class="text-center">
-              <div class="text-2xl font-bold" :class="filteredSummary.totalPnL >= 0 ? 'text-green-400' : 'text-red-400'">
-                {{ filteredSummary.totalPnL >= 0 ? '+' : '' }}${{ filteredSummary.totalPnL.toFixed(0) }}
-              </div>
-              <div class="text-xs text-gray-400 mt-1">Total P&L</div>
-            </div>
-            <div class="text-center">
-              <div class="text-2xl font-bold text-green-400">{{ filteredSummary.winRate }}%</div>
-              <div class="text-xs text-gray-400 mt-1">Win Rate</div>
-            </div>
-            <div class="text-center">
-              <div class="text-2xl font-bold text-blue-400">${{ filteredSummary.avgPnL >= 0 ? '+' : '' }}{{ filteredSummary.avgPnL.toFixed(0) }}</div>
-              <div class="text-xs text-gray-400 mt-1">Avg P&L</div>
-            </div>
-            <div class="text-center">
-              <div class="text-2xl font-bold text-yellow-400">${{ filteredSummary.bestTrade >= 0 ? '+' : '' }}{{ filteredSummary.bestTrade.toFixed(0) }}</div>
-              <div class="text-xs text-gray-400 mt-1">Best Trade</div>
-            </div>
-          </div>
-          <div class="mt-3 pt-3 border-t border-gray-700 grid grid-cols-3 gap-4 text-center">
-            <div>
-              <span class="text-xs text-gray-500">Wins</span>
-              <span class="ml-2 text-sm font-semibold text-green-400">{{ filteredSummary.wins }}</span>
-            </div>
-            <div>
-              <span class="text-xs text-gray-500">Losses</span>
-              <span class="ml-2 text-sm font-semibold text-red-400">{{ filteredSummary.losses }}</span>
-            </div>
-            <div>
-              <span class="text-xs text-gray-500">Profit Factor</span>
-              <span class="ml-2 text-sm font-semibold text-blue-400">{{ filteredSummary.profitFactor.toFixed(1) }}x</span>
-            </div>
-          </div>
         </div>
 
         <!-- Tickets List grouped by Position -->
@@ -650,82 +603,68 @@ const togglePosition = (group) => {
 
 const getAverageEntryPrice = (group) => {
   const tickets = group.tickets || group.positions || []
-  let totalNetPremium = 0
-  let totalContracts = 0
+  let totalEntryPrice = 0
+  let count = 0
 
   tickets.forEach(ticket => {
-    const legs = openingLegs(ticket)
-    legs.forEach(leg => {
-      if (leg.action === 'sell') {
-        totalNetPremium += leg.premium * leg.quantity
-      } else {
-        totalNetPremium -= leg.premium * leg.quantity
-      }
-      totalContracts += leg.quantity
-    })
+    totalEntryPrice += getTicketEntryPrice(ticket)
+    count++
   })
 
-  // Average net premium per contract
-  return totalContracts > 0 ? totalNetPremium / totalContracts : 0
+  return count > 0 ? totalEntryPrice / count : 0
 }
 
 const getAverageExitPrice = (group) => {
   const tickets = group.tickets || group.positions || []
-  let totalNetPremium = 0
-  let totalContracts = 0
+  let totalExitPrice = 0
+  let count = 0
 
   tickets.forEach(ticket => {
     if (ticket.exit_date) {
-      const legs = closingLegs(ticket)
-      legs.forEach(leg => {
-        if (leg.action === 'sell') {
-          totalNetPremium += leg.premium * leg.quantity
-        } else {
-          totalNetPremium -= leg.premium * leg.quantity
-        }
-        totalContracts += leg.quantity
-      })
+      totalExitPrice += getTicketExitPrice(ticket)
+      count++
     }
   })
 
-  // Average net premium per contract
-  return totalContracts > 0 ? totalNetPremium / totalContracts : 0
+  return count > 0 ? totalExitPrice / count : 0
 }
 
 const getTicketEntryPrice = (ticket) => {
   const legs = openingLegs(ticket)
-  let totalNetPremium = 0
-  let totalContracts = 0
+  if (legs.length === 0) return 0
 
+  let totalNetPremium = 0
   legs.forEach(leg => {
     if (leg.action === 'sell') {
       totalNetPremium += leg.premium * leg.quantity
     } else {
       totalNetPremium -= leg.premium * leg.quantity
     }
-    totalContracts += leg.quantity
   })
 
-  return totalContracts > 0 ? totalNetPremium / totalContracts : 0
+  // Use quantity from first leg (all legs in a spread have same quantity)
+  const contracts = legs[0].quantity
+  return totalNetPremium / contracts
 }
 
 const getTicketExitPrice = (ticket) => {
   if (!ticket.exit_date) return 0
 
   const legs = closingLegs(ticket)
-  let totalNetPremium = 0
-  let totalContracts = 0
+  if (legs.length === 0) return 0
 
+  let totalNetPremium = 0
   legs.forEach(leg => {
     if (leg.action === 'sell') {
       totalNetPremium += leg.premium * leg.quantity
     } else {
       totalNetPremium -= leg.premium * leg.quantity
     }
-    totalContracts += leg.quantity
   })
 
-  return totalContracts > 0 ? totalNetPremium / totalContracts : 0
+  // Use quantity from first leg (all legs in a spread have same quantity)
+  const contracts = legs[0].quantity
+  return totalNetPremium / contracts
 }
 
 const getTicketContracts = (ticket) => {
