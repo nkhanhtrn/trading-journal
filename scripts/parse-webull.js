@@ -1,5 +1,5 @@
-// Modular CSV Parser for Webull Options
-// Each strategy is categorized into its own array, then processed independently
+// Webull Options CSV Parser
+// Modular design: categorize → process → match → expire
 
 import fs from 'fs'
 import path from 'path'
@@ -8,9 +8,9 @@ import { fileURLToPath } from 'url'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-// ============================================
-// UTILITIES
-// ============================================
+// =====================================================
+// SECTION 1: UTILITY FUNCTIONS
+// =====================================================
 
 function parseCsvRow(row) {
   const result = []
@@ -49,10 +49,129 @@ function parseOptionSymbol(symbol) {
   return null
 }
 
-// ============================================
-// CATEGORIZATION
-// Divide CSV rows into arrays for each strategy
-// ============================================
+function generateSingleOptionName(opt) {
+  const capitalType = opt.type.charAt(0).toUpperCase() + opt.type.slice(1)
+  const expiryMonth = opt.date.substring(5, 7) + '/' + opt.date.substring(8, 10)
+  return `${opt.underlying} ${capitalType} $${opt.strike} ${expiryMonth}`
+}
+
+// =====================================================
+// SECTION 2: SYMBOL MAPPING & PRICE FETCHING
+// =====================================================
+
+const SYMBOL_MAP = {
+  'VIXW': '^VIX',
+  'SPXW': '^GSPC',
+  'VIX': '^VIX',
+  'SPX': '^GSPC',
+  'NDX': '^NDX',
+  'RUT': '^RUT'
+}
+
+function getYahooSymbol(symbol) {
+  return SYMBOL_MAP[symbol] || symbol
+}
+
+const priceCache = {}
+
+async function getHistoricalPrice(symbol, dateStr) {
+  const cacheKey = `${symbol}_${dateStr}`
+
+  if (priceCache[cacheKey] !== undefined) {
+    return priceCache[cacheKey]
+  }
+
+  // Check file cache
+  try {
+    const cachePath = path.join(__dirname, '../historical-prices.json')
+    if (fs.existsSync(cachePath)) {
+      const cache = JSON.parse(fs.readFileSync(cachePath, 'utf-8'))
+      const yahooSymbol = getYahooSymbol(symbol).replace('^', '')
+      const price = cache[symbol]?.[dateStr] || cache[yahooSymbol]?.[dateStr] || cache[`${symbol}|${dateStr}`]
+      if (price) {
+        priceCache[cacheKey] = price
+        return price
+      }
+    }
+  } catch (e) {
+    // Fall through to fetch
+  }
+
+  // Fetch from Yahoo Finance using chart endpoint
+  try {
+    const yahooSymbol = getYahooSymbol(symbol)
+    const targetDate = new Date(dateStr)
+    const startDate = new Date(targetDate)
+    startDate.setDate(startDate.getDate() - 5)
+    const endDate = new Date(targetDate)
+    endDate.setDate(endDate.getDate() + 5)
+
+    const start = Math.floor(startDate.getTime() / 1000)
+    const end = Math.floor(endDate.getTime() / 1000)
+
+    const url = `https://query1.finance.yahoo.com/v8/finance/chart/${yahooSymbol}?period1=${start}&period2=${end}&interval=1d`
+
+    const response = await fetch(url, {
+      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' }
+    })
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`)
+    }
+
+    const data = await response.json()
+
+    if (data.chart?.result?.[0]?.timestamp) {
+      const timestamps = data.chart.result[0].timestamp
+      const closes = data.chart.result[0].indicators.quote[0].close
+
+      let closestDiff = Infinity
+      let closestPrice = null
+
+      for (let i = 0; i < timestamps.length; i++) {
+        const targetTimestamp = Math.floor(targetDate.getTime() / 1000)
+        const diff = Math.abs(timestamps[i] - targetTimestamp)
+        if (diff < closestDiff && closes[i] !== null) {
+          closestDiff = diff
+          closestPrice = closes[i]
+        }
+      }
+
+      if (closestPrice !== null) {
+        const priceInCents = Math.round(closestPrice * 100)
+        priceCache[cacheKey] = priceInCents
+        savePriceToFile(symbol, dateStr, priceInCents)
+        return priceInCents
+      }
+    }
+
+    priceCache[cacheKey] = null
+    return null
+  } catch (error) {
+    console.error(`  Error fetching price for ${symbol} on ${dateStr}: ${error.message}`)
+    priceCache[cacheKey] = null
+    return null
+  }
+}
+
+function savePriceToFile(symbol, dateStr, price) {
+  try {
+    const cachePath = path.join(__dirname, '../historical-prices.json')
+    let cache = {}
+    if (fs.existsSync(cachePath)) {
+      cache = JSON.parse(fs.readFileSync(cachePath, 'utf-8'))
+    }
+    if (!cache[symbol]) cache[symbol] = {}
+    cache[symbol][dateStr] = price
+    fs.writeFileSync(cachePath, JSON.stringify(cache, null, 2))
+  } catch (e) {
+    // Ignore save errors
+  }
+}
+
+// =====================================================
+// SECTION 3: CATEGORIZATION
+// =====================================================
 
 const strategyBuckets = {
   vertical_spread: [],
@@ -71,7 +190,7 @@ function categorizeRow(row) {
   // Skip cancelled orders
   if (status !== 'Filled' || filled === 0) return null
 
-  // Single options: when name equals symbol, it's a single option row (not a multi-leg header)
+  // Single options: when name equals symbol
   if (name && symbol && name === symbol) {
     const opt = parseOptionSymbol(symbol)
     if (!opt) return null
@@ -99,11 +218,6 @@ function categorizeRow(row) {
     else return side === 'Buy' ? 'long_put' : 'short_put'
   }
 
-  // Debug: check for GLD260302C00480000 buy transaction
-  if (symbol === 'GLD260302C00480000' && side === 'Buy') {
-    console.log(`  DEBUG BUY: name="${name}", symbol="${symbol}", side="${side}", status="${status}", filled=${filled}`)
-  }
-
   return null
 }
 
@@ -114,9 +228,9 @@ function categorizeAllRows(rows) {
   for (let i = 0; i < rows.length; i++) {
     const row = rows[i]
 
-    // Single option: name equals symbol (standalone option, not a leg)
+    // Single option: name equals symbol
     if (row.name && row.symbol && row.name === row.symbol) {
-      currentHeader = null // Reset header
+      currentHeader = null
       const bucket = categorizeRow(row)
       if (bucket) categorized[bucket].push(row)
       continue
@@ -133,17 +247,14 @@ function categorizeAllRows(rows) {
           categorized[bucket].push(currentHeader)
         }
       }
-      // For diagonals, set currentHeader but don't add to categorized
-      // This allows legs to be processed below as single options
       continue
     }
 
     // Leg row (has symbol, no name, and we have a header)
     if (row.symbol && !row.name && currentHeader) {
-      // Check if this is part of a diagonal spread - if so, treat as single option
+      // For diagonals, treat legs as single options
       const headerNameLower = currentHeader.name?.toLowerCase() || ''
       if (headerNameLower.includes('diagonal')) {
-        // Diagonal legs are treated as independent single options
         currentHeader = null
         const bucket = categorizeRow(row)
         if (bucket) categorized[bucket].push(row)
@@ -155,7 +266,7 @@ function categorizeAllRows(rows) {
 
     // Single option (no header, has symbol)
     if (row.symbol && !row.name) {
-      currentHeader = null // Reset header
+      currentHeader = null
       const bucket = categorizeRow(row)
       if (bucket) categorized[bucket].push(row)
     }
@@ -164,185 +275,86 @@ function categorizeAllRows(rows) {
   return categorized
 }
 
-// ============================================
-// STRATEGY PARSING FUNCTIONS
-// Each function takes its categorized array and returns tickets
-// ============================================
+// =====================================================
+// SECTION 4: STRATEGY PROCESSORS
+// =====================================================
 
-// Vertical Spread Parser
-function parseVerticalSpreads(verticalSpreadArray, startTicketId) {
-  const tradesData = []
+function processVerticalSpread(header) {
+  if (!header.legs || header.legs.length < 2) return []
 
-  for (const header of verticalSpreadArray) {
-    if (!header.legs || header.legs.length < 2) continue
-
-    const parsedLegs = header.legs.map(l => {
+  return [{
+    ticketName: header.name,
+    side: header.side,
+    status: header.status,
+    filledTime: header.filledTime,
+    legs: header.legs.map(l => {
       const opt = parseOptionSymbol(l.symbol)
       return { ...opt, side: l.side, quantity: l.filled, premium: l.avgPrice, filledTime: l.filledTime }
     }).filter(l => l.underlying)
-
-    if (parsedLegs.length >= 2) {
-      tradesData.push({
-        ticketName: header.name,
-        side: header.side,
-        status: header.status,
-        filledTime: header.filledTime,
-        legs: parsedLegs
-      })
-    }
-  }
-
-  return matchMultiLeg(tradesData, startTicketId)
+  }]
 }
 
-// Iron Condor Parser
-function parseIronCondors(ironCondorArray, startTicketId) {
-  const tradesData = []
+function processIronCondor(header) {
+  if (!header.legs || header.legs.length < 4) return []
 
-  for (const header of ironCondorArray) {
-    if (!header.legs || header.legs.length < 4) continue
-
-    const parsedLegs = header.legs.map(l => {
+  return [{
+    ticketName: header.name,
+    side: header.side,
+    status: header.status,
+    filledTime: header.filledTime,
+    legs: header.legs.map(l => {
       const opt = parseOptionSymbol(l.symbol)
       return { ...opt, side: l.side, quantity: l.filled, premium: l.avgPrice, filledTime: l.filledTime }
     }).filter(l => l.underlying)
-
-    if (parsedLegs.length >= 4) {
-      tradesData.push({
-        ticketName: header.name,
-        side: header.side,
-        status: header.status,
-        filledTime: header.filledTime,
-        legs: parsedLegs
-      })
-    }
-  }
-
-  return matchMultiLeg(tradesData, startTicketId)
+  }]
 }
 
-// Straddle Parser
-function parseStraddles(straddleArray, startTicketId) {
-  const tradesData = []
+function processStraddle(header) {
+  if (!header.legs || header.legs.length < 2) return []
 
-  for (const header of straddleArray) {
-    if (!header.legs || header.legs.length < 2) continue
-
-    const parsedLegs = header.legs.map(l => {
+  return [{
+    ticketName: header.name,
+    side: header.side,
+    status: header.status,
+    filledTime: header.filledTime,
+    legs: header.legs.map(l => {
       const opt = parseOptionSymbol(l.symbol)
       return { ...opt, side: l.side, quantity: l.filled, premium: l.avgPrice, filledTime: l.filledTime }
     }).filter(l => l.underlying)
-
-    if (parsedLegs.length >= 2) {
-      tradesData.push({
-        ticketName: header.name,
-        side: header.side,
-        status: header.status,
-        filledTime: header.filledTime,
-        legs: parsedLegs
-      })
-    }
-  }
-
-  return matchMultiLeg(tradesData, startTicketId)
+  }]
 }
 
-// Strangle Parser
-function parseStrangles(strangleArray, startTicketId) {
-  const tradesData = []
+function processStrangle(header) {
+  if (!header.legs || header.legs.length < 2) return []
 
-  for (const header of strangleArray) {
-    if (!header.legs || header.legs.length < 2) continue
-
-    const parsedLegs = header.legs.map(l => {
+  return [{
+    ticketName: header.name,
+    side: header.side,
+    status: header.status,
+    filledTime: header.filledTime,
+    legs: header.legs.map(l => {
       const opt = parseOptionSymbol(l.symbol)
       return { ...opt, side: l.side, quantity: l.filled, premium: l.avgPrice, filledTime: l.filledTime }
     }).filter(l => l.underlying)
-
-    if (parsedLegs.length >= 2) {
-      tradesData.push({
-        ticketName: header.name,
-        side: header.side,
-        status: header.status,
-        filledTime: header.filledTime,
-        legs: parsedLegs
-      })
-    }
-  }
-
-  return matchMultiLeg(tradesData, startTicketId)
+  }]
 }
 
-// Generate readable name for single option (same for long/short of same option)
-function generateSingleOptionName(opt) {
-  const capitalType = opt.type.charAt(0).toUpperCase() + opt.type.slice(1)
-  // Include expiry month to distinguish same strike/different expiry
-  const expiryMonth = opt.date.substring(5, 7) + '/' + opt.date.substring(8, 10)
-  return `${opt.underlying} ${capitalType} $${opt.strike} ${expiryMonth}`
+function processSingleOption(row) {
+  const opt = parseOptionSymbol(row.symbol)
+  if (!opt) return []
+
+  return [{
+    ticketName: generateSingleOptionName(opt),
+    side: row.side,
+    status: row.status,
+    filledTime: row.filledTime,
+    legs: [{ ...opt, side: row.side, quantity: row.filled, premium: row.avgPrice, filledTime: row.filledTime }]
+  }]
 }
 
-// Generate readable name for multi-leg strategy
-function generateMultiLegName(header) {
-  // Use the original header name but make it more readable
-  // E.g., "GLD Vertical" → "GLD Vertical Spread"
-  // E.g., "SPXW Iron Condor" → "SPXW Iron Condor"
-  return header.name
-}
-
-// Single Options Parser - combines long/short and matches them
-function parseSingleOptions(longArray, shortArray, startTicketId) {
-  // Process both arrays into trades data
-  const longTrades = longArray.map(row => {
-    const opt = parseOptionSymbol(row.symbol)
-    if (!opt) return null
-    return {
-      ticketName: generateSingleOptionName(opt),
-      side: row.side,
-      status: row.status,
-      filledTime: row.filledTime,
-      legs: [{ ...opt, side: row.side, quantity: row.filled, premium: row.avgPrice, filledTime: row.filledTime }]
-    }
-  }).filter(t => t !== null)
-
-  const shortTrades = shortArray.map(row => {
-    const opt = parseOptionSymbol(row.symbol)
-    if (!opt) return null
-    return {
-      ticketName: generateSingleOptionName(opt),
-      side: row.side,
-      status: row.status,
-      filledTime: row.filledTime,
-      legs: [{ ...opt, side: row.side, quantity: row.filled, premium: row.avgPrice, filledTime: row.filledTime }]
-    }
-  }).filter(t => t !== null)
-
-  // Combine and match
-  return matchSingleOptions([...longTrades, ...shortTrades], startTicketId)
-}
-
-// Long Call Parser (now uses combined parser)
-function parseLongCalls(longCallArray, startTicketId) {
-  return parseSingleOptions(longCallArray, [], startTicketId)
-}
-
-// Short Call Parser (now uses combined parser)
-function parseShortCalls(shortCallArray, startTicketId) {
-  return parseSingleOptions([], shortCallArray, startTicketId)
-}
-
-// Long Put Parser (now uses combined parser)
-function parseLongPuts(longPutArray, startTicketId) {
-  return parseSingleOptions(longPutArray, [], startTicketId)
-}
-
-// Short Put Parser (now uses combined parser)
-function parseShortPuts(shortPutArray, startTicketId) {
-  return parseSingleOptions([], shortPutArray, startTicketId)
-}
-
-// ============================================
-// MATCHING FUNCTIONS
-// ============================================
+// =====================================================
+// SECTION 5: MATCHING FUNCTIONS
+// =====================================================
 
 function matchMultiLeg(tradesList, startTicketId) {
   const tickets = []
@@ -417,18 +429,10 @@ function matchSingleOptions(tradesList, startTicketId) {
     symbolGroups[sym].push(t)
   }
 
-  // Debug: show group sizes
-  for (const [sym, group] of Object.entries(symbolGroups)) {
-    if (sym === 'GLD Call $480' || sym.includes('GLD260302')) {
-      console.log(`  DEBUG: ${sym} has ${group.length} trades`)
-      group.forEach(t => console.log(`    ${t.side} ${t.filledTime}`))
-    }
-  }
-
   for (const [symbol, group] of Object.entries(symbolGroups)) {
     group.sort((a, b) => compareDates(a.filledTime, b.filledTime))
 
-    const openPositions = [] // Tracks all open positions (long or short)
+    const openPositions = []
 
     for (const trade of group) {
       const isLong = trade.side === 'Buy'
@@ -438,16 +442,12 @@ function matchSingleOptions(tradesList, startTicketId) {
       // Try to close opposite positions
       for (let i = 0; i < openPositions.length && remaining > 0; i++) {
         const pos = openPositions[i]
-        // Long trade closes short positions, short trade closes long positions
         if (pos.isLong !== isLong && pos.remaining > 0) {
           const closeQty = Math.min(remaining, pos.remaining)
-          // P&L calculation
           let pnl = 0
           if (pos.isLong) {
-            // We're closing a long position with a sell
             pnl = (trade.legs[0].premium - pos.trade.legs[0].premium) * closeQty * 100
           } else {
-            // We're closing a short position with a buy
             pnl = (pos.trade.legs[0].premium - trade.legs[0].premium) * closeQty * 100
           }
           tickets.push(createClosedTicket(pos.trade, trade, closeQty, pnl, ticketId++))
@@ -457,13 +457,11 @@ function matchSingleOptions(tradesList, startTicketId) {
         }
       }
 
-      // Any remaining quantity opens a new position
       if (remaining > 0) {
         openPositions.push({ trade, remaining, isLong })
       }
     }
 
-    // Remaining open positions
     for (const pos of openPositions) {
       if (pos.remaining > 0) {
         tickets.push(createOpenTicket(pos.trade, pos.remaining, ticketId++))
@@ -474,9 +472,9 @@ function matchSingleOptions(tradesList, startTicketId) {
   return tickets
 }
 
-// ============================================
-// TICKET CREATION
-// ============================================
+// =====================================================
+// SECTION 6: P&L CALCULATION
+// =====================================================
 
 function calcPnL(open, close, qty) {
   let pnl = 0
@@ -489,6 +487,17 @@ function calcPnL(open, close, qty) {
   }
   return pnl
 }
+
+function calculateIntrinsicValue(type, strike, stockPrice) {
+  if (!stockPrice) return null
+  stockPrice = stockPrice / 100
+  if (type === 'call') return Math.max(0, stockPrice - strike)
+  else return Math.max(0, strike - stockPrice)
+}
+
+// =====================================================
+// SECTION 7: TICKET CREATION
+// =====================================================
 
 function createClosedTicket(openTrade, closeTrade, qty, pnl, num) {
   const isOpen = compareDates(openTrade.filledTime, closeTrade.filledTime) < 0
@@ -507,179 +516,29 @@ function createOpenTicket(trade, qty, num) {
   return { ticket: num, date: formatDate(trade.filledTime), symbol: trade.legs[0]?.underlying || trade.ticketName.split(' ')[0], status: 'OPEN', exit_date: null, pnl: 0, strategies: [{ name: trade.ticketName, legs, entry_time: trade.filledTime || trade.placedTime || '', entry_price: null, exit_time: '', exit_price: null }], notes: trade.ticketName }
 }
 
-// Symbol mapping for Yahoo Finance
-const SYMBOL_MAP = {
-  'VIXW': '^VIX',
-  'SPXW': '^GSPC',
-  'VIX': '^VIX',
-  'SPX': '^GSPC',
-  'NDX': '^NDX',
-  'RUT': '^RUT'
-}
-
-function getYahooSymbol(symbol) {
-  return SYMBOL_MAP[symbol] || symbol
-}
-
-// In-memory price cache
-const priceCache = {}
-
-// Get historical price from cache or fetch from Yahoo Finance
-// Returns price in cents or null if not found
-async function getHistoricalPrice(symbol, dateStr) {
-  const cacheKey = `${symbol}_${dateStr}`
-
-  // Check memory cache first
-  if (priceCache[cacheKey] !== undefined) {
-    return priceCache[cacheKey]
-  }
-
-  // Check file cache
-  try {
-    const cachePath = path.join(__dirname, '../historical-prices.json')
-    if (fs.existsSync(cachePath)) {
-      const cache = JSON.parse(fs.readFileSync(cachePath, 'utf-8'))
-      // Check both original symbol and Yahoo symbol
-      const yahooSymbol = getYahooSymbol(symbol).replace('^', '')
-      const price = cache[symbol]?.[dateStr] || cache[yahooSymbol]?.[dateStr] || cache[`${symbol}|${dateStr}`]
-      if (price) {
-        priceCache[cacheKey] = price
-        return price
-      }
-    }
-  } catch (e) {
-    // Fall through to fetch
-  }
-
-  // Fetch from Yahoo Finance using chart endpoint (works better from Node.js)
-  try {
-    const yahooSymbol = getYahooSymbol(symbol)
-    const targetDate = new Date(dateStr)
-    const startDate = new Date(targetDate)
-    startDate.setDate(startDate.getDate() - 5)
-    const endDate = new Date(targetDate)
-    endDate.setDate(endDate.getDate() + 5)
-
-    const start = Math.floor(startDate.getTime() / 1000)
-    const end = Math.floor(endDate.getTime() / 1000)
-
-    // Use the chart endpoint - more reliable for historical data
-    const url = `https://query1.finance.yahoo.com/v8/finance/chart/${yahooSymbol}?period1=${start}&period2=${end}&interval=1d`
-
-    const response = await fetch(url, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-      }
-    })
-
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}`)
-    }
-
-    const data = await response.json()
-
-    if (data.chart?.result?.[0]?.timestamp) {
-      const timestamps = data.chart.result[0].timestamp
-      const closes = data.chart.result[0].indicators.quote[0].close
-
-      // Find the closest date to our target
-      const targetTimestamp = Math.floor(targetDate.getTime() / 1000)
-      let closestTimestamp = null
-      let closestDiff = Infinity
-      let closestPrice = null
-
-      for (let i = 0; i < timestamps.length; i++) {
-        const diff = Math.abs(timestamps[i] - targetTimestamp)
-        if (diff < closestDiff) {
-          closestDiff = diff
-          closestTimestamp = timestamps[i]
-          closestPrice = closes[i]
-        }
-      }
-
-      if (closestPrice !== null && closestPrice !== undefined) {
-        const priceInCents = Math.round(closestPrice * 100)
-        priceCache[cacheKey] = priceInCents
-        savePriceToFile(symbol, dateStr, priceInCents)
-        return priceInCents
-      }
-    }
-
-    priceCache[cacheKey] = null
-    return null
-  } catch (error) {
-    console.error(`  Error fetching price for ${symbol} on ${dateStr}: ${error.message}`)
-    priceCache[cacheKey] = null
-    return null
-  }
-}
-
-function savePriceToFile(symbol, dateStr, price) {
-  try {
-    const cachePath = path.join(__dirname, '../historical-prices.json')
-    let cache = {}
-    if (fs.existsSync(cachePath)) {
-      cache = JSON.parse(fs.readFileSync(cachePath, 'utf-8'))
-    }
-    if (!cache[symbol]) cache[symbol] = {}
-    cache[symbol][dateStr] = price
-    fs.writeFileSync(cachePath, JSON.stringify(cache, null, 2))
-  } catch (e) {
-    // Ignore save errors
-  }
-}
-
-// Calculate intrinsic value of an option at expiration
-function calculateIntrinsicValue(type, strike, stockPrice) {
-  if (!stockPrice) return null
-
-  stockPrice = stockPrice / 100 // Convert from cents to dollars
-
-  if (type === 'call') {
-    return Math.max(0, stockPrice - strike)
-  } else {
-    return Math.max(0, strike - stockPrice)
-  }
-}
-
-// Create a ticket for an expired position with actual P&L calculation
 async function createExpiredTicket(ticket, expiryDate, num) {
   const legs = ticket.strategies[0].legs
   const symbol = ticket.symbol
-
-  // Get historical stock price at expiration
   const stockPrice = await getHistoricalPrice(symbol, expiryDate)
 
   let pnl = 0
   let hasValidPrices = stockPrice !== null
 
-  // Calculate P&L at expiration using actual stock price
   for (const leg of legs) {
     const intrinsicValue = calculateIntrinsicValue(leg.type, leg.strike, stockPrice)
-
     if (intrinsicValue === null) {
       hasValidPrices = false
       break
     }
-
-    if (leg.action === 'buy') {
-      // Long option: (intrinsic value at expiration - premium paid) * qty * 100
-      pnl += (intrinsicValue - leg.premium) * leg.quantity * 100
-    } else {
-      // Short option: (premium received - intrinsic value at expiration) * qty * 100
-      pnl += (leg.premium - intrinsicValue) * leg.quantity * 100
-    }
+    if (leg.action === 'buy') pnl += (intrinsicValue - leg.premium) * leg.quantity * 100
+    else pnl += (leg.premium - intrinsicValue) * leg.quantity * 100
   }
 
-  // If no price data available, fall back to worthless calculation
   if (!hasValidPrices) {
     pnl = 0
     for (const leg of legs) {
-      if (leg.action === 'buy') {
-        pnl -= leg.premium * leg.quantity * 100
-      } else {
-        pnl += leg.premium * leg.quantity * 100
-      }
+      if (leg.action === 'buy') pnl -= leg.premium * leg.quantity * 100
+      else pnl += leg.premium * leg.quantity * 100
     }
   }
 
@@ -702,7 +561,6 @@ async function createExpiredTicket(ticket, expiryDate, num) {
   }
 }
 
-// Process expired positions
 async function processExpiredTickets(tickets, startTicketId) {
   const today = new Date()
   today.setHours(0, 0, 0, 0)
@@ -713,10 +571,10 @@ async function processExpiredTickets(tickets, startTicketId) {
 
   for (const ticket of tickets) {
     if (ticket.status !== 'OPEN') {
-      continue  // Skip already closed tickets
+      stillOpenTickets.push(ticket)
+      continue
     }
 
-    // Get expiry date from first leg
     const legs = ticket.strategies[0].legs
     if (legs.length === 0) {
       stillOpenTickets.push(ticket)
@@ -732,7 +590,6 @@ async function processExpiredTickets(tickets, startTicketId) {
     const expiryDate = new Date(expiryDateStr)
     expiryDate.setHours(0, 0, 0, 0)
 
-    // Check if expired
     if (expiryDate < today) {
       const expiredTicket = await createExpiredTicket(ticket, expiryDateStr, ticketId++)
       expiredTickets.push(expiredTicket)
@@ -744,9 +601,142 @@ async function processExpiredTickets(tickets, startTicketId) {
   return { expired: expiredTickets, open: stillOpenTickets, nextTicketId: ticketId }
 }
 
-// ============================================
-// MAIN
-// ============================================
+// =====================================================
+// SECTION 8: STRATEGY PARSING FUNCTIONS
+// Each takes its categorized array and returns tickets
+// =====================================================
+
+function parseVerticalSpreads(verticalSpreadArray, startTicketId) {
+  const tradesData = []
+
+  for (const header of verticalSpreadArray) {
+    if (!header.legs || header.legs.length < 2) continue
+
+    const parsedLegs = header.legs.map(l => {
+      const opt = parseOptionSymbol(l.symbol)
+      return { ...opt, side: l.side, quantity: l.filled, premium: l.avgPrice, filledTime: l.filledTime }
+    }).filter(l => l.underlying)
+
+    if (parsedLegs.length >= 2) {
+      tradesData.push({
+        ticketName: header.name,
+        side: header.side,
+        status: header.status,
+        filledTime: header.filledTime,
+        legs: parsedLegs
+      })
+    }
+  }
+
+  return matchMultiLeg(tradesData, startTicketId)
+}
+
+function parseIronCondors(ironCondorArray, startTicketId) {
+  const tradesData = []
+
+  for (const header of ironCondorArray) {
+    if (!header.legs || header.legs.length < 4) continue
+
+    const parsedLegs = header.legs.map(l => {
+      const opt = parseOptionSymbol(l.symbol)
+      return { ...opt, side: l.side, quantity: l.filled, premium: l.avgPrice, filledTime: l.filledTime }
+    }).filter(l => l.underlying)
+
+    if (parsedLegs.length >= 4) {
+      tradesData.push({
+        ticketName: header.name,
+        side: header.side,
+        status: header.status,
+        filledTime: header.filledTime,
+        legs: parsedLegs
+      })
+    }
+  }
+
+  return matchMultiLeg(tradesData, startTicketId)
+}
+
+function parseStraddles(straddleArray, startTicketId) {
+  const tradesData = []
+
+  for (const header of straddleArray) {
+    if (!header.legs || header.legs.length < 2) continue
+
+    const parsedLegs = header.legs.map(l => {
+      const opt = parseOptionSymbol(l.symbol)
+      return { ...opt, side: l.side, quantity: l.filled, premium: l.avgPrice, filledTime: l.filledTime }
+    }).filter(l => l.underlying)
+
+    if (parsedLegs.length >= 2) {
+      tradesData.push({
+        ticketName: header.name,
+        side: header.side,
+        status: header.status,
+        filledTime: header.filledTime,
+        legs: parsedLegs
+      })
+    }
+  }
+
+  return matchMultiLeg(tradesData, startTicketId)
+}
+
+function parseStrangles(strangleArray, startTicketId) {
+  const tradesData = []
+
+  for (const header of strangleArray) {
+    if (!header.legs || header.legs.length < 2) continue
+
+    const parsedLegs = header.legs.map(l => {
+      const opt = parseOptionSymbol(l.symbol)
+      return { ...opt, side: l.side, quantity: l.filled, premium: l.avgPrice, filledTime: l.filledTime }
+    }).filter(l => l.underlying)
+
+    if (parsedLegs.length >= 2) {
+      tradesData.push({
+        ticketName: header.name,
+        side: header.side,
+        status: header.status,
+        filledTime: header.filledTime,
+        legs: parsedLegs
+      })
+    }
+  }
+
+  return matchMultiLeg(tradesData, startTicketId)
+}
+
+function parseSingleOptions(longArray, shortArray, startTicketId) {
+  const longTrades = longArray.map(row => {
+    const opt = parseOptionSymbol(row.symbol)
+    if (!opt) return null
+    return {
+      ticketName: generateSingleOptionName(opt),
+      side: row.side,
+      status: row.status,
+      filledTime: row.filledTime,
+      legs: [{ ...opt, side: row.side, quantity: row.filled, premium: row.avgPrice, filledTime: row.filledTime }]
+    }
+  }).filter(t => t !== null)
+
+  const shortTrades = shortArray.map(row => {
+    const opt = parseOptionSymbol(row.symbol)
+    if (!opt) return null
+    return {
+      ticketName: generateSingleOptionName(opt),
+      side: row.side,
+      status: row.status,
+      filledTime: row.filledTime,
+      legs: [{ ...opt, side: row.side, quantity: row.filled, premium: row.avgPrice, filledTime: row.filledTime }]
+    }
+  }).filter(t => t !== null)
+
+  return matchSingleOptions([...longTrades, ...shortTrades], startTicketId)
+}
+
+// =====================================================
+// SECTION 9: MAIN ENTRY POINT
+// =====================================================
 
 async function parseWebullCSV() {
   const csvPath = path.join(__dirname, '../Webull_Orders_Records_Options.csv')
