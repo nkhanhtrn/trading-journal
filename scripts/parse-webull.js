@@ -71,6 +71,14 @@ function categorizeRow(row) {
   // Skip cancelled orders
   if (status !== 'Filled' || filled === 0) return null
 
+  // Single options: when name equals symbol, it's a single option row (not a multi-leg header)
+  if (name && symbol && name === symbol) {
+    const opt = parseOptionSymbol(symbol)
+    if (!opt) return null
+    if (opt.type === 'call') return side === 'Buy' ? 'long_call' : 'short_call'
+    else return side === 'Buy' ? 'long_put' : 'short_put'
+  }
+
   // Multi-leg strategies (header row: has name, no symbol)
   if (name && !symbol) {
     const nameLower = name.toLowerCase()
@@ -99,6 +107,14 @@ function categorizeAllRows(rows) {
   for (let i = 0; i < rows.length; i++) {
     const row = rows[i]
 
+    // Single option: name equals symbol (standalone option, not a leg)
+    if (row.name && row.symbol && row.name === row.symbol) {
+      currentHeader = null // Reset header
+      const bucket = categorizeRow(row)
+      if (bucket) categorized[bucket].push(row)
+      continue
+    }
+
     // Header row (has name, no symbol)
     if (row.name && !row.symbol) {
       currentHeader = { ...row, legs: [] }
@@ -115,6 +131,7 @@ function categorizeAllRows(rows) {
 
     // Single option (no header, has symbol)
     if (row.symbol && !row.name) {
+      currentHeader = null // Reset header
       const bucket = categorizeRow(row)
       if (bucket) categorized[bucket].push(row)
     }
