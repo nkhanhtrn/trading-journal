@@ -82,6 +82,8 @@ function categorizeRow(row) {
   // Multi-leg strategies (header row: has name, no symbol)
   if (name && !symbol) {
     const nameLower = name.toLowerCase()
+    // Skip diagonal spreads - treat legs as individual single options
+    if (nameLower.includes('diagonal')) return null
     if (nameLower.includes('vertical') || nameLower.includes('spread')) return 'vertical_spread'
     if (nameLower.includes('iron condor') || nameLower.includes('condor')) return 'iron_condor'
     if (nameLower.includes('straddle')) return 'straddle'
@@ -124,12 +126,29 @@ function categorizeAllRows(rows) {
     if (row.name && !row.symbol) {
       currentHeader = { ...row, legs: [] }
       const bucket = categorizeRow(row)
-      if (bucket) categorized[bucket].push(currentHeader)
+      // Skip diagonal headers - don't create a spread ticket
+      if (bucket) {
+        const nameLower = row.name.toLowerCase()
+        if (!nameLower.includes('diagonal')) {
+          categorized[bucket].push(currentHeader)
+        }
+      }
+      // For diagonals, set currentHeader but don't add to categorized
+      // This allows legs to be processed below as single options
       continue
     }
 
     // Leg row (has symbol, no name, and we have a header)
     if (row.symbol && !row.name && currentHeader) {
+      // Check if this is part of a diagonal spread - if so, treat as single option
+      const headerNameLower = currentHeader.name?.toLowerCase() || ''
+      if (headerNameLower.includes('diagonal')) {
+        // Diagonal legs are treated as independent single options
+        currentHeader = null
+        const bucket = categorizeRow(row)
+        if (bucket) categorized[bucket].push(row)
+        continue
+      }
       currentHeader.legs.push(row)
       continue
     }
