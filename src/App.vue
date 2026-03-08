@@ -148,6 +148,20 @@
           </div>
         </div>
 
+        <!-- Day Navigation -->
+        <div class="bg-gray-800 rounded-lg p-3 mb-6 flex items-center justify-between">
+          <button @click="prevDay" class="text-gray-400 hover:text-white px-3 py-1 rounded hover:bg-gray-700 transition-colors">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <div class="text-center">
+            <div class="text-xs text-gray-500 mb-1">Viewing trades from</div>
+            <div class="text-lg font-semibold text-white">{{ selectedTradeDate || 'All dates' }}</div>
+          </div>
+          <button @click="nextDay" class="text-gray-400 hover:text-white px-3 py-1 rounded hover:bg-gray-700 transition-colors">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+
         <!-- Filters -->
         <div class="bg-gray-800 rounded-lg p-3 mb-6 flex gap-3 flex-wrap items-center">
           <input v-model="filters.symbol" type="text" placeholder="Search symbol..." class="bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 text-sm flex-1 min-w-40">
@@ -180,6 +194,7 @@
                 <span class="text-xs text-gray-500">{{ group.totalQuantity }}c</span>
               </div>
               <div class="flex items-center gap-3">
+                <MiniCalendarDots :entry-dates="getEntryDates(group)" :exit-dates="getExitDates(group)" />
                 <span v-if="group.openCount === 0" class="text-base font-bold" :class="group.totalPnL >= 0 ? 'text-green-400' : 'text-red-400'">
                   {{ group.totalPnL >= 0 ? '+' : '' }}${{ group.totalPnL.toFixed(0) }}
                 </span>
@@ -197,6 +212,7 @@
                 </div>
                 <button @click.stop="selectedPositionGroup = group" class="text-xs bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded">Details >></button>
               </div>
+
               <div v-if="group.openCount === 0" class="mb-3 pb-3 border-b border-gray-700">
                 <div class="grid grid-cols-3 gap-4 text-sm">
                   <div>
@@ -374,6 +390,7 @@ import { ref, computed, onMounted } from 'vue'
 import { tradesData } from './data/trades.js'
 import SummaryCards from './components/SummaryCards.vue'
 import TradeFormModal from './components/TradeFormModal.vue'
+import MiniCalendarDots from './components/MiniCalendarDots.vue'
 import { fetchPrices, fetchHistoricalPrice } from './utils/priceFetcher.js'
 
 const tickets = ref([])
@@ -399,6 +416,7 @@ const filters = ref({
 
 const sortBy = ref('ticket')
 const selectedPositionGroup = ref(null)
+const selectedTradeDate = ref(null) // For day navigation in trades view
 
 const openPositions = computed(() => {
   return tickets.value.filter(t => t.status === 'OPEN').sort((a, b) => new Date(a.strategies[0]?.legs[0]?.expiry) - new Date(b.strategies[0]?.legs[0]?.expiry))
@@ -445,7 +463,8 @@ const filteredTickets = computed(() => {
     const matchSymbol = !filters.value.symbol || ticket.symbol.toLowerCase().includes(filters.value.symbol.toLowerCase())
     const matchStatus = !filters.value.status || ticket.status === filters.value.status
     const matchDate = isTicketInDateRange(ticket)
-    return matchSymbol && matchStatus && matchDate
+    const matchSelectedDate = !selectedTradeDate.value || ticket.date === selectedTradeDate.value
+    return matchSymbol && matchStatus && matchDate && matchSelectedDate
   })
 
   switch (sortBy.value) {
@@ -710,6 +729,44 @@ const formatLegPrices = (legs) => {
   }).join(' ')
 }
 
+const getFirstEntryDate = (group) => {
+  const tickets = group.tickets || group.positions || []
+  if (tickets.length === 0) return null
+  return tickets.reduce((earliest, t) => t.date < earliest ? t.date : earliest, tickets[0].date)
+}
+
+const getLastExitDate = (group) => {
+  const tickets = group.tickets || group.positions || []
+  const closedTickets = tickets.filter(t => t.exit_date)
+  if (closedTickets.length === 0) return null
+  return closedTickets.reduce((latest, t) => t.exit_date > latest ? t.exit_date : latest, closedTickets[0].exit_date)
+}
+
+const getHoldDuration = (group) => {
+  const entry = getFirstEntryDate(group)
+  const exit = getLastExitDate(group)
+  if (!entry || !exit) return null
+
+  const entryDate = new Date(entry)
+  const exitDate = new Date(exit)
+  const diffTime = Math.abs(exitDate - entryDate)
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+
+  if (diffDays === 0) return 'Same day'
+  if (diffDays === 1) return '1 day'
+  return `${diffDays} days`
+}
+
+const getEntryDates = (group) => {
+  const tickets = group.tickets || group.positions || []
+  return tickets.map(t => t.date).filter(d => d)
+}
+
+const getExitDates = (group) => {
+  const tickets = group.tickets || group.positions || []
+  return tickets.map(t => t.exit_date).filter(d => d)
+}
+
 const selectDate = (date) => {
   if (!date) return
   dateRange.value = {
@@ -816,6 +873,43 @@ const resetFilters = () => {
   filters.value = { symbol: '', status: '' }
   sortBy.value = 'ticket'
   clearDateRange()
+  selectedTradeDate.value = null
+}
+
+const prevDay = () => {
+  // Get all unique sorted dates
+  const dates = [...new Set(tickets.value.map(t => t.date).filter(d => d))].sort()
+
+  if (!selectedTradeDate.value) {
+    // Set to latest trade date if no date selected
+    if (dates.length > 0) {
+      selectedTradeDate.value = dates[dates.length - 1]
+    }
+  } else {
+    // Find the previous date with trades
+    const currentIndex = dates.indexOf(selectedTradeDate.value)
+    if (currentIndex > 0) {
+      selectedTradeDate.value = dates[currentIndex - 1]
+    }
+  }
+}
+
+const nextDay = () => {
+  // Get all unique sorted dates
+  const dates = [...new Set(tickets.value.map(t => t.date).filter(d => d))].sort()
+
+  if (!selectedTradeDate.value) {
+    // Set to earliest trade date if no date selected
+    if (dates.length > 0) {
+      selectedTradeDate.value = dates[0]
+    }
+  } else {
+    // Find the next date with trades
+    const currentIndex = dates.indexOf(selectedTradeDate.value)
+    if (currentIndex < dates.length - 1) {
+      selectedTradeDate.value = dates[currentIndex + 1]
+    }
+  }
 }
 
 // Group filtered tickets by position (symbol + strategy + strikes + expiry)

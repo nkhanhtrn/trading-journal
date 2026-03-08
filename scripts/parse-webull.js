@@ -261,7 +261,7 @@ for (const [ticketName, tradesList] of Object.entries(ticketGroups)) {
             const closeQty = Math.min(remainingCreditQty, openPos.remaining);
             const pnl = calculatePnL(openPos.trade, trade, closeQty);
 
-            matchedTrades.push(createTicket(openPos.trade, trade, closeQty, pnl, ticketCounter++, ticketName));
+            matchedTrades.push(createTicket(openPos.trade, trade, closeQty, pnl, ticketCounter++, ticketName, closeQty));
             openPos.remaining -= closeQty;
             remainingCreditQty -= closeQty;
             matched = true;
@@ -290,7 +290,7 @@ for (const [ticketName, tradesList] of Object.entries(ticketGroups)) {
             const closeQty = Math.min(remainingDebitQty, openPos.remaining);
             const pnl = calculatePnL(openPos.trade, trade, closeQty);
 
-            matchedTrades.push(createTicket(openPos.trade, trade, closeQty, pnl, ticketCounter++, ticketName));
+            matchedTrades.push(createTicket(openPos.trade, trade, closeQty, pnl, ticketCounter++, ticketName, closeQty));
             openPos.remaining -= closeQty;
             remainingDebitQty -= closeQty;
             matched = true;
@@ -312,7 +312,7 @@ for (const [ticketName, tradesList] of Object.entries(ticketGroups)) {
     // Add remaining open positions
     for (const openPos of openPositions) {
       if (openPos.remaining > 0) {
-        matchedTrades.push(createOpenTicket(openPos.trade, ticketCounter++, ticketName));
+        matchedTrades.push(createOpenTicket(openPos.trade, openPos.remaining, ticketCounter++, ticketName));
       }
     }
   }
@@ -338,7 +338,7 @@ function calculatePnL(openTrade, closeTrade, qty) {
   return pnl;
 }
 
-function createTicket(openTrade, closeTrade, qty, pnl, ticketNum, ticketName) {
+function createTicket(openTrade, closeTrade, qty, pnl, ticketNum, ticketName, closeQty) {
   const openState = compareDates(openTrade.filledTime, closeTrade.filledTime) < 0 ? openTrade : closeTrade;
   const closeState = compareDates(openTrade.filledTime, closeTrade.filledTime) < 0 ? closeTrade : openTrade;
 
@@ -349,7 +349,7 @@ function createTicket(openTrade, closeTrade, qty, pnl, ticketNum, ticketName) {
       strike: leg.strike,
       expiry: leg.date,
       premium: leg.premium,
-      quantity: qty,
+      quantity: closeQty, // Use the actual closed quantity
       action: leg.side.toLowerCase()
     });
   }
@@ -359,7 +359,7 @@ function createTicket(openTrade, closeTrade, qty, pnl, ticketNum, ticketName) {
       strike: leg.strike,
       expiry: leg.date,
       premium: leg.premium,
-      quantity: qty,
+      quantity: closeQty, // Use the actual closed quantity
       action: leg.side.toLowerCase()
     });
   }
@@ -383,7 +383,7 @@ function createTicket(openTrade, closeTrade, qty, pnl, ticketNum, ticketName) {
   };
 }
 
-function createOpenTicket(trade, ticketNum, ticketName) {
+function createOpenTicket(trade, remainingQty, ticketNum, ticketName) {
   const legs = [];
   for (const leg of trade.legs) {
     legs.push({
@@ -391,7 +391,7 @@ function createOpenTicket(trade, ticketNum, ticketName) {
       strike: leg.strike,
       expiry: leg.date,
       premium: leg.premium,
-      quantity: leg.quantity,
+      quantity: remainingQty, // Use remaining quantity, not original
       action: leg.side.toLowerCase()
     });
   }
