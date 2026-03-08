@@ -189,72 +189,55 @@ function parseStrangles(strangleArray, startTicketId) {
   return []
 }
 
-// Long Call Parser
+// Single Options Parser - combines long/short and matches them
+function parseSingleOptions(longArray, shortArray, startTicketId) {
+  // Process both arrays into trades data
+  const longTrades = longArray.map(row => {
+    const opt = parseOptionSymbol(row.symbol)
+    if (!opt) return null
+    return {
+      ticketName: row.symbol,
+      side: row.side,
+      status: row.status,
+      filledTime: row.filledTime,
+      legs: [{ ...opt, side: row.side, quantity: row.filled, premium: row.avgPrice, filledTime: row.filledTime }]
+    }
+  }).filter(t => t !== null)
+
+  const shortTrades = shortArray.map(row => {
+    const opt = parseOptionSymbol(row.symbol)
+    if (!opt) return null
+    return {
+      ticketName: row.symbol,
+      side: row.side,
+      status: row.status,
+      filledTime: row.filledTime,
+      legs: [{ ...opt, side: row.side, quantity: row.filled, premium: row.avgPrice, filledTime: row.filledTime }]
+    }
+  }).filter(t => t !== null)
+
+  // Combine and match
+  return matchSingleOptions([...longTrades, ...shortTrades], startTicketId)
+}
+
+// Long Call Parser (now uses combined parser)
 function parseLongCalls(longCallArray, startTicketId) {
-  const tradesData = longCallArray.map(row => {
-    const opt = parseOptionSymbol(row.symbol)
-    if (!opt) return null
-    return {
-      ticketName: row.symbol,
-      side: row.side,
-      status: row.status,
-      filledTime: row.filledTime,
-      legs: [{ ...opt, side: row.side, quantity: row.filled, premium: row.avgPrice, filledTime: row.filledTime }]
-    }
-  }).filter(t => t !== null)
-
-  return matchSingleOptions(tradesData, startTicketId)
+  return parseSingleOptions(longCallArray, [], startTicketId)
 }
 
-// Short Call Parser
+// Short Call Parser (now uses combined parser)
 function parseShortCalls(shortCallArray, startTicketId) {
-  const tradesData = shortCallArray.map(row => {
-    const opt = parseOptionSymbol(row.symbol)
-    if (!opt) return null
-    return {
-      ticketName: row.symbol,
-      side: row.side,
-      status: row.status,
-      filledTime: row.filledTime,
-      legs: [{ ...opt, side: row.side, quantity: row.filled, premium: row.avgPrice, filledTime: row.filledTime }]
-    }
-  }).filter(t => t !== null)
-
-  return matchSingleOptions(tradesData, startTicketId)
+  return parseSingleOptions([], shortCallArray, startTicketId)
 }
 
-// Long Put Parser
+// Long Put Parser (now uses combined parser)
 function parseLongPuts(longPutArray, startTicketId) {
-  const tradesData = longPutArray.map(row => {
-    const opt = parseOptionSymbol(row.symbol)
-    if (!opt) return null
-    return {
-      ticketName: row.symbol,
-      side: row.side,
-      status: row.status,
-      filledTime: row.filledTime,
-      legs: [{ ...opt, side: row.side, quantity: row.filled, premium: row.avgPrice, filledTime: row.filledTime }]
-    }
-  }).filter(t => t !== null)
-
-  return matchSingleOptions(tradesData, startTicketId)
+  return parseSingleOptions(longPutArray, [], startTicketId)
 }
 
-// Short Put Parser
+// Short Put Parser (now uses combined parser)
 function parseShortPuts(shortPutArray, startTicketId) {
-  const tradesData = shortPutArray.map(row => {
-    const opt = parseOptionSymbol(row.symbol)
-    if (!opt) return null
-    return {
-      ticketName: row.symbol,
-      side: row.side,
-      status: row.status,
-      filledTime: row.filledTime,
-      legs: [{ ...opt, side: row.side, quantity: row.filled, premium: row.avgPrice, filledTime: row.filledTime }]
-    }
-  }).filter(t => t !== null)
-
-  return matchSingleOptions(tradesData, startTicketId)
+  return parseSingleOptions([], shortPutArray, startTicketId)
 }
 
 // ============================================
@@ -337,42 +320,45 @@ function matchSingleOptions(tradesList, startTicketId) {
   for (const [symbol, group] of Object.entries(symbolGroups)) {
     group.sort((a, b) => compareDates(a.filledTime, b.filledTime))
 
-    const longPositions = []
-    const shortPositions = []
+    const openPositions = [] // Tracks all open positions (long or short)
 
     for (const trade of group) {
       const isLong = trade.side === 'Buy'
-      const pos = { trade, remaining: trade.legs[0].quantity, isLong }
+      const qty = trade.legs[0].quantity
+      let remaining = qty
 
-      if (isLong) longPositions.push(pos)
-      else shortPositions.push(pos)
-    }
-
-    // Match longs with shorts
-    for (const longPos of longPositions) {
-      let remaining = longPos.remaining
-
-      for (let i = 0; i < shortPositions.length && remaining > 0; i++) {
-        const shortPos = shortPositions[i]
-        if (shortPos.remaining > 0) {
-          const closeQty = Math.min(remaining, shortPos.remaining)
-          const pnl = (shortPos.trade.legs[0].premium - longPos.trade.legs[0].premium) * closeQty * 100
-          tickets.push(createClosedTicket(longPos.trade, shortPos.trade, closeQty, pnl, ticketId++))
-          longPos.remaining -= closeQty
-          shortPos.remaining -= closeQty
+      // Try to close opposite positions
+      for (let i = 0; i < openPositions.length && remaining > 0; i++) {
+        const pos = openPositions[i]
+        // Long trade closes short positions, short trade closes long positions
+        if (pos.isLong !== isLong && pos.remaining > 0) {
+          const closeQty = Math.min(remaining, pos.remaining)
+          // P&L calculation
+          let pnl = 0
+          if (pos.isLong) {
+            // We're closing a long position with a sell
+            pnl = (trade.legs[0].premium - pos.trade.legs[0].premium) * closeQty * 100
+          } else {
+            // We're closing a short position with a buy
+            pnl = (pos.trade.legs[0].premium - trade.legs[0].premium) * closeQty * 100
+          }
+          tickets.push(createClosedTicket(pos.trade, trade, closeQty, pnl, ticketId++))
+          pos.remaining -= closeQty
           remaining -= closeQty
-          if (shortPos.remaining <= 0) { shortPositions.splice(i, 1); i-- }
+          if (pos.remaining <= 0) { openPositions.splice(i, 1); i-- }
         }
       }
 
-      if (longPos.remaining > 0) {
-        tickets.push(createOpenTicket(longPos.trade, longPos.remaining, ticketId++))
+      // Any remaining quantity opens a new position
+      if (remaining > 0) {
+        openPositions.push({ trade, remaining, isLong })
       }
     }
 
-    for (const shortPos of shortPositions) {
-      if (shortPos.remaining > 0) {
-        tickets.push(createOpenTicket(shortPos.trade, shortPos.remaining, ticketId++))
+    // Remaining open positions
+    for (const pos of openPositions) {
+      if (pos.remaining > 0) {
+        tickets.push(createOpenTicket(pos.trade, pos.remaining, ticketId++))
       }
     }
   }
@@ -705,26 +691,16 @@ async function parseWebullCSV() {
   allTickets.push(...sg)
   currentTicketId += sg.length
 
-  // Single options
-  const lc = parseLongCalls(categorized.long_call, currentTicketId)
-  console.log(`  Long Calls: ${lc.length} tickets`)
-  allTickets.push(...lc)
-  currentTicketId += lc.length
+  // Single options - combine long/short for proper matching
+  const calls = parseSingleOptions(categorized.long_call, categorized.short_call, currentTicketId)
+  console.log(`  Calls (long+short): ${calls.length} tickets`)
+  allTickets.push(...calls)
+  currentTicketId += calls.length
 
-  const sc = parseShortCalls(categorized.short_call, currentTicketId)
-  console.log(`  Short Calls: ${sc.length} tickets`)
-  allTickets.push(...sc)
-  currentTicketId += sc.length
-
-  const lp = parseLongPuts(categorized.long_put, currentTicketId)
-  console.log(`  Long Puts: ${lp.length} tickets`)
-  allTickets.push(...lp)
-  currentTicketId += lp.length
-
-  const sp = parseShortPuts(categorized.short_put, currentTicketId)
-  console.log(`  Short Puts: ${sp.length} tickets`)
-  allTickets.push(...sp)
-  currentTicketId += sp.length
+  const puts = parseSingleOptions(categorized.long_put, categorized.short_put, currentTicketId)
+  console.log(`  Puts (long+short): ${puts.length} tickets`)
+  allTickets.push(...puts)
+  currentTicketId += puts.length
 
   // STEP 3: Process expired positions
   const { expired, open: stillOpen } = await processExpiredTickets(allTickets, currentTicketId)

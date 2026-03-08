@@ -4153,12 +4153,156 @@ export const tradesData = [
     "notes": "VIXW Vertical"
   },
   {
+    "ticket": 1108,
+    "date": "2026-02-26",
+    "symbol": "XSP",
+    "status": "LOSS",
+    "exit_date": "2026-02-27",
+    "pnl": -195,
+    "strategies": [
+      {
+        "name": "XSP260227C00691000",
+        "legs": [
+          {
+            "type": "call",
+            "strike": 691,
+            "expiry": "2026-02-27",
+            "premium": 2.17,
+            "quantity": 1,
+            "action": "buy"
+          },
+          {
+            "type": "call",
+            "strike": 691,
+            "expiry": "2026-02-27",
+            "premium": 0.22,
+            "quantity": 1,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "02/26/2026 15:01:32 EST",
+        "entry_price": null,
+        "exit_time": "02/27/2026 10:01:11 EST",
+        "exit_price": null
+      }
+    ],
+    "notes": "XSP260227C00691000"
+  },
+  {
+    "ticket": 1109,
+    "date": "2026-02-13",
+    "symbol": "GLD",
+    "status": "WIN",
+    "exit_date": "2026-02-17",
+    "pnl": 300,
+    "strategies": [
+      {
+        "name": "GLD260227C00478000",
+        "legs": [
+          {
+            "type": "call",
+            "strike": 478,
+            "expiry": "2026-02-27",
+            "premium": 4.45,
+            "quantity": 1,
+            "action": "sell"
+          },
+          {
+            "type": "call",
+            "strike": 478,
+            "expiry": "2026-02-27",
+            "premium": 1.45,
+            "quantity": 1,
+            "action": "buy"
+          }
+        ],
+        "entry_time": "02/13/2026 15:26:04 EST",
+        "entry_price": null,
+        "exit_time": "02/17/2026 12:17:27 EST",
+        "exit_price": null
+      }
+    ],
+    "notes": "GLD260227C00478000"
+  },
+  {
+    "ticket": 1110,
+    "date": "2026-02-10",
+    "symbol": "GLD",
+    "status": "WIN",
+    "exit_date": "2026-02-17",
+    "pnl": 916,
+    "strategies": [
+      {
+        "name": "GLD260220C00470000",
+        "legs": [
+          {
+            "type": "call",
+            "strike": 470,
+            "expiry": "2026-02-20",
+            "premium": 5,
+            "quantity": 2,
+            "action": "sell"
+          },
+          {
+            "type": "call",
+            "strike": 470,
+            "expiry": "2026-02-20",
+            "premium": 0.42,
+            "quantity": 2,
+            "action": "buy"
+          }
+        ],
+        "entry_time": "02/10/2026 10:34:53 EST",
+        "entry_price": null,
+        "exit_time": "02/17/2026 12:16:57 EST",
+        "exit_price": null
+      }
+    ],
+    "notes": "GLD260220C00470000"
+  },
+  {
+    "ticket": 1111,
+    "date": "2026-02-05",
+    "symbol": "GLD",
+    "status": "WIN",
+    "exit_date": "2026-02-13",
+    "pnl": 193,
+    "strategies": [
+      {
+        "name": "GLD260220C00481000",
+        "legs": [
+          {
+            "type": "call",
+            "strike": 481,
+            "expiry": "2026-02-20",
+            "premium": 3.05,
+            "quantity": 1,
+            "action": "sell"
+          },
+          {
+            "type": "call",
+            "strike": 481,
+            "expiry": "2026-02-20",
+            "premium": 1.12,
+            "quantity": 1,
+            "action": "buy"
+          }
+        ],
+        "entry_time": "02/05/2026 13:42:30 EST",
+        "entry_price": null,
+        "exit_time": "02/13/2026 15:01:25 EST",
+        "exit_price": null
+      }
+    ],
+    "notes": "GLD260220C00481000"
+  },
+  {
     "ticket": 1112,
     "date": "2026-02-12",
     "symbol": "FSLY",
-    "status": "OPEN",
-    "exit_date": null,
-    "pnl": 0,
+    "status": "WIN",
+    "exit_date": "2026-02-12",
+    "pnl": 1463,
     "strategies": [
       {
         "name": "FSLY270115C00022500",
@@ -4170,11 +4314,19 @@ export const tradesData = [
             "premium": 3,
             "quantity": 35,
             "action": "buy"
+          },
+          {
+            "type": "call",
+            "strike": 22.5,
+            "expiry": "2027-01-15",
+            "premium": 3.418,
+            "quantity": 35,
+            "action": "sell"
           }
         ],
         "entry_time": "02/12/2026 11:53:43 EST",
         "entry_price": null,
-        "exit_time": "",
+        "exit_time": "02/12/2026 13:01:50 EST",
         "exit_price": null
       }
     ],
@@ -4237,6 +4389,78 @@ export const tradesData = [
     "notes": "GLD261231C00383000"
   },
   {
+    "ticket": 1115,
+    "date": "2026-02-04",
+    "symbol": "GLD",
+    "status": "WIN",
+    "exit_date": "2026-02-05",
+    "pnl": 165,
+    "strategies": [
+      {
+        "name": "GLD260213C00480000",
+        "legs": [
+          {
+            "type": "call",
+            "strike": 480,
+            "expiry": "2026-02-13",
+            "premium": 3.5,
+            "quantity": 1,
+            "action": "sell"
+          },
+          {
+            "type": "call",
+            "strike": 480,
+            "expiry": "2026-02-13",
+            "premium": 1.85,
+            "quantity": 1,
+            "action": "buy"
+          }
+        ],
+        "entry_time": "02/04/2026 15:57:03 EST",
+        "entry_price": null,
+        "exit_time": "02/05/2026 11:43:52 EST",
+        "exit_price": null
+      }
+    ],
+    "notes": "GLD260213C00480000"
+  },
+  {
+    "ticket": 1116,
+    "date": "2026-02-04",
+    "symbol": "GLD",
+    "status": "WIN",
+    "exit_date": "2026-02-05",
+    "pnl": 214,
+    "strategies": [
+      {
+        "name": "GLD260211C00467000",
+        "legs": [
+          {
+            "type": "call",
+            "strike": 467,
+            "expiry": "2026-02-11",
+            "premium": 5,
+            "quantity": 1,
+            "action": "sell"
+          },
+          {
+            "type": "call",
+            "strike": 467,
+            "expiry": "2026-02-11",
+            "premium": 2.86,
+            "quantity": 1,
+            "action": "buy"
+          }
+        ],
+        "entry_time": "02/04/2026 15:20:21 EST",
+        "entry_price": null,
+        "exit_time": "02/05/2026 11:44:21 EST",
+        "exit_price": null
+      }
+    ],
+    "notes": "GLD260211C00467000"
+  },
+  {
     "ticket": 1117,
     "date": "2026-02-04",
     "symbol": "GLD",
@@ -4263,6 +4487,42 @@ export const tradesData = [
       }
     ],
     "notes": "GLD261231C00391000"
+  },
+  {
+    "ticket": 1118,
+    "date": "2026-02-02",
+    "symbol": "GLD",
+    "status": "LOSS",
+    "exit_date": "2026-02-02",
+    "pnl": -169,
+    "strategies": [
+      {
+        "name": "GLD260202C00430000",
+        "legs": [
+          {
+            "type": "call",
+            "strike": 430,
+            "expiry": "2026-02-02",
+            "premium": 0.9,
+            "quantity": 1,
+            "action": "sell"
+          },
+          {
+            "type": "call",
+            "strike": 430,
+            "expiry": "2026-02-02",
+            "premium": 2.59,
+            "quantity": 1,
+            "action": "buy"
+          }
+        ],
+        "entry_time": "02/02/2026 14:06:18 EST",
+        "entry_price": null,
+        "exit_time": "02/02/2026 14:43:24 EST",
+        "exit_price": null
+      }
+    ],
+    "notes": "GLD260202C00430000"
   },
   {
     "ticket": 1119,
@@ -4321,40 +4581,336 @@ export const tradesData = [
     "notes": "GLD261231C00500000"
   },
   {
-    "ticket": 1136,
-    "date": "2026-02-12",
-    "symbol": "FSLY",
-    "status": "OPEN",
-    "exit_date": null,
-    "pnl": 0,
+    "ticket": 1121,
+    "date": "2025-12-19",
+    "symbol": "VIXW",
+    "status": "LOSS",
+    "exit_date": "2025-12-22",
+    "pnl": -405,
     "strategies": [
       {
-        "name": "FSLY270115C00022500",
+        "name": "VIXW251224C00017000",
         "legs": [
           {
             "type": "call",
-            "strike": 22.5,
-            "expiry": "2027-01-15",
-            "premium": 3.418,
-            "quantity": 35,
+            "strike": 17,
+            "expiry": "2025-12-24",
+            "premium": 0.35,
+            "quantity": 15,
+            "action": "buy"
+          },
+          {
+            "type": "call",
+            "strike": 17,
+            "expiry": "2025-12-24",
+            "premium": 0.08,
+            "quantity": 15,
             "action": "sell"
           }
         ],
-        "entry_time": "02/12/2026 13:01:50 EST",
+        "entry_time": "12/19/2025 15:03:29 EST",
         "entry_price": null,
-        "exit_time": "",
+        "exit_time": "12/22/2025 11:00:52 EST",
         "exit_price": null
       }
     ],
-    "notes": "FSLY270115C00022500"
+    "notes": "VIXW251224C00017000"
   },
   {
-    "ticket": 1154,
-    "date": "2026-03-06",
+    "ticket": 1122,
+    "date": "2025-12-17",
+    "symbol": "VIXW",
+    "status": "LOSS",
+    "exit_date": "2025-12-18",
+    "pnl": -360,
+    "strategies": [
+      {
+        "name": "VIXW251224C00020000",
+        "legs": [
+          {
+            "type": "call",
+            "strike": 20,
+            "expiry": "2025-12-24",
+            "premium": 0.49,
+            "quantity": 20,
+            "action": "buy"
+          },
+          {
+            "type": "call",
+            "strike": 20,
+            "expiry": "2025-12-24",
+            "premium": 0.31,
+            "quantity": 20,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "12/17/2025 13:00:41 EST",
+        "entry_price": null,
+        "exit_time": "12/18/2025 09:30:45 EST",
+        "exit_price": null
+      }
+    ],
+    "notes": "VIXW251224C00020000"
+  },
+  {
+    "ticket": 1123,
+    "date": "2025-12-05",
+    "symbol": "VIXW",
+    "status": "LOSS",
+    "exit_date": "2025-12-08",
+    "pnl": -90,
+    "strategies": [
+      {
+        "name": "VIXW251210C00017000",
+        "legs": [
+          {
+            "type": "call",
+            "strike": 17,
+            "expiry": "2025-12-10",
+            "premium": 0.56,
+            "quantity": 10,
+            "action": "buy"
+          },
+          {
+            "type": "call",
+            "strike": 17,
+            "expiry": "2025-12-10",
+            "premium": 0.47,
+            "quantity": 10,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "12/05/2025 14:39:30 EST",
+        "entry_price": null,
+        "exit_time": "12/08/2025 10:36:03 EST",
+        "exit_price": null
+      }
+    ],
+    "notes": "VIXW251210C00017000"
+  },
+  {
+    "ticket": 1124,
+    "date": "2025-11-26",
+    "symbol": "VIXW",
+    "status": "LOSS",
+    "exit_date": "2025-11-28",
+    "pnl": -200,
+    "strategies": [
+      {
+        "name": "VIXW251203C00020000",
+        "legs": [
+          {
+            "type": "call",
+            "strike": 20,
+            "expiry": "2025-12-03",
+            "premium": 0.45,
+            "quantity": 10,
+            "action": "buy"
+          },
+          {
+            "type": "call",
+            "strike": 20,
+            "expiry": "2025-12-03",
+            "premium": 0.25,
+            "quantity": 10,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "11/26/2025 13:28:00 EST",
+        "entry_price": null,
+        "exit_time": "11/28/2025 11:35:44 EST",
+        "exit_price": null
+      }
+    ],
+    "notes": "VIXW251203C00020000"
+  },
+  {
+    "ticket": 1125,
+    "date": "2025-10-17",
+    "symbol": "SPY",
+    "status": "LOSS",
+    "exit_date": "2025-10-22",
+    "pnl": -9,
+    "strategies": [
+      {
+        "name": "SPY251024C00670000",
+        "legs": [
+          {
+            "type": "call",
+            "strike": 670,
+            "expiry": "2025-10-24",
+            "premium": 3.78,
+            "quantity": 1,
+            "action": "buy"
+          },
+          {
+            "type": "call",
+            "strike": 670,
+            "expiry": "2025-10-24",
+            "premium": 3.69,
+            "quantity": 1,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "10/17/2025 14:46:43 EDT",
+        "entry_price": null,
+        "exit_time": "10/22/2025 10:25:21 EDT",
+        "exit_price": null
+      }
+    ],
+    "notes": "SPY251024C00670000"
+  },
+  {
+    "ticket": 1128,
+    "date": "2025-05-19",
+    "symbol": "HD",
+    "status": "LOSS",
+    "exit_date": "2025-05-20",
+    "pnl": -36,
+    "strategies": [
+      {
+        "name": "HD250523C00390000",
+        "legs": [
+          {
+            "type": "call",
+            "strike": 390,
+            "expiry": "2025-05-23",
+            "premium": 3.1,
+            "quantity": 1,
+            "action": "buy"
+          },
+          {
+            "type": "call",
+            "strike": 390,
+            "expiry": "2025-05-23",
+            "premium": 2.74,
+            "quantity": 1,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "05/19/2025 15:16:00 EDT",
+        "entry_price": null,
+        "exit_time": "05/20/2025 09:36:22 EDT",
+        "exit_price": null
+      }
+    ],
+    "notes": "HD250523C00390000"
+  },
+  {
+    "ticket": 1129,
+    "date": "2025-04-11",
+    "symbol": "SPXW",
+    "status": "WIN",
+    "exit_date": "2025-04-11",
+    "pnl": 180,
+    "strategies": [
+      {
+        "name": "SPXW250411C05400000",
+        "legs": [
+          {
+            "type": "call",
+            "strike": 5400,
+            "expiry": "2025-04-11",
+            "premium": 8.4,
+            "quantity": 1,
+            "action": "buy"
+          },
+          {
+            "type": "call",
+            "strike": 5400,
+            "expiry": "2025-04-11",
+            "premium": 10.2,
+            "quantity": 1,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "04/11/2025 10:41:23 EDT",
+        "entry_price": null,
+        "exit_time": "04/11/2025 13:13:02 EDT",
+        "exit_price": null
+      }
+    ],
+    "notes": "SPXW250411C05400000"
+  },
+  {
+    "ticket": 1130,
+    "date": "2025-04-09",
+    "symbol": "SPY",
+    "status": "LOSS",
+    "exit_date": "2025-04-10",
+    "pnl": -104,
+    "strategies": [
+      {
+        "name": "SPY250423C00545000",
+        "legs": [
+          {
+            "type": "call",
+            "strike": 545,
+            "expiry": "2025-04-23",
+            "premium": 7.11,
+            "quantity": 1,
+            "action": "buy"
+          },
+          {
+            "type": "call",
+            "strike": 545,
+            "expiry": "2025-04-23",
+            "premium": 6.07,
+            "quantity": 1,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "04/09/2025 13:43:27 EDT",
+        "entry_price": null,
+        "exit_time": "04/10/2025 10:16:28 EDT",
+        "exit_price": null
+      }
+    ],
+    "notes": "SPY250423C00545000"
+  },
+  {
+    "ticket": 1131,
+    "date": "2025-01-28",
+    "symbol": "TSM",
+    "status": "WIN",
+    "exit_date": "2025-01-29",
+    "pnl": 25,
+    "strategies": [
+      {
+        "name": "TSM250321C00200000",
+        "legs": [
+          {
+            "type": "call",
+            "strike": 200,
+            "expiry": "2025-03-21",
+            "premium": 13.15,
+            "quantity": 5,
+            "action": "buy"
+          },
+          {
+            "type": "call",
+            "strike": 200,
+            "expiry": "2025-03-21",
+            "premium": 13.2,
+            "quantity": 5,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "01/28/2025 13:21:01 EST",
+        "entry_price": null,
+        "exit_time": "01/29/2025 11:40:02 EST",
+        "exit_price": null
+      }
+    ],
+    "notes": "TSM250321C00200000"
+  },
+  {
+    "ticket": 1137,
+    "date": "2026-03-04",
     "symbol": "GLD",
-    "status": "OPEN",
-    "exit_date": null,
-    "pnl": 0,
+    "status": "WIN",
+    "exit_date": "2026-03-06",
+    "pnl": 263,
     "strategies": [
       {
         "name": "GLD260313P00471000",
@@ -4363,30 +4919,82 @@ export const tradesData = [
             "type": "put",
             "strike": 471,
             "expiry": "2026-03-13",
+            "premium": 10.23,
+            "quantity": 1,
+            "action": "sell"
+          },
+          {
+            "type": "put",
+            "strike": 471,
+            "expiry": "2026-03-13",
             "premium": 7.6,
-            "quantity": 5,
+            "quantity": 1,
             "action": "buy"
           }
         ],
-        "entry_time": "03/06/2026 10:47:13 EST",
+        "entry_time": "03/04/2026 11:17:51 EST",
         "entry_price": null,
-        "exit_time": "",
+        "exit_time": "03/06/2026 10:47:13 EST",
         "exit_price": null
       }
     ],
     "notes": "GLD260313P00471000"
   },
   {
-    "ticket": 1155,
+    "ticket": 1138,
     "date": "2026-03-04",
     "symbol": "GLD",
-    "status": "OPEN",
-    "exit_date": null,
-    "pnl": 0,
+    "status": "WIN",
+    "exit_date": "2026-03-06",
+    "pnl": 1100,
+    "strategies": [
+      {
+        "name": "GLD260313P00471000",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 471,
+            "expiry": "2026-03-13",
+            "premium": 10.35,
+            "quantity": 4,
+            "action": "sell"
+          },
+          {
+            "type": "put",
+            "strike": 471,
+            "expiry": "2026-03-13",
+            "premium": 7.6,
+            "quantity": 4,
+            "action": "buy"
+          }
+        ],
+        "entry_time": "03/04/2026 12:15:04 EST",
+        "entry_price": null,
+        "exit_time": "03/06/2026 10:47:13 EST",
+        "exit_price": null
+      }
+    ],
+    "notes": "GLD260313P00471000"
+  },
+  {
+    "ticket": 1139,
+    "date": "2026-03-03",
+    "symbol": "GLD",
+    "status": "WIN",
+    "exit_date": "2026-03-04",
+    "pnl": 1125,
     "strategies": [
       {
         "name": "GLD260311P00470000",
         "legs": [
+          {
+            "type": "put",
+            "strike": 470,
+            "expiry": "2026-03-11",
+            "premium": 10.6,
+            "quantity": 5,
+            "action": "sell"
+          },
           {
             "type": "put",
             "strike": 470,
@@ -4396,21 +5004,21 @@ export const tradesData = [
             "action": "buy"
           }
         ],
-        "entry_time": "03/04/2026 11:15:43 EST",
+        "entry_time": "03/03/2026 11:40:35 EST",
         "entry_price": null,
-        "exit_time": "",
+        "exit_time": "03/04/2026 11:15:43 EST",
         "exit_price": null
       }
     ],
     "notes": "GLD260311P00470000"
   },
   {
-    "ticket": 1156,
+    "ticket": 1140,
     "date": "2026-03-03",
     "symbol": "VIXW",
-    "status": "OPEN",
-    "exit_date": null,
-    "pnl": 0,
+    "status": "WIN",
+    "exit_date": "2026-03-03",
+    "pnl": 80,
     "strategies": [
       {
         "name": "VIXW260311P00022000",
@@ -4422,18 +5030,1682 @@ export const tradesData = [
             "premium": 1.39,
             "quantity": 5,
             "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 22,
+            "expiry": "2026-03-11",
+            "premium": 1.55,
+            "quantity": 5,
+            "action": "sell"
           }
         ],
         "entry_time": "03/03/2026 11:31:27 EST",
         "entry_price": null,
-        "exit_time": "",
+        "exit_time": "03/03/2026 12:44:16 EST",
         "exit_price": null
       }
     ],
     "notes": "VIXW260311P00022000"
   },
   {
-    "ticket": 1212,
+    "ticket": 1141,
+    "date": "2026-02-23",
+    "symbol": "XSP",
+    "status": "LOSS",
+    "exit_date": "2026-02-23",
+    "pnl": -180,
+    "strategies": [
+      {
+        "name": "XSP260223P00680000",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 680,
+            "expiry": "2026-02-23",
+            "premium": 0.93,
+            "quantity": 5,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 680,
+            "expiry": "2026-02-23",
+            "premium": 0.57,
+            "quantity": 5,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "02/23/2026 11:09:43 EST",
+        "entry_price": null,
+        "exit_time": "02/23/2026 11:24:37 EST",
+        "exit_price": null
+      }
+    ],
+    "notes": "XSP260223P00680000"
+  },
+  {
+    "ticket": 1142,
+    "date": "2026-02-12",
+    "symbol": "VIX",
+    "status": "LOSS",
+    "exit_date": "2026-02-12",
+    "pnl": -140,
+    "strategies": [
+      {
+        "name": "VIX260218P00018000",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 18,
+            "expiry": "2026-02-18",
+            "premium": 0.27,
+            "quantity": 20,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 18,
+            "expiry": "2026-02-18",
+            "premium": 0.2,
+            "quantity": 20,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "02/12/2026 12:39:38 EST",
+        "entry_price": null,
+        "exit_time": "02/12/2026 13:01:09 EST",
+        "exit_price": null
+      }
+    ],
+    "notes": "VIX260218P00018000"
+  },
+  {
+    "ticket": 1144,
+    "date": "2026-01-29",
+    "symbol": "VIXW",
+    "status": "WIN",
+    "exit_date": "2026-01-30",
+    "pnl": 68,
+    "strategies": [
+      {
+        "name": "VIXW260204P00017000",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 17,
+            "expiry": "2026-02-04",
+            "premium": 0.3,
+            "quantity": 17,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 17,
+            "expiry": "2026-02-04",
+            "premium": 0.34,
+            "quantity": 17,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "01/29/2026 11:16:47 EST",
+        "entry_price": null,
+        "exit_time": "01/30/2026 11:54:35 EST",
+        "exit_price": null
+      }
+    ],
+    "notes": "VIXW260204P00017000"
+  },
+  {
+    "ticket": 1145,
+    "date": "2026-01-28",
+    "symbol": "GLD",
+    "status": "WIN",
+    "exit_date": "2026-01-28",
+    "pnl": 0,
+    "strategies": [
+      {
+        "name": "GLD260130P00475000",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 475,
+            "expiry": "2026-01-30",
+            "premium": 2.45,
+            "quantity": 1,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 475,
+            "expiry": "2026-01-30",
+            "premium": 2.45,
+            "quantity": 1,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "01/28/2026 15:50:59 EST",
+        "entry_price": null,
+        "exit_time": "01/28/2026 15:51:10 EST",
+        "exit_price": null
+      }
+    ],
+    "notes": "GLD260130P00475000"
+  },
+  {
+    "ticket": 1146,
+    "date": "2026-01-27",
+    "symbol": "GLD",
+    "status": "WIN",
+    "exit_date": "2026-01-28",
+    "pnl": 161,
+    "strategies": [
+      {
+        "name": "GLD260128P00459000",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 459,
+            "expiry": "2026-01-28",
+            "premium": 1.62,
+            "quantity": 1,
+            "action": "sell"
+          },
+          {
+            "type": "put",
+            "strike": 459,
+            "expiry": "2026-01-28",
+            "premium": 0.01,
+            "quantity": 1,
+            "action": "buy"
+          }
+        ],
+        "entry_time": "01/27/2026 09:33:26 EST",
+        "entry_price": null,
+        "exit_time": "01/28/2026 15:49:58 EST",
+        "exit_price": null
+      }
+    ],
+    "notes": "GLD260128P00459000"
+  },
+  {
+    "ticket": 1147,
+    "date": "2026-01-22",
+    "symbol": "GLD",
+    "status": "WIN",
+    "exit_date": "2026-01-23",
+    "pnl": 206,
+    "strategies": [
+      {
+        "name": "GLD260123P00445000",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 445,
+            "expiry": "2026-01-23",
+            "premium": 2.08,
+            "quantity": 1,
+            "action": "sell"
+          },
+          {
+            "type": "put",
+            "strike": 445,
+            "expiry": "2026-01-23",
+            "premium": 0.02,
+            "quantity": 1,
+            "action": "buy"
+          }
+        ],
+        "entry_time": "01/22/2026 11:09:52 EST",
+        "entry_price": null,
+        "exit_time": "01/23/2026 15:24:02 EST",
+        "exit_price": null
+      }
+    ],
+    "notes": "GLD260123P00445000"
+  },
+  {
+    "ticket": 1149,
+    "date": "2026-01-02",
+    "symbol": "VIXW",
+    "status": "LOSS",
+    "exit_date": "2026-01-06",
+    "pnl": -210,
+    "strategies": [
+      {
+        "name": "VIXW260107P00014500",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 14.5,
+            "expiry": "2026-01-07",
+            "premium": 0.06,
+            "quantity": 70,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 14.5,
+            "expiry": "2026-01-07",
+            "premium": 0.03,
+            "quantity": 70,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "01/02/2026 10:20:41 EST",
+        "entry_price": null,
+        "exit_time": "01/06/2026 15:33:51 EST",
+        "exit_price": null
+      }
+    ],
+    "notes": "VIXW260107P00014500"
+  },
+  {
+    "ticket": 1150,
+    "date": "2025-12-17",
+    "symbol": "VIXW",
+    "status": "WIN",
+    "exit_date": "2025-12-18",
+    "pnl": 0,
+    "strategies": [
+      {
+        "name": "VIXW251224P00015000",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 15,
+            "expiry": "2025-12-24",
+            "premium": 0.08,
+            "quantity": 60,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 15,
+            "expiry": "2025-12-24",
+            "premium": 0.08,
+            "quantity": 60,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "12/17/2025 13:23:31 EST",
+        "entry_price": null,
+        "exit_time": "12/18/2025 09:36:16 EST",
+        "exit_price": null
+      }
+    ],
+    "notes": "VIXW251224P00015000"
+  },
+  {
+    "ticket": 1151,
+    "date": "2025-12-05",
+    "symbol": "SOFI",
+    "status": "LOSS",
+    "exit_date": "2025-12-09",
+    "pnl": -100,
+    "strategies": [
+      {
+        "name": "SOFI260116P00028000",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 28,
+            "expiry": "2026-01-16",
+            "premium": 2.54,
+            "quantity": 20,
+            "action": "sell"
+          },
+          {
+            "type": "put",
+            "strike": 28,
+            "expiry": "2026-01-16",
+            "premium": 2.59,
+            "quantity": 20,
+            "action": "buy"
+          }
+        ],
+        "entry_time": "12/05/2025 10:07:07 EST",
+        "entry_price": null,
+        "exit_time": "12/09/2025 15:51:23 EST",
+        "exit_price": null
+      }
+    ],
+    "notes": "SOFI260116P00028000"
+  },
+  {
+    "ticket": 1152,
+    "date": "2025-12-15",
+    "symbol": "SOFI",
+    "status": "LOSS",
+    "exit_date": "2025-12-15",
+    "pnl": -20,
+    "strategies": [
+      {
+        "name": "SOFI260116P00028000",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 28,
+            "expiry": "2026-01-16",
+            "premium": 2.44,
+            "quantity": 20,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 28,
+            "expiry": "2026-01-16",
+            "premium": 2.43,
+            "quantity": 20,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "12/15/2025 11:27:36 EST",
+        "entry_price": null,
+        "exit_time": "12/15/2025 11:28:15 EST",
+        "exit_price": null
+      }
+    ],
+    "notes": "SOFI260116P00028000"
+  },
+  {
+    "ticket": 1153,
+    "date": "2025-12-12",
+    "symbol": "VIX",
+    "status": "LOSS",
+    "exit_date": "2025-12-12",
+    "pnl": -50,
+    "strategies": [
+      {
+        "name": "VIX251217P00015500",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 15.5,
+            "expiry": "2025-12-17",
+            "premium": 0.11,
+            "quantity": 50,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 15.5,
+            "expiry": "2025-12-17",
+            "premium": 0.1,
+            "quantity": 50,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "12/12/2025 11:31:17 EST",
+        "entry_price": null,
+        "exit_time": "12/12/2025 11:35:02 EST",
+        "exit_price": null
+      }
+    ],
+    "notes": "VIX251217P00015500"
+  },
+  {
+    "ticket": 1154,
+    "date": "2025-12-12",
+    "symbol": "VIX",
+    "status": "WIN",
+    "exit_date": "2025-12-12",
+    "pnl": 0,
+    "strategies": [
+      {
+        "name": "VIX251217P00015500",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 15.5,
+            "expiry": "2025-12-17",
+            "premium": 0.15,
+            "quantity": 30,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 15.5,
+            "expiry": "2025-12-17",
+            "premium": 0.15,
+            "quantity": 30,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "12/12/2025 12:00:45 EST",
+        "entry_price": null,
+        "exit_time": "12/12/2025 14:07:29 EST",
+        "exit_price": null
+      }
+    ],
+    "notes": "VIX251217P00015500"
+  },
+  {
+    "ticket": 1156,
+    "date": "2025-11-26",
+    "symbol": "VIXW",
+    "status": "WIN",
+    "exit_date": "2025-12-02",
+    "pnl": 216,
+    "strategies": [
+      {
+        "name": "VIXW251203P00017000",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 17,
+            "expiry": "2025-12-03",
+            "premium": 0.19,
+            "quantity": 9,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 17,
+            "expiry": "2025-12-03",
+            "premium": 0.43,
+            "quantity": 9,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "11/26/2025 13:36:10 EST",
+        "entry_price": null,
+        "exit_time": "12/02/2025 10:26:15 EST",
+        "exit_price": null
+      }
+    ],
+    "notes": "VIXW251203P00017000"
+  },
+  {
+    "ticket": 1158,
+    "date": "2025-11-20",
+    "symbol": "SOFI",
+    "status": "WIN",
+    "exit_date": "2025-11-26",
+    "pnl": 4400,
+    "strategies": [
+      {
+        "name": "SOFI260102P00030000",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 30,
+            "expiry": "2026-01-02",
+            "premium": 5.15,
+            "quantity": 20,
+            "action": "sell"
+          },
+          {
+            "type": "put",
+            "strike": 30,
+            "expiry": "2026-01-02",
+            "premium": 2.95,
+            "quantity": 20,
+            "action": "buy"
+          }
+        ],
+        "entry_time": "11/20/2025 13:10:48 EST",
+        "entry_price": null,
+        "exit_time": "11/26/2025 11:51:25 EST",
+        "exit_price": null
+      }
+    ],
+    "notes": "SOFI260102P00030000"
+  },
+  {
+    "ticket": 1159,
+    "date": "2025-11-21",
+    "symbol": "SPY",
+    "status": "LOSS",
+    "exit_date": "2025-11-21",
+    "pnl": -134,
+    "strategies": [
+      {
+        "name": "SPY251128P00650000",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 650,
+            "expiry": "2025-11-28",
+            "premium": 4.75,
+            "quantity": 1,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 650,
+            "expiry": "2025-11-28",
+            "premium": 3.41,
+            "quantity": 1,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "11/21/2025 13:18:49 EST",
+        "entry_price": null,
+        "exit_time": "11/21/2025 13:40:24 EST",
+        "exit_price": null
+      }
+    ],
+    "notes": "SPY251128P00650000"
+  },
+  {
+    "ticket": 1160,
+    "date": "2025-11-19",
+    "symbol": "VIXW",
+    "status": "WIN",
+    "exit_date": "2025-11-20",
+    "pnl": 971,
+    "strategies": [
+      {
+        "name": "VIXW251126P00020000",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 20,
+            "expiry": "2025-11-26",
+            "premium": 0.56,
+            "quantity": 19,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 20,
+            "expiry": "2025-11-26",
+            "premium": 1.0710526316,
+            "quantity": 19,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "11/19/2025 16:03:14 EST",
+        "entry_price": null,
+        "exit_time": "11/20/2025 10:01:24 EST",
+        "exit_price": null
+      }
+    ],
+    "notes": "VIXW251126P00020000"
+  },
+  {
+    "ticket": 1161,
+    "date": "2025-11-19",
+    "symbol": "VIXW",
+    "status": "WIN",
+    "exit_date": "2025-11-20",
+    "pnl": 52,
+    "strategies": [
+      {
+        "name": "VIXW251126P00020000",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 20,
+            "expiry": "2025-11-26",
+            "premium": 0.56,
+            "quantity": 1,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 20,
+            "expiry": "2025-11-26",
+            "premium": 1.08,
+            "quantity": 1,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "11/19/2025 16:03:14 EST",
+        "entry_price": null,
+        "exit_time": "11/20/2025 10:17:35 EST",
+        "exit_price": null
+      }
+    ],
+    "notes": "VIXW251126P00020000"
+  },
+  {
+    "ticket": 1162,
+    "date": "2025-11-17",
+    "symbol": "VIX",
+    "status": "LOSS",
+    "exit_date": "2025-11-17",
+    "pnl": -8,
+    "strategies": [
+      {
+        "name": "VIX251119P00020000",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 20,
+            "expiry": "2025-11-19",
+            "premium": 0.23,
+            "quantity": 1,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 20,
+            "expiry": "2025-11-19",
+            "premium": 0.15,
+            "quantity": 1,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "11/17/2025 14:16:12 EST",
+        "entry_price": null,
+        "exit_time": "11/17/2025 15:16:47 EST",
+        "exit_price": null
+      }
+    ],
+    "notes": "VIX251119P00020000"
+  },
+  {
+    "ticket": 1163,
+    "date": "2025-11-13",
+    "symbol": "VIX",
+    "status": "LOSS",
+    "exit_date": "2025-11-14",
+    "pnl": -60,
+    "strategies": [
+      {
+        "name": "VIX251119P00019000",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 19,
+            "expiry": "2025-11-19",
+            "premium": 0.51,
+            "quantity": 10,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 19,
+            "expiry": "2025-11-19",
+            "premium": 0.45,
+            "quantity": 10,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "11/13/2025 16:01:51 EST",
+        "entry_price": null,
+        "exit_time": "11/14/2025 14:54:43 EST",
+        "exit_price": null
+      }
+    ],
+    "notes": "VIX251119P00019000"
+  },
+  {
+    "ticket": 1164,
+    "date": "2025-11-07",
+    "symbol": "SOFI",
+    "status": "WIN",
+    "exit_date": "2025-11-10",
+    "pnl": 1500,
+    "strategies": [
+      {
+        "name": "SOFI251219P00030000",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 30,
+            "expiry": "2025-12-19",
+            "premium": 4.2,
+            "quantity": 10,
+            "action": "sell"
+          },
+          {
+            "type": "put",
+            "strike": 30,
+            "expiry": "2025-12-19",
+            "premium": 2.7,
+            "quantity": 10,
+            "action": "buy"
+          }
+        ],
+        "entry_time": "11/07/2025 13:32:03 EST",
+        "entry_price": null,
+        "exit_time": "11/10/2025 10:19:53 EST",
+        "exit_price": null
+      }
+    ],
+    "notes": "SOFI251219P00030000"
+  },
+  {
+    "ticket": 1165,
+    "date": "2025-11-07",
+    "symbol": "VIXW",
+    "status": "WIN",
+    "exit_date": "2025-11-10",
+    "pnl": 1280,
+    "strategies": [
+      {
+        "name": "VIXW251112P00020000",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 20,
+            "expiry": "2025-11-12",
+            "premium": 0.46,
+            "quantity": 10,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 20,
+            "expiry": "2025-11-12",
+            "premium": 1.74,
+            "quantity": 10,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "11/07/2025 12:42:06 EST",
+        "entry_price": null,
+        "exit_time": "11/10/2025 10:03:29 EST",
+        "exit_price": null
+      }
+    ],
+    "notes": "VIXW251112P00020000"
+  },
+  {
+    "ticket": 1167,
+    "date": "2025-09-24",
+    "symbol": "SOFI",
+    "status": "WIN",
+    "exit_date": "2025-09-24",
+    "pnl": 100,
+    "strategies": [
+      {
+        "name": "SOFI251121P00039000",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 39,
+            "expiry": "2025-11-21",
+            "premium": 10.55,
+            "quantity": 20,
+            "action": "sell"
+          },
+          {
+            "type": "put",
+            "strike": 39,
+            "expiry": "2025-11-21",
+            "premium": 10.5,
+            "quantity": 20,
+            "action": "buy"
+          }
+        ],
+        "entry_time": "09/24/2025 11:02:43 EDT",
+        "entry_price": null,
+        "exit_time": "09/24/2025 11:12:30 EDT",
+        "exit_price": null
+      }
+    ],
+    "notes": "SOFI251121P00039000"
+  },
+  {
+    "ticket": 1168,
+    "date": "2025-09-24",
+    "symbol": "SOFI",
+    "status": "LOSS",
+    "exit_date": "2025-10-20",
+    "pnl": -100,
+    "strategies": [
+      {
+        "name": "SOFI251121P00039000",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 39,
+            "expiry": "2025-11-21",
+            "premium": 10.55,
+            "quantity": 5,
+            "action": "sell"
+          },
+          {
+            "type": "put",
+            "strike": 39,
+            "expiry": "2025-11-21",
+            "premium": 10.75,
+            "quantity": 5,
+            "action": "buy"
+          }
+        ],
+        "entry_time": "09/24/2025 11:02:43 EDT",
+        "entry_price": null,
+        "exit_time": "10/20/2025 15:18:42 EDT",
+        "exit_price": null
+      }
+    ],
+    "notes": "SOFI251121P00039000"
+  },
+  {
+    "ticket": 1169,
+    "date": "2025-10-17",
+    "symbol": "SPY",
+    "status": "LOSS",
+    "exit_date": "2025-10-20",
+    "pnl": -261,
+    "strategies": [
+      {
+        "name": "SPY251024P00654000",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 654,
+            "expiry": "2025-10-24",
+            "premium": 3.41,
+            "quantity": 1,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 654,
+            "expiry": "2025-10-24",
+            "premium": 0.8,
+            "quantity": 1,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "10/17/2025 14:47:53 EDT",
+        "entry_price": null,
+        "exit_time": "10/20/2025 13:38:07 EDT",
+        "exit_price": null
+      }
+    ],
+    "notes": "SPY251024P00654000"
+  },
+  {
+    "ticket": 1170,
+    "date": "2025-10-14",
+    "symbol": "VIX",
+    "status": "LOSS",
+    "exit_date": "2025-10-20",
+    "pnl": -340,
+    "strategies": [
+      {
+        "name": "VIX251022P00018500",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 18.5,
+            "expiry": "2025-10-22",
+            "premium": 0.68,
+            "quantity": 10,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 18.5,
+            "expiry": "2025-10-22",
+            "premium": 0.34,
+            "quantity": 10,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "10/14/2025 12:38:12 EDT",
+        "entry_price": null,
+        "exit_time": "10/20/2025 11:13:57 EDT",
+        "exit_price": null
+      }
+    ],
+    "notes": "VIX251022P00018500"
+  },
+  {
+    "ticket": 1171,
+    "date": "2025-10-10",
+    "symbol": "VIXW",
+    "status": "LOSS",
+    "exit_date": "2025-10-13",
+    "pnl": -20,
+    "strategies": [
+      {
+        "name": "VIXW251015P00019000",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 19,
+            "expiry": "2025-10-15",
+            "premium": 0.65,
+            "quantity": 10,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 19,
+            "expiry": "2025-10-15",
+            "premium": 0.63,
+            "quantity": 10,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "10/10/2025 15:35:17 EDT",
+        "entry_price": null,
+        "exit_time": "10/13/2025 13:22:26 EDT",
+        "exit_price": null
+      }
+    ],
+    "notes": "VIXW251015P00019000"
+  },
+  {
+    "ticket": 1172,
+    "date": "2025-10-10",
+    "symbol": "VIXW",
+    "status": "LOSS",
+    "exit_date": "2025-10-10",
+    "pnl": -150,
+    "strategies": [
+      {
+        "name": "VIXW251015P00018000",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 18,
+            "expiry": "2025-10-15",
+            "premium": 0.54,
+            "quantity": 10,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 18,
+            "expiry": "2025-10-15",
+            "premium": 0.39,
+            "quantity": 10,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "10/10/2025 11:45:07 EDT",
+        "entry_price": null,
+        "exit_time": "10/10/2025 13:18:27 EDT",
+        "exit_price": null
+      }
+    ],
+    "notes": "VIXW251015P00018000"
+  },
+  {
+    "ticket": 1173,
+    "date": "2025-09-23",
+    "symbol": "VIXW",
+    "status": "WIN",
+    "exit_date": "2025-09-29",
+    "pnl": 189,
+    "strategies": [
+      {
+        "name": "VIXW251001P00016000",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 16,
+            "expiry": "2025-10-01",
+            "premium": 0.2,
+            "quantity": 27,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 16,
+            "expiry": "2025-10-01",
+            "premium": 0.27,
+            "quantity": 27,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "09/23/2025 10:51:34 EDT",
+        "entry_price": null,
+        "exit_time": "09/29/2025 11:50:40 EDT",
+        "exit_price": null
+      }
+    ],
+    "notes": "VIXW251001P00016000"
+  },
+  {
+    "ticket": 1175,
+    "date": "2025-08-18",
+    "symbol": "VIX",
+    "status": "LOSS",
+    "exit_date": "2025-08-19",
+    "pnl": -300,
+    "strategies": [
+      {
+        "name": "VIX250820P00015000",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 15,
+            "expiry": "2025-08-20",
+            "premium": 0.11,
+            "quantity": 50,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 15,
+            "expiry": "2025-08-20",
+            "premium": 0.05,
+            "quantity": 50,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "08/18/2025 11:00:49 EDT",
+        "entry_price": null,
+        "exit_time": "08/19/2025 12:10:05 EDT",
+        "exit_price": null
+      }
+    ],
+    "notes": "VIX250820P00015000"
+  },
+  {
+    "ticket": 1176,
+    "date": "2025-08-15",
+    "symbol": "VIX",
+    "status": "LOSS",
+    "exit_date": "2025-08-19",
+    "pnl": -100,
+    "strategies": [
+      {
+        "name": "VIX250820P00014500",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 14.5,
+            "expiry": "2025-08-20",
+            "premium": 0.05,
+            "quantity": 100,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 14.5,
+            "expiry": "2025-08-20",
+            "premium": 0.04,
+            "quantity": 100,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "08/15/2025 13:59:39 EDT",
+        "entry_price": null,
+        "exit_time": "08/19/2025 10:06:22 EDT",
+        "exit_price": null
+      }
+    ],
+    "notes": "VIX250820P00014500"
+  },
+  {
+    "ticket": 1177,
+    "date": "2025-08-01",
+    "symbol": "VIXW",
+    "status": "WIN",
+    "exit_date": "2025-08-04",
+    "pnl": 90,
+    "strategies": [
+      {
+        "name": "VIXW250806P00018000",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 18,
+            "expiry": "2025-08-06",
+            "premium": 0.43,
+            "quantity": 10,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 18,
+            "expiry": "2025-08-06",
+            "premium": 0.52,
+            "quantity": 10,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "08/01/2025 10:18:57 EDT",
+        "entry_price": null,
+        "exit_time": "08/04/2025 13:19:49 EDT",
+        "exit_price": null
+      }
+    ],
+    "notes": "VIXW250806P00018000"
+  },
+  {
+    "ticket": 1178,
+    "date": "2025-07-28",
+    "symbol": "UPS",
+    "status": "WIN",
+    "exit_date": "2025-07-29",
+    "pnl": 448,
+    "strategies": [
+      {
+        "name": "UPS250801P00099000",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 99,
+            "expiry": "2025-08-01",
+            "premium": 2.36,
+            "quantity": 2,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 99,
+            "expiry": "2025-08-01",
+            "premium": 4.6,
+            "quantity": 2,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "07/28/2025 14:46:31 EDT",
+        "entry_price": null,
+        "exit_time": "07/29/2025 09:38:52 EDT",
+        "exit_price": null
+      }
+    ],
+    "notes": "UPS250801P00099000"
+  },
+  {
+    "ticket": 1179,
+    "date": "2025-07-28",
+    "symbol": "SBUX",
+    "status": "WIN",
+    "exit_date": "2025-07-29",
+    "pnl": 6,
+    "strategies": [
+      {
+        "name": "SBUX250801P00090000",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 90,
+            "expiry": "2025-08-01",
+            "premium": 1.44,
+            "quantity": 2,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 90,
+            "expiry": "2025-08-01",
+            "premium": 1.47,
+            "quantity": 2,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "07/28/2025 13:37:40 EDT",
+        "entry_price": null,
+        "exit_time": "07/29/2025 09:39:38 EDT",
+        "exit_price": null
+      }
+    ],
+    "notes": "SBUX250801P00090000"
+  },
+  {
+    "ticket": 1181,
+    "date": "2025-07-16",
+    "symbol": "VIXW",
+    "status": "LOSS",
+    "exit_date": "2025-07-22",
+    "pnl": -2054,
+    "strategies": [
+      {
+        "name": "VIXW250723P00017000",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 17,
+            "expiry": "2025-07-23",
+            "premium": 0.19,
+            "quantity": 300,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 17,
+            "expiry": "2025-07-23",
+            "premium": 0.1215333333,
+            "quantity": 300,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "07/16/2025 12:36:32 EDT",
+        "entry_price": null,
+        "exit_time": "07/22/2025 10:29:27 EDT",
+        "exit_price": null
+      }
+    ],
+    "notes": "VIXW250723P00017000"
+  },
+  {
+    "ticket": 1182,
+    "date": "2025-07-14",
+    "symbol": "VIX",
+    "status": "LOSS",
+    "exit_date": "2025-07-14",
+    "pnl": -150,
+    "strategies": [
+      {
+        "name": "VIX250716P00016500",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 16.5,
+            "expiry": "2025-07-16",
+            "premium": 0.14,
+            "quantity": 75,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 16.5,
+            "expiry": "2025-07-16",
+            "premium": 0.12,
+            "quantity": 75,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "07/14/2025 13:21:51 EDT",
+        "entry_price": null,
+        "exit_time": "07/14/2025 15:27:42 EDT",
+        "exit_price": null
+      }
+    ],
+    "notes": "VIX250716P00016500"
+  },
+  {
+    "ticket": 1184,
+    "date": "2025-06-30",
+    "symbol": "VIXW",
+    "status": "LOSS",
+    "exit_date": "2025-07-01",
+    "pnl": -300,
+    "strategies": [
+      {
+        "name": "VIXW250702P00017000",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 17,
+            "expiry": "2025-07-02",
+            "premium": 0.22,
+            "quantity": 50,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 17,
+            "expiry": "2025-07-02",
+            "premium": 0.16,
+            "quantity": 50,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "06/30/2025 10:01:32 EDT",
+        "entry_price": null,
+        "exit_time": "07/01/2025 12:02:35 EDT",
+        "exit_price": null
+      }
+    ],
+    "notes": "VIXW250702P00017000"
+  },
+  {
+    "ticket": 1187,
+    "date": "2025-06-05",
+    "symbol": "VIXW",
+    "status": "WIN",
+    "exit_date": "2025-06-06",
+    "pnl": 510,
+    "strategies": [
+      {
+        "name": "VIXW250611P00019000",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 19,
+            "expiry": "2025-06-11",
+            "premium": 0.85,
+            "quantity": 10,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 19,
+            "expiry": "2025-06-11",
+            "premium": 1.36,
+            "quantity": 10,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "06/05/2025 15:50:08 EDT",
+        "entry_price": null,
+        "exit_time": "06/06/2025 15:31:02 EDT",
+        "exit_price": null
+      }
+    ],
+    "notes": "VIXW250611P00019000"
+  },
+  {
+    "ticket": 1189,
+    "date": "2025-05-30",
+    "symbol": "VIXW",
+    "status": "WIN",
+    "exit_date": "2025-06-02",
+    "pnl": 3239,
+    "strategies": [
+      {
+        "name": "VIXW250603P00019000",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 19,
+            "expiry": "2025-06-03",
+            "premium": 0.12,
+            "quantity": 79,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 19,
+            "expiry": "2025-06-03",
+            "premium": 0.53,
+            "quantity": 79,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "05/30/2025 12:59:43 EDT",
+        "entry_price": null,
+        "exit_time": "06/02/2025 16:13:42 EDT",
+        "exit_price": null
+      }
+    ],
+    "notes": "VIXW250603P00019000"
+  },
+  {
+    "ticket": 1191,
+    "date": "2025-05-23",
+    "symbol": "VIXW",
+    "status": "LOSS",
+    "exit_date": "2025-05-27",
+    "pnl": -200,
+    "strategies": [
+      {
+        "name": "VIXW250528P00019000",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 19,
+            "expiry": "2025-05-28",
+            "premium": 0.06,
+            "quantity": 100,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 19,
+            "expiry": "2025-05-28",
+            "premium": 0.04,
+            "quantity": 100,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "05/23/2025 12:42:36 EDT",
+        "entry_price": null,
+        "exit_time": "05/27/2025 09:40:32 EDT",
+        "exit_price": null
+      }
+    ],
+    "notes": "VIXW250528P00019000"
+  },
+  {
+    "ticket": 1192,
+    "date": "2025-05-20",
+    "symbol": "PANW",
+    "status": "WIN",
+    "exit_date": "2025-05-21",
+    "pnl": 260,
+    "strategies": [
+      {
+        "name": "PANW250523P00182500",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 182.5,
+            "expiry": "2025-05-23",
+            "premium": 2.55,
+            "quantity": 4,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 182.5,
+            "expiry": "2025-05-23",
+            "premium": 3.2,
+            "quantity": 4,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "05/20/2025 15:55:48 EDT",
+        "entry_price": null,
+        "exit_time": "05/21/2025 10:24:57 EDT",
+        "exit_price": null
+      }
+    ],
+    "notes": "PANW250523P00182500"
+  },
+  {
+    "ticket": 1193,
+    "date": "2025-05-19",
+    "symbol": "HD",
+    "status": "LOSS",
+    "exit_date": "2025-05-20",
+    "pnl": -253,
+    "strategies": [
+      {
+        "name": "HD250523P00370000",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 370,
+            "expiry": "2025-05-23",
+            "premium": 3.8,
+            "quantity": 1,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 370,
+            "expiry": "2025-05-23",
+            "premium": 1.27,
+            "quantity": 1,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "05/19/2025 15:14:46 EDT",
+        "entry_price": null,
+        "exit_time": "05/20/2025 09:37:15 EDT",
+        "exit_price": null
+      }
+    ],
+    "notes": "HD250523P00370000"
+  },
+  {
+    "ticket": 1194,
+    "date": "2025-05-19",
+    "symbol": "VIX",
+    "status": "LOSS",
+    "exit_date": "2025-05-20",
+    "pnl": -40,
+    "strategies": [
+      {
+        "name": "VIX250521P00018000",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 18,
+            "expiry": "2025-05-21",
+            "premium": 0.2,
+            "quantity": 20,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 18,
+            "expiry": "2025-05-21",
+            "premium": 0.18,
+            "quantity": 20,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "05/19/2025 09:48:34 EDT",
+        "entry_price": null,
+        "exit_time": "05/20/2025 15:53:40 EDT",
+        "exit_price": null
+      }
+    ],
+    "notes": "VIX250521P00018000"
+  },
+  {
+    "ticket": 1196,
+    "date": "2025-05-15",
+    "symbol": "VIX",
+    "status": "LOSS",
+    "exit_date": "2025-05-19",
+    "pnl": -494,
+    "strategies": [
+      {
+        "name": "VIX250521P00017000",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 17,
+            "expiry": "2025-05-21",
+            "premium": 0.1,
+            "quantity": 99,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 17,
+            "expiry": "2025-05-21",
+            "premium": 0.0501010101,
+            "quantity": 99,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "05/15/2025 14:12:17 EDT",
+        "entry_price": null,
+        "exit_time": "05/19/2025 12:45:47 EDT",
+        "exit_price": null
+      }
+    ],
+    "notes": "VIX250521P00017000"
+  },
+  {
+    "ticket": 1198,
+    "date": "2025-05-08",
+    "symbol": "VIXW",
+    "status": "WIN",
+    "exit_date": "2025-05-12",
+    "pnl": 620,
+    "strategies": [
+      {
+        "name": "VIXW250514P00020000",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 20,
+            "expiry": "2025-05-14",
+            "premium": 0.09,
+            "quantity": 10,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 20,
+            "expiry": "2025-05-14",
+            "premium": 0.71,
+            "quantity": 10,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "05/08/2025 12:21:25 EDT",
+        "entry_price": null,
+        "exit_time": "05/12/2025 11:32:34 EDT",
+        "exit_price": null
+      }
+    ],
+    "notes": "VIXW250514P00020000"
+  },
+  {
+    "ticket": 1200,
+    "date": "2025-04-11",
+    "symbol": "SPY",
+    "status": "LOSS",
+    "exit_date": "2025-04-11",
+    "pnl": -27,
+    "strategies": [
+      {
+        "name": "SPY250411P00530000",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 530,
+            "expiry": "2025-04-11",
+            "premium": 2.94,
+            "quantity": 1,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 530,
+            "expiry": "2025-04-11",
+            "premium": 2.67,
+            "quantity": 1,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "04/11/2025 13:01:31 EDT",
+        "entry_price": null,
+        "exit_time": "04/11/2025 13:05:09 EDT",
+        "exit_price": null
+      }
+    ],
+    "notes": "SPY250411P00530000"
+  },
+  {
+    "ticket": 1201,
+    "date": "2025-04-09",
+    "symbol": "SPY",
+    "status": "LOSS",
+    "exit_date": "2025-04-10",
+    "pnl": -175,
+    "strategies": [
+      {
+        "name": "SPY250423P00500000",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 500,
+            "expiry": "2025-04-23",
+            "premium": 7.92,
+            "quantity": 1,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 500,
+            "expiry": "2025-04-23",
+            "premium": 6.17,
+            "quantity": 1,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "04/09/2025 13:43:48 EDT",
+        "entry_price": null,
+        "exit_time": "04/10/2025 10:16:52 EDT",
+        "exit_price": null
+      }
+    ],
+    "notes": "SPY250423P00500000"
+  },
+  {
+    "ticket": 1203,
     "date": "2026-03-06",
     "symbol": "GLD",
     "status": "OPEN",
@@ -4461,119 +6733,7 @@ export const tradesData = [
     "notes": "GLD260309P00466000"
   },
   {
-    "ticket": 1213,
-    "date": "2026-03-04",
-    "symbol": "GLD",
-    "status": "OPEN",
-    "exit_date": null,
-    "pnl": 0,
-    "strategies": [
-      {
-        "name": "GLD260313P00471000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 471,
-            "expiry": "2026-03-13",
-            "premium": 10.23,
-            "quantity": 1,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "03/04/2026 11:17:51 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": null
-      }
-    ],
-    "notes": "GLD260313P00471000"
-  },
-  {
-    "ticket": 1214,
-    "date": "2026-03-04",
-    "symbol": "GLD",
-    "status": "OPEN",
-    "exit_date": null,
-    "pnl": 0,
-    "strategies": [
-      {
-        "name": "GLD260313P00471000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 471,
-            "expiry": "2026-03-13",
-            "premium": 10.35,
-            "quantity": 4,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "03/04/2026 12:15:04 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": null
-      }
-    ],
-    "notes": "GLD260313P00471000"
-  },
-  {
-    "ticket": 1215,
-    "date": "2026-03-03",
-    "symbol": "VIXW",
-    "status": "OPEN",
-    "exit_date": null,
-    "pnl": 0,
-    "strategies": [
-      {
-        "name": "VIXW260311P00022000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 22,
-            "expiry": "2026-03-11",
-            "premium": 1.55,
-            "quantity": 5,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "03/03/2026 12:44:16 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": null
-      }
-    ],
-    "notes": "VIXW260311P00022000"
-  },
-  {
-    "ticket": 1216,
-    "date": "2026-03-03",
-    "symbol": "GLD",
-    "status": "OPEN",
-    "exit_date": null,
-    "pnl": 0,
-    "strategies": [
-      {
-        "name": "GLD260311P00470000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 470,
-            "expiry": "2026-03-11",
-            "premium": 10.6,
-            "quantity": 5,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "03/03/2026 11:40:35 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": null
-      }
-    ],
-    "notes": "GLD260311P00470000"
-  },
-  {
-    "ticket": 1265,
+    "ticket": 1207,
     "date": "2026-03-02",
     "symbol": "VIXW",
     "status": "LOSS",
@@ -4609,7 +6769,7 @@ export const tradesData = [
     "notes": "VIXW Vertical (Expired @ $23.57)"
   },
   {
-    "ticket": 1266,
+    "ticket": 1208,
     "date": "2026-03-02",
     "symbol": "VIXW",
     "status": "LOSS",
@@ -4645,7 +6805,7 @@ export const tradesData = [
     "notes": "VIXW Vertical (Expired @ $23.57)"
   },
   {
-    "ticket": 1267,
+    "ticket": 1209,
     "date": "2025-10-23",
     "symbol": "SPXW",
     "status": "LOSS",
@@ -4681,7 +6841,7 @@ export const tradesData = [
     "notes": "SPXW Vertical (Expired @ $6738.44)"
   },
   {
-    "ticket": 1268,
+    "ticket": 1210,
     "date": "2025-08-22",
     "symbol": "DJT",
     "status": "WIN",
@@ -4717,7 +6877,7 @@ export const tradesData = [
     "notes": "DJT Vertical (Expired @ $17.95)"
   },
   {
-    "ticket": 1269,
+    "ticket": 1211,
     "date": "2025-07-16",
     "symbol": "VIXW",
     "status": "WIN",
@@ -4753,7 +6913,7 @@ export const tradesData = [
     "notes": "VIXW Vertical (Expired @ $15.37)"
   },
   {
-    "ticket": 1270,
+    "ticket": 1212,
     "date": "2025-07-23",
     "symbol": "DJT",
     "status": "LOSS",
@@ -4789,7 +6949,7 @@ export const tradesData = [
     "notes": "DJT Vertical (Expired @ $19.11)"
   },
   {
-    "ticket": 1271,
+    "ticket": 1213,
     "date": "2025-07-10",
     "symbol": "VIXW",
     "status": "LOSS",
@@ -4825,7 +6985,7 @@ export const tradesData = [
     "notes": "VIXW Vertical (Expired @ $15.37)"
   },
   {
-    "ticket": 1272,
+    "ticket": 1214,
     "date": "2025-05-28",
     "symbol": "DJT",
     "status": "LOSS",
@@ -4861,7 +7021,7 @@ export const tradesData = [
     "notes": "DJT Vertical (Expired @ $19.16)"
   },
   {
-    "ticket": 1273,
+    "ticket": 1215,
     "date": "2025-06-27",
     "symbol": "DJT",
     "status": "LOSS",
@@ -4897,7 +7057,7 @@ export const tradesData = [
     "notes": "DJT Vertical (Expired @ $17.82)"
   },
   {
-    "ticket": 1274,
+    "ticket": 1216,
     "date": "2025-06-24",
     "symbol": "VIXW",
     "status": "LOSS",
@@ -4933,7 +7093,7 @@ export const tradesData = [
     "notes": "VIXW Vertical (Expired @ $15.37)"
   },
   {
-    "ticket": 1275,
+    "ticket": 1217,
     "date": "2025-06-24",
     "symbol": "VIXW",
     "status": "LOSS",
@@ -4969,7 +7129,7 @@ export const tradesData = [
     "notes": "VIXW Vertical (Expired @ $15.37)"
   },
   {
-    "ticket": 1276,
+    "ticket": 1218,
     "date": "2025-06-02",
     "symbol": "VIXW",
     "status": "LOSS",
@@ -5005,7 +7165,7 @@ export const tradesData = [
     "notes": "VIXW Vertical (Expired @ $17.69)"
   },
   {
-    "ticket": 1277,
+    "ticket": 1219,
     "date": "2025-04-17",
     "symbol": "VIXW",
     "status": "LOSS",
@@ -5041,7 +7201,7 @@ export const tradesData = [
     "notes": "VIXW Vertical (Expired @ $28.45)"
   },
   {
-    "ticket": 1278,
+    "ticket": 1220,
     "date": "2025-04-17",
     "symbol": "VIX",
     "status": "LOSS",
@@ -5077,7 +7237,7 @@ export const tradesData = [
     "notes": "VIX Vertical (Expired @ $17.16)"
   },
   {
-    "ticket": 1279,
+    "ticket": 1221,
     "date": "2025-04-17",
     "symbol": "VIX",
     "status": "LOSS",
@@ -5113,7 +7273,7 @@ export const tradesData = [
     "notes": "VIX Vertical (Expired @ $17.16)"
   },
   {
-    "ticket": 1280,
+    "ticket": 1222,
     "date": "2025-04-17",
     "symbol": "VIX",
     "status": "LOSS",
@@ -5149,7 +7309,7 @@ export const tradesData = [
     "notes": "VIX Vertical (Expired @ $17.16)"
   },
   {
-    "ticket": 1281,
+    "ticket": 1223,
     "date": "2025-04-17",
     "symbol": "VIX",
     "status": "LOSS",
@@ -5185,7 +7345,7 @@ export const tradesData = [
     "notes": "VIX Vertical (Expired @ $17.16)"
   },
   {
-    "ticket": 1282,
+    "ticket": 1224,
     "date": "2025-04-17",
     "symbol": "VIX",
     "status": "LOSS",
@@ -5221,7 +7381,7 @@ export const tradesData = [
     "notes": "VIX Vertical (Expired @ $17.16)"
   },
   {
-    "ticket": 1283,
+    "ticket": 1225,
     "date": "2025-04-14",
     "symbol": "SPXW",
     "status": "LOSS",
@@ -5257,7 +7417,7 @@ export const tradesData = [
     "notes": "SPXW Vertical (Expired @ $5405.97)"
   },
   {
-    "ticket": 1284,
+    "ticket": 1226,
     "date": "2025-04-11",
     "symbol": "SPXW",
     "status": "LOSS",
@@ -5293,7 +7453,7 @@ export const tradesData = [
     "notes": "SPXW Vertical (Expired @ $5268.05)"
   },
   {
-    "ticket": 1285,
+    "ticket": 1227,
     "date": "2025-04-10",
     "symbol": "SPXW",
     "status": "LOSS",
@@ -5329,7 +7489,7 @@ export const tradesData = [
     "notes": "SPXW Vertical (Expired @ $5456.90)"
   },
   {
-    "ticket": 1286,
+    "ticket": 1228,
     "date": "2025-03-04",
     "symbol": "VIX",
     "status": "LOSS",
@@ -5365,7 +7525,7 @@ export const tradesData = [
     "notes": "VIX Vertical (Expired @ $32.64)"
   },
   {
-    "ticket": 1287,
+    "ticket": 1229,
     "date": "2025-02-18",
     "symbol": "SPXW",
     "status": "WIN",
@@ -5401,7 +7561,7 @@ export const tradesData = [
     "notes": "SPXW Vertical (Expired @ $6129.58)"
   },
   {
-    "ticket": 1288,
+    "ticket": 1230,
     "date": "2025-02-18",
     "symbol": "SPXW",
     "status": "LOSS",
@@ -5437,7 +7597,7 @@ export const tradesData = [
     "notes": "SPXW Vertical (Expired @ $6129.58)"
   },
   {
-    "ticket": 1289,
+    "ticket": 1231,
     "date": "2025-01-21",
     "symbol": "SOFI",
     "status": "LOSS",
@@ -5473,7 +7633,7 @@ export const tradesData = [
     "notes": "SOFI Vertical (Expired @ $15.56)"
   },
   {
-    "ticket": 1290,
+    "ticket": 1232,
     "date": "2025-01-21",
     "symbol": "SOFI",
     "status": "LOSS",
@@ -5509,343 +7669,7 @@ export const tradesData = [
     "notes": "SOFI Vertical (Expired @ $15.56)"
   },
   {
-    "ticket": 1291,
-    "date": "2026-02-26",
-    "symbol": "XSP",
-    "status": "LOSS",
-    "exit_date": "2026-02-27",
-    "pnl": -217,
-    "strategies": [
-      {
-        "name": "XSP260227C00691000",
-        "legs": [
-          {
-            "type": "call",
-            "strike": 691,
-            "expiry": "2026-02-27",
-            "premium": 2.17,
-            "quantity": 1,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "02/26/2026 15:01:32 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": null
-      }
-    ],
-    "notes": "XSP260227C00691000 (Expired - no price data)"
-  },
-  {
-    "ticket": 1292,
-    "date": "2026-02-17",
-    "symbol": "GLD",
-    "status": "LOSS",
-    "exit_date": "2026-02-27",
-    "pnl": -145,
-    "strategies": [
-      {
-        "name": "GLD260227C00478000",
-        "legs": [
-          {
-            "type": "call",
-            "strike": 478,
-            "expiry": "2026-02-27",
-            "premium": 1.45,
-            "quantity": 1,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "02/17/2026 12:17:27 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "477.48"
-      }
-    ],
-    "notes": "GLD260227C00478000 (Expired @ $477.48)"
-  },
-  {
-    "ticket": 1293,
-    "date": "2026-02-17",
-    "symbol": "GLD",
-    "status": "LOSS",
-    "exit_date": "2026-02-20",
-    "pnl": -84,
-    "strategies": [
-      {
-        "name": "GLD260220C00470000",
-        "legs": [
-          {
-            "type": "call",
-            "strike": 470,
-            "expiry": "2026-02-20",
-            "premium": 0.42,
-            "quantity": 2,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "02/17/2026 12:16:57 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "459.56"
-      }
-    ],
-    "notes": "GLD260220C00470000 (Expired @ $459.56)"
-  },
-  {
-    "ticket": 1294,
-    "date": "2026-02-13",
-    "symbol": "GLD",
-    "status": "LOSS",
-    "exit_date": "2026-02-20",
-    "pnl": -112,
-    "strategies": [
-      {
-        "name": "GLD260220C00481000",
-        "legs": [
-          {
-            "type": "call",
-            "strike": 481,
-            "expiry": "2026-02-20",
-            "premium": 1.12,
-            "quantity": 1,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "02/13/2026 15:01:25 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "459.56"
-      }
-    ],
-    "notes": "GLD260220C00481000 (Expired @ $459.56)"
-  },
-  {
-    "ticket": 1295,
-    "date": "2026-02-05",
-    "symbol": "GLD",
-    "status": "LOSS",
-    "exit_date": "2026-02-13",
-    "pnl": -185,
-    "strategies": [
-      {
-        "name": "GLD260213C00480000",
-        "legs": [
-          {
-            "type": "call",
-            "strike": 480,
-            "expiry": "2026-02-13",
-            "premium": 1.85,
-            "quantity": 1,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "02/05/2026 11:43:52 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "451.39"
-      }
-    ],
-    "notes": "GLD260213C00480000 (Expired @ $451.39)"
-  },
-  {
-    "ticket": 1296,
-    "date": "2026-02-05",
-    "symbol": "GLD",
-    "status": "LOSS",
-    "exit_date": "2026-02-11",
-    "pnl": -286,
-    "strategies": [
-      {
-        "name": "GLD260211C00467000",
-        "legs": [
-          {
-            "type": "call",
-            "strike": 467,
-            "expiry": "2026-02-11",
-            "premium": 2.86,
-            "quantity": 1,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "02/05/2026 11:44:21 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "462.40"
-      }
-    ],
-    "notes": "GLD260211C00467000 (Expired @ $462.40)"
-  },
-  {
-    "ticket": 1297,
-    "date": "2026-02-02",
-    "symbol": "GLD",
-    "status": "LOSS",
-    "exit_date": "2026-02-02",
-    "pnl": -259,
-    "strategies": [
-      {
-        "name": "GLD260202C00430000",
-        "legs": [
-          {
-            "type": "call",
-            "strike": 430,
-            "expiry": "2026-02-02",
-            "premium": 2.59,
-            "quantity": 1,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "02/02/2026 14:43:24 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "427.13"
-      }
-    ],
-    "notes": "GLD260202C00430000 (Expired @ $427.13)"
-  },
-  {
-    "ticket": 1298,
-    "date": "2025-12-19",
-    "symbol": "VIXW",
-    "status": "LOSS",
-    "exit_date": "2025-12-24",
-    "pnl": -525,
-    "strategies": [
-      {
-        "name": "VIXW251224C00017000",
-        "legs": [
-          {
-            "type": "call",
-            "strike": 17,
-            "expiry": "2025-12-24",
-            "premium": 0.35,
-            "quantity": 15,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "12/19/2025 15:03:29 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "13.47"
-      }
-    ],
-    "notes": "VIXW251224C00017000 (Expired @ $13.47)"
-  },
-  {
-    "ticket": 1299,
-    "date": "2025-12-17",
-    "symbol": "VIXW",
-    "status": "LOSS",
-    "exit_date": "2025-12-24",
-    "pnl": -980,
-    "strategies": [
-      {
-        "name": "VIXW251224C00020000",
-        "legs": [
-          {
-            "type": "call",
-            "strike": 20,
-            "expiry": "2025-12-24",
-            "premium": 0.49,
-            "quantity": 20,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "12/17/2025 13:00:41 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "13.47"
-      }
-    ],
-    "notes": "VIXW251224C00020000 (Expired @ $13.47)"
-  },
-  {
-    "ticket": 1300,
-    "date": "2025-12-05",
-    "symbol": "VIXW",
-    "status": "LOSS",
-    "exit_date": "2025-12-10",
-    "pnl": -560,
-    "strategies": [
-      {
-        "name": "VIXW251210C00017000",
-        "legs": [
-          {
-            "type": "call",
-            "strike": 17,
-            "expiry": "2025-12-10",
-            "premium": 0.56,
-            "quantity": 10,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "12/05/2025 14:39:30 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "15.77"
-      }
-    ],
-    "notes": "VIXW251210C00017000 (Expired @ $15.77)"
-  },
-  {
-    "ticket": 1301,
-    "date": "2025-11-26",
-    "symbol": "VIXW",
-    "status": "LOSS",
-    "exit_date": "2025-12-03",
-    "pnl": -450,
-    "strategies": [
-      {
-        "name": "VIXW251203C00020000",
-        "legs": [
-          {
-            "type": "call",
-            "strike": 20,
-            "expiry": "2025-12-03",
-            "premium": 0.45,
-            "quantity": 10,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "11/26/2025 13:28:00 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "16.08"
-      }
-    ],
-    "notes": "VIXW251203C00020000 (Expired @ $16.08)"
-  },
-  {
-    "ticket": 1302,
-    "date": "2025-10-17",
-    "symbol": "SPY",
-    "status": "LOSS",
-    "exit_date": "2025-10-24",
-    "pnl": -202,
-    "strategies": [
-      {
-        "name": "SPY251024C00670000",
-        "legs": [
-          {
-            "type": "call",
-            "strike": 670,
-            "expiry": "2025-10-24",
-            "premium": 3.78,
-            "quantity": 1,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "10/17/2025 14:46:43 EDT",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "671.76"
-      }
-    ],
-    "notes": "SPY251024C00670000 (Expired @ $671.76)"
-  },
-  {
-    "ticket": 1303,
+    "ticket": 1233,
     "date": "2025-08-07",
     "symbol": "CHYM",
     "status": "LOSS",
@@ -5873,7 +7697,7 @@ export const tradesData = [
     "notes": "CHYM250815C00035000 (Expired @ $29.25)"
   },
   {
-    "ticket": 1304,
+    "ticket": 1234,
     "date": "2025-05-20",
     "symbol": "PANW",
     "status": "LOSS",
@@ -5901,147 +7725,7 @@ export const tradesData = [
     "notes": "PANW250523C00207500 (Expired @ $186.14)"
   },
   {
-    "ticket": 1305,
-    "date": "2025-05-19",
-    "symbol": "HD",
-    "status": "LOSS",
-    "exit_date": "2025-05-23",
-    "pnl": -310,
-    "strategies": [
-      {
-        "name": "HD250523C00390000",
-        "legs": [
-          {
-            "type": "call",
-            "strike": 390,
-            "expiry": "2025-05-23",
-            "premium": 3.1,
-            "quantity": 1,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "05/19/2025 15:16:00 EDT",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "366.13"
-      }
-    ],
-    "notes": "HD250523C00390000 (Expired @ $366.13)"
-  },
-  {
-    "ticket": 1306,
-    "date": "2025-04-11",
-    "symbol": "SPXW",
-    "status": "LOSS",
-    "exit_date": "2025-04-11",
-    "pnl": -840,
-    "strategies": [
-      {
-        "name": "SPXW250411C05400000",
-        "legs": [
-          {
-            "type": "call",
-            "strike": 5400,
-            "expiry": "2025-04-11",
-            "premium": 8.4,
-            "quantity": 1,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "04/11/2025 10:41:23 EDT",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "5268.05"
-      }
-    ],
-    "notes": "SPXW250411C05400000 (Expired @ $5268.05)"
-  },
-  {
-    "ticket": 1307,
-    "date": "2025-04-09",
-    "symbol": "SPY",
-    "status": "LOSS",
-    "exit_date": "2025-04-23",
-    "pnl": -711,
-    "strategies": [
-      {
-        "name": "SPY250423C00545000",
-        "legs": [
-          {
-            "type": "call",
-            "strike": 545,
-            "expiry": "2025-04-23",
-            "premium": 7.11,
-            "quantity": 1,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "04/09/2025 13:43:27 EDT",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "527.25"
-      }
-    ],
-    "notes": "SPY250423C00545000 (Expired @ $527.25)"
-  },
-  {
-    "ticket": 1308,
-    "date": "2025-01-28",
-    "symbol": "TSM",
-    "status": "LOSS",
-    "exit_date": "2025-03-21",
-    "pnl": -6575,
-    "strategies": [
-      {
-        "name": "TSM250321C00200000",
-        "legs": [
-          {
-            "type": "call",
-            "strike": 200,
-            "expiry": "2025-03-21",
-            "premium": 13.15,
-            "quantity": 5,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "01/28/2025 13:21:01 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "177.47"
-      }
-    ],
-    "notes": "TSM250321C00200000 (Expired @ $177.47)"
-  },
-  {
-    "ticket": 1309,
-    "date": "2026-02-27",
-    "symbol": "XSP",
-    "status": "WIN",
-    "exit_date": "2026-02-27",
-    "pnl": 22,
-    "strategies": [
-      {
-        "name": "XSP260227C00691000",
-        "legs": [
-          {
-            "type": "call",
-            "strike": 691,
-            "expiry": "2026-02-27",
-            "premium": 0.22,
-            "quantity": 1,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "02/27/2026 10:01:11 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": null
-      }
-    ],
-    "notes": "XSP260227C00691000 (Expired - no price data)"
-  },
-  {
-    "ticket": 1310,
+    "ticket": 1235,
     "date": "2026-02-20",
     "symbol": "GLD",
     "status": "LOSS",
@@ -6069,7 +7753,7 @@ export const tradesData = [
     "notes": "GLD260302C00480000 (Expired @ $490.00)"
   },
   {
-    "ticket": 1311,
+    "ticket": 1236,
     "date": "2026-02-18",
     "symbol": "GLD",
     "status": "LOSS",
@@ -6097,63 +7781,7 @@ export const tradesData = [
     "notes": "GLD260223C00464000 (Expired @ $481.28)"
   },
   {
-    "ticket": 1312,
-    "date": "2026-02-13",
-    "symbol": "GLD",
-    "status": "WIN",
-    "exit_date": "2026-02-27",
-    "pnl": 445,
-    "strategies": [
-      {
-        "name": "GLD260227C00478000",
-        "legs": [
-          {
-            "type": "call",
-            "strike": 478,
-            "expiry": "2026-02-27",
-            "premium": 4.45,
-            "quantity": 1,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "02/13/2026 15:26:04 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "477.48"
-      }
-    ],
-    "notes": "GLD260227C00478000 (Expired @ $477.48)"
-  },
-  {
-    "ticket": 1313,
-    "date": "2026-02-10",
-    "symbol": "GLD",
-    "status": "WIN",
-    "exit_date": "2026-02-20",
-    "pnl": 1000,
-    "strategies": [
-      {
-        "name": "GLD260220C00470000",
-        "legs": [
-          {
-            "type": "call",
-            "strike": 470,
-            "expiry": "2026-02-20",
-            "premium": 5,
-            "quantity": 2,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "02/10/2026 10:34:53 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "459.56"
-      }
-    ],
-    "notes": "GLD260220C00470000 (Expired @ $459.56)"
-  },
-  {
-    "ticket": 1314,
+    "ticket": 1237,
     "date": "2026-02-05",
     "symbol": "GLD",
     "status": "WIN",
@@ -6181,35 +7809,7 @@ export const tradesData = [
     "notes": "GLD260213C00457000 (Expired @ $451.39)"
   },
   {
-    "ticket": 1315,
-    "date": "2026-02-05",
-    "symbol": "GLD",
-    "status": "WIN",
-    "exit_date": "2026-02-20",
-    "pnl": 305,
-    "strategies": [
-      {
-        "name": "GLD260220C00481000",
-        "legs": [
-          {
-            "type": "call",
-            "strike": 481,
-            "expiry": "2026-02-20",
-            "premium": 3.05,
-            "quantity": 1,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "02/05/2026 13:42:30 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "459.56"
-      }
-    ],
-    "notes": "GLD260220C00481000 (Expired @ $459.56)"
-  },
-  {
-    "ticket": 1316,
+    "ticket": 1238,
     "date": "2026-02-05",
     "symbol": "GLD",
     "status": "WIN",
@@ -6237,91 +7837,7 @@ export const tradesData = [
     "notes": "GLD260213C00463000 (Expired @ $451.39)"
   },
   {
-    "ticket": 1317,
-    "date": "2026-02-04",
-    "symbol": "GLD",
-    "status": "WIN",
-    "exit_date": "2026-02-13",
-    "pnl": 350,
-    "strategies": [
-      {
-        "name": "GLD260213C00480000",
-        "legs": [
-          {
-            "type": "call",
-            "strike": 480,
-            "expiry": "2026-02-13",
-            "premium": 3.5,
-            "quantity": 1,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "02/04/2026 15:57:03 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "451.39"
-      }
-    ],
-    "notes": "GLD260213C00480000 (Expired @ $451.39)"
-  },
-  {
-    "ticket": 1318,
-    "date": "2026-02-04",
-    "symbol": "GLD",
-    "status": "WIN",
-    "exit_date": "2026-02-11",
-    "pnl": 500,
-    "strategies": [
-      {
-        "name": "GLD260211C00467000",
-        "legs": [
-          {
-            "type": "call",
-            "strike": 467,
-            "expiry": "2026-02-11",
-            "premium": 5,
-            "quantity": 1,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "02/04/2026 15:20:21 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "462.40"
-      }
-    ],
-    "notes": "GLD260211C00467000 (Expired @ $462.40)"
-  },
-  {
-    "ticket": 1319,
-    "date": "2026-02-02",
-    "symbol": "GLD",
-    "status": "WIN",
-    "exit_date": "2026-02-02",
-    "pnl": 90,
-    "strategies": [
-      {
-        "name": "GLD260202C00430000",
-        "legs": [
-          {
-            "type": "call",
-            "strike": 430,
-            "expiry": "2026-02-02",
-            "premium": 0.9,
-            "quantity": 1,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "02/02/2026 14:06:18 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "427.13"
-      }
-    ],
-    "notes": "GLD260202C00430000 (Expired @ $427.13)"
-  },
-  {
-    "ticket": 1320,
+    "ticket": 1239,
     "date": "2026-01-21",
     "symbol": "GLD",
     "status": "LOSS",
@@ -6349,315 +7865,7 @@ export const tradesData = [
     "notes": "GLD260128C00450000 (Expired @ $476.10)"
   },
   {
-    "ticket": 1321,
-    "date": "2025-12-22",
-    "symbol": "VIXW",
-    "status": "WIN",
-    "exit_date": "2025-12-24",
-    "pnl": 120,
-    "strategies": [
-      {
-        "name": "VIXW251224C00017000",
-        "legs": [
-          {
-            "type": "call",
-            "strike": 17,
-            "expiry": "2025-12-24",
-            "premium": 0.08,
-            "quantity": 15,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "12/22/2025 11:00:52 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "13.47"
-      }
-    ],
-    "notes": "VIXW251224C00017000 (Expired @ $13.47)"
-  },
-  {
-    "ticket": 1322,
-    "date": "2025-12-18",
-    "symbol": "VIXW",
-    "status": "WIN",
-    "exit_date": "2025-12-24",
-    "pnl": 620,
-    "strategies": [
-      {
-        "name": "VIXW251224C00020000",
-        "legs": [
-          {
-            "type": "call",
-            "strike": 20,
-            "expiry": "2025-12-24",
-            "premium": 0.31,
-            "quantity": 20,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "12/18/2025 09:30:45 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "13.47"
-      }
-    ],
-    "notes": "VIXW251224C00020000 (Expired @ $13.47)"
-  },
-  {
-    "ticket": 1323,
-    "date": "2025-12-08",
-    "symbol": "VIXW",
-    "status": "WIN",
-    "exit_date": "2025-12-10",
-    "pnl": 470,
-    "strategies": [
-      {
-        "name": "VIXW251210C00017000",
-        "legs": [
-          {
-            "type": "call",
-            "strike": 17,
-            "expiry": "2025-12-10",
-            "premium": 0.47,
-            "quantity": 10,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "12/08/2025 10:36:03 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "15.77"
-      }
-    ],
-    "notes": "VIXW251210C00017000 (Expired @ $15.77)"
-  },
-  {
-    "ticket": 1324,
-    "date": "2025-11-28",
-    "symbol": "VIXW",
-    "status": "WIN",
-    "exit_date": "2025-12-03",
-    "pnl": 250,
-    "strategies": [
-      {
-        "name": "VIXW251203C00020000",
-        "legs": [
-          {
-            "type": "call",
-            "strike": 20,
-            "expiry": "2025-12-03",
-            "premium": 0.25,
-            "quantity": 10,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "11/28/2025 11:35:44 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "16.08"
-      }
-    ],
-    "notes": "VIXW251203C00020000 (Expired @ $16.08)"
-  },
-  {
-    "ticket": 1325,
-    "date": "2025-10-22",
-    "symbol": "SPY",
-    "status": "WIN",
-    "exit_date": "2025-10-24",
-    "pnl": 193,
-    "strategies": [
-      {
-        "name": "SPY251024C00670000",
-        "legs": [
-          {
-            "type": "call",
-            "strike": 670,
-            "expiry": "2025-10-24",
-            "premium": 3.69,
-            "quantity": 1,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "10/22/2025 10:25:21 EDT",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "671.76"
-      }
-    ],
-    "notes": "SPY251024C00670000 (Expired @ $671.76)"
-  },
-  {
-    "ticket": 1326,
-    "date": "2025-05-20",
-    "symbol": "HD",
-    "status": "WIN",
-    "exit_date": "2025-05-23",
-    "pnl": 274,
-    "strategies": [
-      {
-        "name": "HD250523C00390000",
-        "legs": [
-          {
-            "type": "call",
-            "strike": 390,
-            "expiry": "2025-05-23",
-            "premium": 2.74,
-            "quantity": 1,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "05/20/2025 09:36:22 EDT",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "366.13"
-      }
-    ],
-    "notes": "HD250523C00390000 (Expired @ $366.13)"
-  },
-  {
-    "ticket": 1327,
-    "date": "2025-04-11",
-    "symbol": "SPXW",
-    "status": "WIN",
-    "exit_date": "2025-04-11",
-    "pnl": 1020,
-    "strategies": [
-      {
-        "name": "SPXW250411C05400000",
-        "legs": [
-          {
-            "type": "call",
-            "strike": 5400,
-            "expiry": "2025-04-11",
-            "premium": 10.2,
-            "quantity": 1,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "04/11/2025 13:13:02 EDT",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "5268.05"
-      }
-    ],
-    "notes": "SPXW250411C05400000 (Expired @ $5268.05)"
-  },
-  {
-    "ticket": 1328,
-    "date": "2025-04-10",
-    "symbol": "SPY",
-    "status": "WIN",
-    "exit_date": "2025-04-23",
-    "pnl": 607,
-    "strategies": [
-      {
-        "name": "SPY250423C00545000",
-        "legs": [
-          {
-            "type": "call",
-            "strike": 545,
-            "expiry": "2025-04-23",
-            "premium": 6.07,
-            "quantity": 1,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "04/10/2025 10:16:28 EDT",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "527.25"
-      }
-    ],
-    "notes": "SPY250423C00545000 (Expired @ $527.25)"
-  },
-  {
-    "ticket": 1329,
-    "date": "2025-01-29",
-    "symbol": "TSM",
-    "status": "WIN",
-    "exit_date": "2025-03-21",
-    "pnl": 6600,
-    "strategies": [
-      {
-        "name": "TSM250321C00200000",
-        "legs": [
-          {
-            "type": "call",
-            "strike": 200,
-            "expiry": "2025-03-21",
-            "premium": 13.2,
-            "quantity": 5,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "01/29/2025 11:40:02 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "177.47"
-      }
-    ],
-    "notes": "TSM250321C00200000 (Expired @ $177.47)"
-  },
-  {
-    "ticket": 1330,
-    "date": "2026-02-23",
-    "symbol": "XSP",
-    "status": "LOSS",
-    "exit_date": "2026-02-23",
-    "pnl": -465,
-    "strategies": [
-      {
-        "name": "XSP260223P00680000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 680,
-            "expiry": "2026-02-23",
-            "premium": 0.93,
-            "quantity": 5,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "02/23/2026 11:09:43 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": null
-      }
-    ],
-    "notes": "XSP260223P00680000 (Expired - no price data)"
-  },
-  {
-    "ticket": 1331,
-    "date": "2026-02-12",
-    "symbol": "VIX",
-    "status": "LOSS",
-    "exit_date": "2026-02-18",
-    "pnl": -540,
-    "strategies": [
-      {
-        "name": "VIX260218P00018000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 18,
-            "expiry": "2026-02-18",
-            "premium": 0.27,
-            "quantity": 20,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "02/12/2026 12:39:38 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "19.62"
-      }
-    ],
-    "notes": "VIX260218P00018000 (Expired @ $19.62)"
-  },
-  {
-    "ticket": 1332,
+    "ticket": 1240,
     "date": "2026-02-12",
     "symbol": "VIX",
     "status": "LOSS",
@@ -6685,119 +7893,7 @@ export const tradesData = [
     "notes": "VIX260218P00018000 (Expired @ $19.62)"
   },
   {
-    "ticket": 1333,
-    "date": "2026-01-29",
-    "symbol": "VIXW",
-    "status": "LOSS",
-    "exit_date": "2026-02-04",
-    "pnl": -510,
-    "strategies": [
-      {
-        "name": "VIXW260204P00017000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 17,
-            "expiry": "2026-02-04",
-            "premium": 0.3,
-            "quantity": 17,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "01/29/2026 11:16:47 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "18.64"
-      }
-    ],
-    "notes": "VIXW260204P00017000 (Expired @ $18.64)"
-  },
-  {
-    "ticket": 1334,
-    "date": "2026-01-28",
-    "symbol": "GLD",
-    "status": "LOSS",
-    "exit_date": "2026-01-30",
-    "pnl": -245,
-    "strategies": [
-      {
-        "name": "GLD260130P00475000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 475,
-            "expiry": "2026-01-30",
-            "premium": 2.45,
-            "quantity": 1,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "01/28/2026 15:50:59 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "495.90"
-      }
-    ],
-    "notes": "GLD260130P00475000 (Expired @ $495.90)"
-  },
-  {
-    "ticket": 1335,
-    "date": "2026-01-28",
-    "symbol": "GLD",
-    "status": "LOSS",
-    "exit_date": "2026-01-28",
-    "pnl": -1,
-    "strategies": [
-      {
-        "name": "GLD260128P00459000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 459,
-            "expiry": "2026-01-28",
-            "premium": 0.01,
-            "quantity": 1,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "01/28/2026 15:49:58 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "476.10"
-      }
-    ],
-    "notes": "GLD260128P00459000 (Expired @ $476.10)"
-  },
-  {
-    "ticket": 1336,
-    "date": "2026-01-23",
-    "symbol": "GLD",
-    "status": "LOSS",
-    "exit_date": "2026-01-23",
-    "pnl": -2,
-    "strategies": [
-      {
-        "name": "GLD260123P00445000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 445,
-            "expiry": "2026-01-23",
-            "premium": 0.02,
-            "quantity": 1,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "01/23/2026 15:24:02 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "451.79"
-      }
-    ],
-    "notes": "GLD260123P00445000 (Expired @ $451.79)"
-  },
-  {
-    "ticket": 1337,
+    "ticket": 1241,
     "date": "2026-01-02",
     "symbol": "VIXW",
     "status": "LOSS",
@@ -6825,175 +7921,7 @@ export const tradesData = [
     "notes": "VIXW260107P00013500 (Expired @ $15.38)"
   },
   {
-    "ticket": 1338,
-    "date": "2026-01-02",
-    "symbol": "VIXW",
-    "status": "LOSS",
-    "exit_date": "2026-01-07",
-    "pnl": -420,
-    "strategies": [
-      {
-        "name": "VIXW260107P00014500",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 14.5,
-            "expiry": "2026-01-07",
-            "premium": 0.06,
-            "quantity": 70,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "01/02/2026 10:20:41 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "15.38"
-      }
-    ],
-    "notes": "VIXW260107P00014500 (Expired @ $15.38)"
-  },
-  {
-    "ticket": 1339,
-    "date": "2025-12-17",
-    "symbol": "VIXW",
-    "status": "WIN",
-    "exit_date": "2025-12-24",
-    "pnl": 8700,
-    "strategies": [
-      {
-        "name": "VIXW251224P00015000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 15,
-            "expiry": "2025-12-24",
-            "premium": 0.08,
-            "quantity": 60,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "12/17/2025 13:23:31 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "13.47"
-      }
-    ],
-    "notes": "VIXW251224P00015000 (Expired @ $13.47)"
-  },
-  {
-    "ticket": 1340,
-    "date": "2025-12-09",
-    "symbol": "SOFI",
-    "status": "LOSS",
-    "exit_date": "2026-01-16",
-    "pnl": -2060,
-    "strategies": [
-      {
-        "name": "SOFI260116P00028000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 28,
-            "expiry": "2026-01-16",
-            "premium": 2.59,
-            "quantity": 20,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "12/09/2025 15:51:23 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "26.44"
-      }
-    ],
-    "notes": "SOFI260116P00028000 (Expired @ $26.44)"
-  },
-  {
-    "ticket": 1341,
-    "date": "2025-12-15",
-    "symbol": "SOFI",
-    "status": "LOSS",
-    "exit_date": "2026-01-16",
-    "pnl": -1760,
-    "strategies": [
-      {
-        "name": "SOFI260116P00028000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 28,
-            "expiry": "2026-01-16",
-            "premium": 2.44,
-            "quantity": 20,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "12/15/2025 11:27:36 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "26.44"
-      }
-    ],
-    "notes": "SOFI260116P00028000 (Expired @ $26.44)"
-  },
-  {
-    "ticket": 1342,
-    "date": "2025-12-12",
-    "symbol": "VIX",
-    "status": "LOSS",
-    "exit_date": "2025-12-17",
-    "pnl": -550,
-    "strategies": [
-      {
-        "name": "VIX251217P00015500",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 15.5,
-            "expiry": "2025-12-17",
-            "premium": 0.11,
-            "quantity": 50,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "12/12/2025 11:31:17 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "17.62"
-      }
-    ],
-    "notes": "VIX251217P00015500 (Expired @ $17.62)"
-  },
-  {
-    "ticket": 1343,
-    "date": "2025-12-12",
-    "symbol": "VIX",
-    "status": "LOSS",
-    "exit_date": "2025-12-17",
-    "pnl": -450,
-    "strategies": [
-      {
-        "name": "VIX251217P00015500",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 15.5,
-            "expiry": "2025-12-17",
-            "premium": 0.15,
-            "quantity": 30,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "12/12/2025 12:00:45 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "17.62"
-      }
-    ],
-    "notes": "VIX251217P00015500 (Expired @ $17.62)"
-  },
-  {
-    "ticket": 1344,
+    "ticket": 1242,
     "date": "2025-12-09",
     "symbol": "VIXW",
     "status": "WIN",
@@ -7021,12 +7949,12 @@ export const tradesData = [
     "notes": "VIXW251210P00016000 (Expired @ $15.77)"
   },
   {
-    "ticket": 1345,
+    "ticket": 1243,
     "date": "2025-11-26",
     "symbol": "VIXW",
     "status": "WIN",
     "exit_date": "2025-12-03",
-    "pnl": 730,
+    "pnl": 73,
     "strategies": [
       {
         "name": "VIXW251203P00017000",
@@ -7036,7 +7964,7 @@ export const tradesData = [
             "strike": 17,
             "expiry": "2025-12-03",
             "premium": 0.19,
-            "quantity": 10,
+            "quantity": 1,
             "action": "buy"
           }
         ],
@@ -7049,203 +7977,7 @@ export const tradesData = [
     "notes": "VIXW251203P00017000 (Expired @ $16.08)"
   },
   {
-    "ticket": 1346,
-    "date": "2025-11-26",
-    "symbol": "SOFI",
-    "status": "LOSS",
-    "exit_date": "2026-01-02",
-    "pnl": -820,
-    "strategies": [
-      {
-        "name": "SOFI260102P00030000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 30,
-            "expiry": "2026-01-02",
-            "premium": 2.95,
-            "quantity": 20,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "11/26/2025 11:51:25 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "27.46"
-      }
-    ],
-    "notes": "SOFI260102P00030000 (Expired @ $27.46)"
-  },
-  {
-    "ticket": 1347,
-    "date": "2025-11-21",
-    "symbol": "SPY",
-    "status": "LOSS",
-    "exit_date": "2025-11-28",
-    "pnl": -475,
-    "strategies": [
-      {
-        "name": "SPY251128P00650000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 650,
-            "expiry": "2025-11-28",
-            "premium": 4.75,
-            "quantity": 1,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "11/21/2025 13:18:49 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "683.39"
-      }
-    ],
-    "notes": "SPY251128P00650000 (Expired @ $683.39)"
-  },
-  {
-    "ticket": 1348,
-    "date": "2025-11-19",
-    "symbol": "VIXW",
-    "status": "WIN",
-    "exit_date": "2025-11-26",
-    "pnl": 4500,
-    "strategies": [
-      {
-        "name": "VIXW251126P00020000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 20,
-            "expiry": "2025-11-26",
-            "premium": 0.56,
-            "quantity": 20,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "11/19/2025 16:03:14 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "17.19"
-      }
-    ],
-    "notes": "VIXW251126P00020000 (Expired @ $17.19)"
-  },
-  {
-    "ticket": 1349,
-    "date": "2025-11-17",
-    "symbol": "VIX",
-    "status": "LOSS",
-    "exit_date": "2025-11-19",
-    "pnl": -23,
-    "strategies": [
-      {
-        "name": "VIX251119P00020000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 20,
-            "expiry": "2025-11-19",
-            "premium": 0.23,
-            "quantity": 1,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "11/17/2025 14:16:12 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "23.66"
-      }
-    ],
-    "notes": "VIX251119P00020000 (Expired @ $23.66)"
-  },
-  {
-    "ticket": 1350,
-    "date": "2025-11-13",
-    "symbol": "VIX",
-    "status": "LOSS",
-    "exit_date": "2025-11-19",
-    "pnl": -510,
-    "strategies": [
-      {
-        "name": "VIX251119P00019000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 19,
-            "expiry": "2025-11-19",
-            "premium": 0.51,
-            "quantity": 10,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "11/13/2025 16:01:51 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "23.66"
-      }
-    ],
-    "notes": "VIX251119P00019000 (Expired @ $23.66)"
-  },
-  {
-    "ticket": 1351,
-    "date": "2025-11-10",
-    "symbol": "SOFI",
-    "status": "WIN",
-    "exit_date": "2025-12-19",
-    "pnl": 1010,
-    "strategies": [
-      {
-        "name": "SOFI251219P00030000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 30,
-            "expiry": "2025-12-19",
-            "premium": 2.7,
-            "quantity": 10,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "11/10/2025 10:19:53 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "26.29"
-      }
-    ],
-    "notes": "SOFI251219P00030000 (Expired @ $26.29)"
-  },
-  {
-    "ticket": 1352,
-    "date": "2025-11-07",
-    "symbol": "VIXW",
-    "status": "WIN",
-    "exit_date": "2025-11-12",
-    "pnl": 2030,
-    "strategies": [
-      {
-        "name": "VIXW251112P00020000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 20,
-            "expiry": "2025-11-12",
-            "premium": 0.46,
-            "quantity": 10,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "11/07/2025 12:42:06 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "17.51"
-      }
-    ],
-    "notes": "VIXW251112P00020000 (Expired @ $17.51)"
-  },
-  {
-    "ticket": 1353,
+    "ticket": 1244,
     "date": "2025-10-31",
     "symbol": "VIXW",
     "status": "LOSS",
@@ -7273,203 +8005,7 @@ export const tradesData = [
     "notes": "VIXW251105P00018000 (Expired @ $18.01)"
   },
   {
-    "ticket": 1354,
-    "date": "2025-09-24",
-    "symbol": "SOFI",
-    "status": "WIN",
-    "exit_date": "2025-11-21",
-    "pnl": 7180,
-    "strategies": [
-      {
-        "name": "SOFI251121P00039000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 39,
-            "expiry": "2025-11-21",
-            "premium": 10.5,
-            "quantity": 20,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "09/24/2025 11:12:30 EDT",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "24.91"
-      }
-    ],
-    "notes": "SOFI251121P00039000 (Expired @ $24.91)"
-  },
-  {
-    "ticket": 1355,
-    "date": "2025-10-20",
-    "symbol": "SOFI",
-    "status": "WIN",
-    "exit_date": "2025-11-21",
-    "pnl": 1670,
-    "strategies": [
-      {
-        "name": "SOFI251121P00039000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 39,
-            "expiry": "2025-11-21",
-            "premium": 10.75,
-            "quantity": 5,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "10/20/2025 15:18:42 EDT",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "24.91"
-      }
-    ],
-    "notes": "SOFI251121P00039000 (Expired @ $24.91)"
-  },
-  {
-    "ticket": 1356,
-    "date": "2025-10-17",
-    "symbol": "SPY",
-    "status": "LOSS",
-    "exit_date": "2025-10-24",
-    "pnl": -341,
-    "strategies": [
-      {
-        "name": "SPY251024P00654000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 654,
-            "expiry": "2025-10-24",
-            "premium": 3.41,
-            "quantity": 1,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "10/17/2025 14:47:53 EDT",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "671.76"
-      }
-    ],
-    "notes": "SPY251024P00654000 (Expired @ $671.76)"
-  },
-  {
-    "ticket": 1357,
-    "date": "2025-10-14",
-    "symbol": "VIX",
-    "status": "LOSS",
-    "exit_date": "2025-10-22",
-    "pnl": -680,
-    "strategies": [
-      {
-        "name": "VIX251022P00018500",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 18.5,
-            "expiry": "2025-10-22",
-            "premium": 0.68,
-            "quantity": 10,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "10/14/2025 12:38:12 EDT",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "18.60"
-      }
-    ],
-    "notes": "VIX251022P00018500 (Expired @ $18.60)"
-  },
-  {
-    "ticket": 1358,
-    "date": "2025-10-10",
-    "symbol": "VIXW",
-    "status": "LOSS",
-    "exit_date": "2025-10-15",
-    "pnl": -650,
-    "strategies": [
-      {
-        "name": "VIXW251015P00019000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 19,
-            "expiry": "2025-10-15",
-            "premium": 0.65,
-            "quantity": 10,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "10/10/2025 15:35:17 EDT",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "20.64"
-      }
-    ],
-    "notes": "VIXW251015P00019000 (Expired @ $20.64)"
-  },
-  {
-    "ticket": 1359,
-    "date": "2025-10-10",
-    "symbol": "VIXW",
-    "status": "LOSS",
-    "exit_date": "2025-10-15",
-    "pnl": -540,
-    "strategies": [
-      {
-        "name": "VIXW251015P00018000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 18,
-            "expiry": "2025-10-15",
-            "premium": 0.54,
-            "quantity": 10,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "10/10/2025 11:45:07 EDT",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "20.64"
-      }
-    ],
-    "notes": "VIXW251015P00018000 (Expired @ $20.64)"
-  },
-  {
-    "ticket": 1360,
-    "date": "2025-09-23",
-    "symbol": "VIXW",
-    "status": "LOSS",
-    "exit_date": "2025-10-01",
-    "pnl": -540,
-    "strategies": [
-      {
-        "name": "VIXW251001P00016000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 16,
-            "expiry": "2025-10-01",
-            "premium": 0.2,
-            "quantity": 27,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "09/23/2025 10:51:34 EDT",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "16.29"
-      }
-    ],
-    "notes": "VIXW251001P00016000 (Expired @ $16.29)"
-  },
-  {
-    "ticket": 1361,
+    "ticket": 1245,
     "date": "2025-09-22",
     "symbol": "VIXW",
     "status": "LOSS",
@@ -7497,147 +8033,7 @@ export const tradesData = [
     "notes": "VIXW250924P00015000 (Expired @ $16.18)"
   },
   {
-    "ticket": 1362,
-    "date": "2025-08-18",
-    "symbol": "VIX",
-    "status": "LOSS",
-    "exit_date": "2025-08-20",
-    "pnl": -550,
-    "strategies": [
-      {
-        "name": "VIX250820P00015000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 15,
-            "expiry": "2025-08-20",
-            "premium": 0.11,
-            "quantity": 50,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "08/18/2025 11:00:49 EDT",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "15.69"
-      }
-    ],
-    "notes": "VIX250820P00015000 (Expired @ $15.69)"
-  },
-  {
-    "ticket": 1363,
-    "date": "2025-08-15",
-    "symbol": "VIX",
-    "status": "LOSS",
-    "exit_date": "2025-08-20",
-    "pnl": -500,
-    "strategies": [
-      {
-        "name": "VIX250820P00014500",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 14.5,
-            "expiry": "2025-08-20",
-            "premium": 0.05,
-            "quantity": 100,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "08/15/2025 13:59:39 EDT",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "15.69"
-      }
-    ],
-    "notes": "VIX250820P00014500 (Expired @ $15.69)"
-  },
-  {
-    "ticket": 1364,
-    "date": "2025-08-01",
-    "symbol": "VIXW",
-    "status": "WIN",
-    "exit_date": "2025-08-06",
-    "pnl": 800,
-    "strategies": [
-      {
-        "name": "VIXW250806P00018000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 18,
-            "expiry": "2025-08-06",
-            "premium": 0.43,
-            "quantity": 10,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "08/01/2025 10:18:57 EDT",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "16.77"
-      }
-    ],
-    "notes": "VIXW250806P00018000 (Expired @ $16.77)"
-  },
-  {
-    "ticket": 1365,
-    "date": "2025-07-28",
-    "symbol": "UPS",
-    "status": "WIN",
-    "exit_date": "2025-08-01",
-    "pnl": 2096,
-    "strategies": [
-      {
-        "name": "UPS250801P00099000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 99,
-            "expiry": "2025-08-01",
-            "premium": 2.36,
-            "quantity": 2,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "07/28/2025 14:46:31 EDT",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "86.16"
-      }
-    ],
-    "notes": "UPS250801P00099000 (Expired @ $86.16)"
-  },
-  {
-    "ticket": 1366,
-    "date": "2025-07-28",
-    "symbol": "SBUX",
-    "status": "LOSS",
-    "exit_date": "2025-08-01",
-    "pnl": -120,
-    "strategies": [
-      {
-        "name": "SBUX250801P00090000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 90,
-            "expiry": "2025-08-01",
-            "premium": 1.44,
-            "quantity": 2,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "07/28/2025 13:37:40 EDT",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "89.16"
-      }
-    ],
-    "notes": "SBUX250801P00090000 (Expired @ $89.16)"
-  },
-  {
-    "ticket": 1367,
+    "ticket": 1246,
     "date": "2025-07-24",
     "symbol": "VIXW",
     "status": "LOSS",
@@ -7665,63 +8061,7 @@ export const tradesData = [
     "notes": "VIXW250730P00015000 (Expired @ $15.48)"
   },
   {
-    "ticket": 1368,
-    "date": "2025-07-16",
-    "symbol": "VIXW",
-    "status": "WIN",
-    "exit_date": "2025-07-23",
-    "pnl": 43200,
-    "strategies": [
-      {
-        "name": "VIXW250723P00017000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 17,
-            "expiry": "2025-07-23",
-            "premium": 0.19,
-            "quantity": 300,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "07/16/2025 12:36:32 EDT",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "15.37"
-      }
-    ],
-    "notes": "VIXW250723P00017000 (Expired @ $15.37)"
-  },
-  {
-    "ticket": 1369,
-    "date": "2025-07-14",
-    "symbol": "VIX",
-    "status": "LOSS",
-    "exit_date": "2025-07-16",
-    "pnl": -1050,
-    "strategies": [
-      {
-        "name": "VIX250716P00016500",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 16.5,
-            "expiry": "2025-07-16",
-            "premium": 0.14,
-            "quantity": 75,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "07/14/2025 13:21:51 EDT",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "17.16"
-      }
-    ],
-    "notes": "VIX250716P00016500 (Expired @ $17.16)"
-  },
-  {
-    "ticket": 1370,
+    "ticket": 1247,
     "date": "2025-07-14",
     "symbol": "VIXW",
     "status": "WIN",
@@ -7749,12 +8089,12 @@ export const tradesData = [
     "notes": "VIXW250723P00018000 (Expired @ $15.37)"
   },
   {
-    "ticket": 1371,
+    "ticket": 1248,
     "date": "2025-06-30",
     "symbol": "VIXW",
     "status": "WIN",
     "exit_date": "2025-07-02",
-    "pnl": 1400,
+    "pnl": 700,
     "strategies": [
       {
         "name": "VIXW250702P00017000",
@@ -7764,7 +8104,7 @@ export const tradesData = [
             "strike": 17,
             "expiry": "2025-07-02",
             "premium": 0.22,
-            "quantity": 100,
+            "quantity": 50,
             "action": "buy"
           }
         ],
@@ -7777,7 +8117,7 @@ export const tradesData = [
     "notes": "VIXW250702P00017000 (Expired @ $16.64)"
   },
   {
-    "ticket": 1372,
+    "ticket": 1249,
     "date": "2025-06-11",
     "symbol": "VIX",
     "status": "LOSS",
@@ -7805,12 +8145,12 @@ export const tradesData = [
     "notes": "VIX250618P00017500 (Expired @ $20.14)"
   },
   {
-    "ticket": 1373,
+    "ticket": 1250,
     "date": "2025-06-05",
     "symbol": "VIXW",
     "status": "WIN",
     "exit_date": "2025-06-11",
-    "pnl": 1335,
+    "pnl": 445,
     "strategies": [
       {
         "name": "VIXW250611P00019000",
@@ -7820,7 +8160,7 @@ export const tradesData = [
             "strike": 19,
             "expiry": "2025-06-11",
             "premium": 0.85,
-            "quantity": 15,
+            "quantity": 5,
             "action": "buy"
           }
         ],
@@ -7833,12 +8173,12 @@ export const tradesData = [
     "notes": "VIXW250611P00019000 (Expired @ $17.26)"
   },
   {
-    "ticket": 1374,
+    "ticket": 1251,
     "date": "2025-05-30",
     "symbol": "VIXW",
     "status": "WIN",
     "exit_date": "2025-06-03",
-    "pnl": 9520,
+    "pnl": 119,
     "strategies": [
       {
         "name": "VIXW250603P00019000",
@@ -7848,7 +8188,7 @@ export const tradesData = [
             "strike": 19,
             "expiry": "2025-06-03",
             "premium": 0.12,
-            "quantity": 80,
+            "quantity": 1,
             "action": "buy"
           }
         ],
@@ -7861,119 +8201,7 @@ export const tradesData = [
     "notes": "VIXW250603P00019000 (Expired @ $17.69)"
   },
   {
-    "ticket": 1375,
-    "date": "2025-05-23",
-    "symbol": "VIXW",
-    "status": "LOSS",
-    "exit_date": "2025-05-28",
-    "pnl": -600,
-    "strategies": [
-      {
-        "name": "VIXW250528P00019000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 19,
-            "expiry": "2025-05-28",
-            "premium": 0.06,
-            "quantity": 100,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "05/23/2025 12:42:36 EDT",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "19.31"
-      }
-    ],
-    "notes": "VIXW250528P00019000 (Expired @ $19.31)"
-  },
-  {
-    "ticket": 1376,
-    "date": "2025-05-20",
-    "symbol": "PANW",
-    "status": "LOSS",
-    "exit_date": "2025-05-23",
-    "pnl": -1020,
-    "strategies": [
-      {
-        "name": "PANW250523P00182500",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 182.5,
-            "expiry": "2025-05-23",
-            "premium": 2.55,
-            "quantity": 4,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "05/20/2025 15:55:48 EDT",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "186.14"
-      }
-    ],
-    "notes": "PANW250523P00182500 (Expired @ $186.14)"
-  },
-  {
-    "ticket": 1377,
-    "date": "2025-05-19",
-    "symbol": "HD",
-    "status": "WIN",
-    "exit_date": "2025-05-23",
-    "pnl": 7,
-    "strategies": [
-      {
-        "name": "HD250523P00370000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 370,
-            "expiry": "2025-05-23",
-            "premium": 3.8,
-            "quantity": 1,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "05/19/2025 15:14:46 EDT",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "366.13"
-      }
-    ],
-    "notes": "HD250523P00370000 (Expired @ $366.13)"
-  },
-  {
-    "ticket": 1378,
-    "date": "2025-05-19",
-    "symbol": "VIX",
-    "status": "LOSS",
-    "exit_date": "2025-05-21",
-    "pnl": -400,
-    "strategies": [
-      {
-        "name": "VIX250521P00018000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 18,
-            "expiry": "2025-05-21",
-            "premium": 0.2,
-            "quantity": 20,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "05/19/2025 09:48:34 EDT",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "20.87"
-      }
-    ],
-    "notes": "VIX250521P00018000 (Expired @ $20.87)"
-  },
-  {
-    "ticket": 1379,
+    "ticket": 1252,
     "date": "2025-05-15",
     "symbol": "VIX",
     "status": "LOSS",
@@ -8001,12 +8229,12 @@ export const tradesData = [
     "notes": "VIX250521P00016000 (Expired @ $20.87)"
   },
   {
-    "ticket": 1380,
+    "ticket": 1253,
     "date": "2025-05-15",
     "symbol": "VIX",
     "status": "LOSS",
     "exit_date": "2025-05-21",
-    "pnl": -1000,
+    "pnl": -10,
     "strategies": [
       {
         "name": "VIX250521P00017000",
@@ -8016,7 +8244,7 @@ export const tradesData = [
             "strike": 17,
             "expiry": "2025-05-21",
             "premium": 0.1,
-            "quantity": 100,
+            "quantity": 1,
             "action": "buy"
           }
         ],
@@ -8029,12 +8257,12 @@ export const tradesData = [
     "notes": "VIX250521P00017000 (Expired @ $20.87)"
   },
   {
-    "ticket": 1381,
+    "ticket": 1254,
     "date": "2025-05-08",
     "symbol": "VIXW",
     "status": "WIN",
     "exit_date": "2025-05-14",
-    "pnl": 12900,
+    "pnl": 11610,
     "strategies": [
       {
         "name": "VIXW250514P00020000",
@@ -8044,7 +8272,7 @@ export const tradesData = [
             "strike": 20,
             "expiry": "2025-05-14",
             "premium": 0.09,
-            "quantity": 100,
+            "quantity": 90,
             "action": "buy"
           }
         ],
@@ -8057,63 +8285,7 @@ export const tradesData = [
     "notes": "VIXW250514P00020000 (Expired @ $18.62)"
   },
   {
-    "ticket": 1382,
-    "date": "2025-04-11",
-    "symbol": "SPY",
-    "status": "WIN",
-    "exit_date": "2025-04-11",
-    "pnl": 248,
-    "strategies": [
-      {
-        "name": "SPY250411P00530000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 530,
-            "expiry": "2025-04-11",
-            "premium": 2.94,
-            "quantity": 1,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "04/11/2025 13:01:31 EDT",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "524.58"
-      }
-    ],
-    "notes": "SPY250411P00530000 (Expired @ $524.58)"
-  },
-  {
-    "ticket": 1383,
-    "date": "2025-04-09",
-    "symbol": "SPY",
-    "status": "LOSS",
-    "exit_date": "2025-04-23",
-    "pnl": -792,
-    "strategies": [
-      {
-        "name": "SPY250423P00500000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 500,
-            "expiry": "2025-04-23",
-            "premium": 7.92,
-            "quantity": 1,
-            "action": "buy"
-          }
-        ],
-        "entry_time": "04/09/2025 13:43:48 EDT",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "527.25"
-      }
-    ],
-    "notes": "SPY250423P00500000 (Expired @ $527.25)"
-  },
-  {
-    "ticket": 1384,
+    "ticket": 1255,
     "date": "2025-04-08",
     "symbol": "SPXW",
     "status": "LOSS",
@@ -8141,91 +8313,7 @@ export const tradesData = [
     "notes": "SPXW250408P04930000 (Expired @ $5062.25)"
   },
   {
-    "ticket": 1385,
-    "date": "2026-02-23",
-    "symbol": "XSP",
-    "status": "WIN",
-    "exit_date": "2026-02-23",
-    "pnl": 285,
-    "strategies": [
-      {
-        "name": "XSP260223P00680000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 680,
-            "expiry": "2026-02-23",
-            "premium": 0.57,
-            "quantity": 5,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "02/23/2026 11:24:37 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": null
-      }
-    ],
-    "notes": "XSP260223P00680000 (Expired - no price data)"
-  },
-  {
-    "ticket": 1386,
-    "date": "2026-02-12",
-    "symbol": "VIX",
-    "status": "WIN",
-    "exit_date": "2026-02-18",
-    "pnl": 400,
-    "strategies": [
-      {
-        "name": "VIX260218P00018000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 18,
-            "expiry": "2026-02-18",
-            "premium": 0.2,
-            "quantity": 20,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "02/12/2026 13:01:09 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "19.62"
-      }
-    ],
-    "notes": "VIX260218P00018000 (Expired @ $19.62)"
-  },
-  {
-    "ticket": 1387,
-    "date": "2026-01-30",
-    "symbol": "VIXW",
-    "status": "WIN",
-    "exit_date": "2026-02-04",
-    "pnl": 578,
-    "strategies": [
-      {
-        "name": "VIXW260204P00017000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 17,
-            "expiry": "2026-02-04",
-            "premium": 0.34,
-            "quantity": 17,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "01/30/2026 11:54:35 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "18.64"
-      }
-    ],
-    "notes": "VIXW260204P00017000 (Expired @ $18.64)"
-  },
-  {
-    "ticket": 1388,
+    "ticket": 1256,
     "date": "2026-01-28",
     "symbol": "GLD",
     "status": "WIN",
@@ -8253,63 +8341,7 @@ export const tradesData = [
     "notes": "GLD260130P00478000 (Expired @ $495.90)"
   },
   {
-    "ticket": 1389,
-    "date": "2026-01-28",
-    "symbol": "GLD",
-    "status": "WIN",
-    "exit_date": "2026-01-30",
-    "pnl": 245,
-    "strategies": [
-      {
-        "name": "GLD260130P00475000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 475,
-            "expiry": "2026-01-30",
-            "premium": 2.45,
-            "quantity": 1,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "01/28/2026 15:51:10 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "495.90"
-      }
-    ],
-    "notes": "GLD260130P00475000 (Expired @ $495.90)"
-  },
-  {
-    "ticket": 1390,
-    "date": "2026-01-27",
-    "symbol": "GLD",
-    "status": "WIN",
-    "exit_date": "2026-01-28",
-    "pnl": 162,
-    "strategies": [
-      {
-        "name": "GLD260128P00459000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 459,
-            "expiry": "2026-01-28",
-            "premium": 1.62,
-            "quantity": 1,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "01/27/2026 09:33:26 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "476.10"
-      }
-    ],
-    "notes": "GLD260128P00459000 (Expired @ $476.10)"
-  },
-  {
-    "ticket": 1391,
+    "ticket": 1257,
     "date": "2026-01-23",
     "symbol": "GLD",
     "status": "WIN",
@@ -8337,623 +8369,7 @@ export const tradesData = [
     "notes": "GLD260126P00453000 (Expired @ $464.70)"
   },
   {
-    "ticket": 1392,
-    "date": "2026-01-22",
-    "symbol": "GLD",
-    "status": "WIN",
-    "exit_date": "2026-01-23",
-    "pnl": 208,
-    "strategies": [
-      {
-        "name": "GLD260123P00445000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 445,
-            "expiry": "2026-01-23",
-            "premium": 2.08,
-            "quantity": 1,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "01/22/2026 11:09:52 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "451.79"
-      }
-    ],
-    "notes": "GLD260123P00445000 (Expired @ $451.79)"
-  },
-  {
-    "ticket": 1393,
-    "date": "2026-01-06",
-    "symbol": "VIXW",
-    "status": "WIN",
-    "exit_date": "2026-01-07",
-    "pnl": 210,
-    "strategies": [
-      {
-        "name": "VIXW260107P00014500",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 14.5,
-            "expiry": "2026-01-07",
-            "premium": 0.03,
-            "quantity": 70,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "01/06/2026 15:33:51 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "15.38"
-      }
-    ],
-    "notes": "VIXW260107P00014500 (Expired @ $15.38)"
-  },
-  {
-    "ticket": 1394,
-    "date": "2025-12-18",
-    "symbol": "VIXW",
-    "status": "LOSS",
-    "exit_date": "2025-12-24",
-    "pnl": -8700,
-    "strategies": [
-      {
-        "name": "VIXW251224P00015000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 15,
-            "expiry": "2025-12-24",
-            "premium": 0.08,
-            "quantity": 60,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "12/18/2025 09:36:16 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "13.47"
-      }
-    ],
-    "notes": "VIXW251224P00015000 (Expired @ $13.47)"
-  },
-  {
-    "ticket": 1395,
-    "date": "2025-12-05",
-    "symbol": "SOFI",
-    "status": "WIN",
-    "exit_date": "2026-01-16",
-    "pnl": 1960,
-    "strategies": [
-      {
-        "name": "SOFI260116P00028000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 28,
-            "expiry": "2026-01-16",
-            "premium": 2.54,
-            "quantity": 20,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "12/05/2025 10:07:07 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "26.44"
-      }
-    ],
-    "notes": "SOFI260116P00028000 (Expired @ $26.44)"
-  },
-  {
-    "ticket": 1396,
-    "date": "2025-12-15",
-    "symbol": "SOFI",
-    "status": "WIN",
-    "exit_date": "2026-01-16",
-    "pnl": 1740,
-    "strategies": [
-      {
-        "name": "SOFI260116P00028000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 28,
-            "expiry": "2026-01-16",
-            "premium": 2.43,
-            "quantity": 20,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "12/15/2025 11:28:15 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "26.44"
-      }
-    ],
-    "notes": "SOFI260116P00028000 (Expired @ $26.44)"
-  },
-  {
-    "ticket": 1397,
-    "date": "2025-12-12",
-    "symbol": "VIX",
-    "status": "WIN",
-    "exit_date": "2025-12-17",
-    "pnl": 500,
-    "strategies": [
-      {
-        "name": "VIX251217P00015500",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 15.5,
-            "expiry": "2025-12-17",
-            "premium": 0.1,
-            "quantity": 50,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "12/12/2025 11:35:02 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "17.62"
-      }
-    ],
-    "notes": "VIX251217P00015500 (Expired @ $17.62)"
-  },
-  {
-    "ticket": 1398,
-    "date": "2025-12-12",
-    "symbol": "VIX",
-    "status": "WIN",
-    "exit_date": "2025-12-17",
-    "pnl": 450,
-    "strategies": [
-      {
-        "name": "VIX251217P00015500",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 15.5,
-            "expiry": "2025-12-17",
-            "premium": 0.15,
-            "quantity": 30,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "12/12/2025 14:07:29 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "17.62"
-      }
-    ],
-    "notes": "VIX251217P00015500 (Expired @ $17.62)"
-  },
-  {
-    "ticket": 1399,
-    "date": "2025-12-02",
-    "symbol": "VIXW",
-    "status": "LOSS",
-    "exit_date": "2025-12-03",
-    "pnl": -441,
-    "strategies": [
-      {
-        "name": "VIXW251203P00017000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 17,
-            "expiry": "2025-12-03",
-            "premium": 0.43,
-            "quantity": 9,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "12/02/2025 10:26:15 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "16.08"
-      }
-    ],
-    "notes": "VIXW251203P00017000 (Expired @ $16.08)"
-  },
-  {
-    "ticket": 1400,
-    "date": "2025-11-21",
-    "symbol": "SPY",
-    "status": "WIN",
-    "exit_date": "2025-11-28",
-    "pnl": 341,
-    "strategies": [
-      {
-        "name": "SPY251128P00650000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 650,
-            "expiry": "2025-11-28",
-            "premium": 3.41,
-            "quantity": 1,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "11/21/2025 13:40:24 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "683.39"
-      }
-    ],
-    "notes": "SPY251128P00650000 (Expired @ $683.39)"
-  },
-  {
-    "ticket": 1401,
-    "date": "2025-11-20",
-    "symbol": "SOFI",
-    "status": "WIN",
-    "exit_date": "2026-01-02",
-    "pnl": 5220,
-    "strategies": [
-      {
-        "name": "SOFI260102P00030000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 30,
-            "expiry": "2026-01-02",
-            "premium": 5.15,
-            "quantity": 20,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "11/20/2025 13:10:48 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "27.46"
-      }
-    ],
-    "notes": "SOFI260102P00030000 (Expired @ $27.46)"
-  },
-  {
-    "ticket": 1402,
-    "date": "2025-11-20",
-    "symbol": "VIXW",
-    "status": "LOSS",
-    "exit_date": "2025-11-26",
-    "pnl": -3304,
-    "strategies": [
-      {
-        "name": "VIXW251126P00020000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 20,
-            "expiry": "2025-11-26",
-            "premium": 1.0710526316,
-            "quantity": 19,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "11/20/2025 10:01:24 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "17.19"
-      }
-    ],
-    "notes": "VIXW251126P00020000 (Expired @ $17.19)"
-  },
-  {
-    "ticket": 1403,
-    "date": "2025-11-20",
-    "symbol": "VIXW",
-    "status": "LOSS",
-    "exit_date": "2025-11-26",
-    "pnl": -173,
-    "strategies": [
-      {
-        "name": "VIXW251126P00020000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 20,
-            "expiry": "2025-11-26",
-            "premium": 1.08,
-            "quantity": 1,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "11/20/2025 10:17:35 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "17.19"
-      }
-    ],
-    "notes": "VIXW251126P00020000 (Expired @ $17.19)"
-  },
-  {
-    "ticket": 1404,
-    "date": "2025-11-17",
-    "symbol": "VIX",
-    "status": "WIN",
-    "exit_date": "2025-11-19",
-    "pnl": 15,
-    "strategies": [
-      {
-        "name": "VIX251119P00020000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 20,
-            "expiry": "2025-11-19",
-            "premium": 0.15,
-            "quantity": 1,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "11/17/2025 15:16:47 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "23.66"
-      }
-    ],
-    "notes": "VIX251119P00020000 (Expired @ $23.66)"
-  },
-  {
-    "ticket": 1405,
-    "date": "2025-11-14",
-    "symbol": "VIX",
-    "status": "WIN",
-    "exit_date": "2025-11-19",
-    "pnl": 450,
-    "strategies": [
-      {
-        "name": "VIX251119P00019000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 19,
-            "expiry": "2025-11-19",
-            "premium": 0.45,
-            "quantity": 10,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "11/14/2025 14:54:43 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "23.66"
-      }
-    ],
-    "notes": "VIX251119P00019000 (Expired @ $23.66)"
-  },
-  {
-    "ticket": 1406,
-    "date": "2025-11-10",
-    "symbol": "VIXW",
-    "status": "LOSS",
-    "exit_date": "2025-11-12",
-    "pnl": -750,
-    "strategies": [
-      {
-        "name": "VIXW251112P00020000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 20,
-            "expiry": "2025-11-12",
-            "premium": 1.74,
-            "quantity": 10,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "11/10/2025 10:03:29 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "17.51"
-      }
-    ],
-    "notes": "VIXW251112P00020000 (Expired @ $17.51)"
-  },
-  {
-    "ticket": 1407,
-    "date": "2025-11-07",
-    "symbol": "SOFI",
-    "status": "WIN",
-    "exit_date": "2025-12-19",
-    "pnl": 490,
-    "strategies": [
-      {
-        "name": "SOFI251219P00030000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 30,
-            "expiry": "2025-12-19",
-            "premium": 4.2,
-            "quantity": 10,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "11/07/2025 13:32:03 EST",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "26.29"
-      }
-    ],
-    "notes": "SOFI251219P00030000 (Expired @ $26.29)"
-  },
-  {
-    "ticket": 1408,
-    "date": "2025-10-20",
-    "symbol": "SPY",
-    "status": "WIN",
-    "exit_date": "2025-10-24",
-    "pnl": 80,
-    "strategies": [
-      {
-        "name": "SPY251024P00654000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 654,
-            "expiry": "2025-10-24",
-            "premium": 0.8,
-            "quantity": 1,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "10/20/2025 13:38:07 EDT",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "671.76"
-      }
-    ],
-    "notes": "SPY251024P00654000 (Expired @ $671.76)"
-  },
-  {
-    "ticket": 1409,
-    "date": "2025-10-20",
-    "symbol": "VIX",
-    "status": "WIN",
-    "exit_date": "2025-10-22",
-    "pnl": 340,
-    "strategies": [
-      {
-        "name": "VIX251022P00018500",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 18.5,
-            "expiry": "2025-10-22",
-            "premium": 0.34,
-            "quantity": 10,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "10/20/2025 11:13:57 EDT",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "18.60"
-      }
-    ],
-    "notes": "VIX251022P00018500 (Expired @ $18.60)"
-  },
-  {
-    "ticket": 1410,
-    "date": "2025-10-13",
-    "symbol": "VIXW",
-    "status": "WIN",
-    "exit_date": "2025-10-15",
-    "pnl": 630,
-    "strategies": [
-      {
-        "name": "VIXW251015P00019000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 19,
-            "expiry": "2025-10-15",
-            "premium": 0.63,
-            "quantity": 10,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "10/13/2025 13:22:26 EDT",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "20.64"
-      }
-    ],
-    "notes": "VIXW251015P00019000 (Expired @ $20.64)"
-  },
-  {
-    "ticket": 1411,
-    "date": "2025-10-10",
-    "symbol": "VIXW",
-    "status": "WIN",
-    "exit_date": "2025-10-15",
-    "pnl": 390,
-    "strategies": [
-      {
-        "name": "VIXW251015P00018000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 18,
-            "expiry": "2025-10-15",
-            "premium": 0.39,
-            "quantity": 10,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "10/10/2025 13:18:27 EDT",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "20.64"
-      }
-    ],
-    "notes": "VIXW251015P00018000 (Expired @ $20.64)"
-  },
-  {
-    "ticket": 1412,
-    "date": "2025-09-29",
-    "symbol": "VIXW",
-    "status": "WIN",
-    "exit_date": "2025-10-01",
-    "pnl": 729,
-    "strategies": [
-      {
-        "name": "VIXW251001P00016000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 16,
-            "expiry": "2025-10-01",
-            "premium": 0.27,
-            "quantity": 27,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "09/29/2025 11:50:40 EDT",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "16.29"
-      }
-    ],
-    "notes": "VIXW251001P00016000 (Expired @ $16.29)"
-  },
-  {
-    "ticket": 1413,
-    "date": "2025-09-24",
-    "symbol": "SOFI",
-    "status": "LOSS",
-    "exit_date": "2025-11-21",
-    "pnl": -8850,
-    "strategies": [
-      {
-        "name": "SOFI251121P00039000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 39,
-            "expiry": "2025-11-21",
-            "premium": 10.55,
-            "quantity": 25,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "09/24/2025 11:02:43 EDT",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "24.91"
-      }
-    ],
-    "notes": "SOFI251121P00039000 (Expired @ $24.91)"
-  },
-  {
-    "ticket": 1414,
+    "ticket": 1258,
     "date": "2025-08-22",
     "symbol": "DJT",
     "status": "WIN",
@@ -8979,509 +8395,5 @@ export const tradesData = [
       }
     ],
     "notes": "DJT250829P00019000 (Expired @ $17.95)"
-  },
-  {
-    "ticket": 1415,
-    "date": "2025-08-19",
-    "symbol": "VIX",
-    "status": "WIN",
-    "exit_date": "2025-08-20",
-    "pnl": 250,
-    "strategies": [
-      {
-        "name": "VIX250820P00015000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 15,
-            "expiry": "2025-08-20",
-            "premium": 0.05,
-            "quantity": 50,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "08/19/2025 12:10:05 EDT",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "15.69"
-      }
-    ],
-    "notes": "VIX250820P00015000 (Expired @ $15.69)"
-  },
-  {
-    "ticket": 1416,
-    "date": "2025-08-19",
-    "symbol": "VIX",
-    "status": "WIN",
-    "exit_date": "2025-08-20",
-    "pnl": 400,
-    "strategies": [
-      {
-        "name": "VIX250820P00014500",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 14.5,
-            "expiry": "2025-08-20",
-            "premium": 0.04,
-            "quantity": 100,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "08/19/2025 10:06:22 EDT",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "15.69"
-      }
-    ],
-    "notes": "VIX250820P00014500 (Expired @ $15.69)"
-  },
-  {
-    "ticket": 1417,
-    "date": "2025-08-04",
-    "symbol": "VIXW",
-    "status": "LOSS",
-    "exit_date": "2025-08-06",
-    "pnl": -710,
-    "strategies": [
-      {
-        "name": "VIXW250806P00018000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 18,
-            "expiry": "2025-08-06",
-            "premium": 0.52,
-            "quantity": 10,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "08/04/2025 13:19:49 EDT",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "16.77"
-      }
-    ],
-    "notes": "VIXW250806P00018000 (Expired @ $16.77)"
-  },
-  {
-    "ticket": 1418,
-    "date": "2025-07-29",
-    "symbol": "SBUX",
-    "status": "WIN",
-    "exit_date": "2025-08-01",
-    "pnl": 126,
-    "strategies": [
-      {
-        "name": "SBUX250801P00090000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 90,
-            "expiry": "2025-08-01",
-            "premium": 1.47,
-            "quantity": 2,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "07/29/2025 09:39:38 EDT",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "89.16"
-      }
-    ],
-    "notes": "SBUX250801P00090000 (Expired @ $89.16)"
-  },
-  {
-    "ticket": 1419,
-    "date": "2025-07-29",
-    "symbol": "UPS",
-    "status": "LOSS",
-    "exit_date": "2025-08-01",
-    "pnl": -1648,
-    "strategies": [
-      {
-        "name": "UPS250801P00099000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 99,
-            "expiry": "2025-08-01",
-            "premium": 4.6,
-            "quantity": 2,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "07/29/2025 09:38:52 EDT",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "86.16"
-      }
-    ],
-    "notes": "UPS250801P00099000 (Expired @ $86.16)"
-  },
-  {
-    "ticket": 1420,
-    "date": "2025-07-22",
-    "symbol": "VIXW",
-    "status": "LOSS",
-    "exit_date": "2025-07-23",
-    "pnl": -45254,
-    "strategies": [
-      {
-        "name": "VIXW250723P00017000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 17,
-            "expiry": "2025-07-23",
-            "premium": 0.1215333333,
-            "quantity": 300,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "07/22/2025 10:29:27 EDT",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "15.37"
-      }
-    ],
-    "notes": "VIXW250723P00017000 (Expired @ $15.37)"
-  },
-  {
-    "ticket": 1421,
-    "date": "2025-07-14",
-    "symbol": "VIX",
-    "status": "WIN",
-    "exit_date": "2025-07-16",
-    "pnl": 900,
-    "strategies": [
-      {
-        "name": "VIX250716P00016500",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 16.5,
-            "expiry": "2025-07-16",
-            "premium": 0.12,
-            "quantity": 75,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "07/14/2025 15:27:42 EDT",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "17.16"
-      }
-    ],
-    "notes": "VIX250716P00016500 (Expired @ $17.16)"
-  },
-  {
-    "ticket": 1422,
-    "date": "2025-07-01",
-    "symbol": "VIXW",
-    "status": "LOSS",
-    "exit_date": "2025-07-02",
-    "pnl": -1000,
-    "strategies": [
-      {
-        "name": "VIXW250702P00017000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 17,
-            "expiry": "2025-07-02",
-            "premium": 0.16,
-            "quantity": 50,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "07/01/2025 12:02:35 EDT",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "16.64"
-      }
-    ],
-    "notes": "VIXW250702P00017000 (Expired @ $16.64)"
-  },
-  {
-    "ticket": 1423,
-    "date": "2025-06-06",
-    "symbol": "VIXW",
-    "status": "LOSS",
-    "exit_date": "2025-06-11",
-    "pnl": -380,
-    "strategies": [
-      {
-        "name": "VIXW250611P00019000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 19,
-            "expiry": "2025-06-11",
-            "premium": 1.36,
-            "quantity": 10,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "06/06/2025 15:31:02 EDT",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "17.26"
-      }
-    ],
-    "notes": "VIXW250611P00019000 (Expired @ $17.26)"
-  },
-  {
-    "ticket": 1424,
-    "date": "2025-06-02",
-    "symbol": "VIXW",
-    "status": "LOSS",
-    "exit_date": "2025-06-03",
-    "pnl": -6162,
-    "strategies": [
-      {
-        "name": "VIXW250603P00019000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 19,
-            "expiry": "2025-06-03",
-            "premium": 0.53,
-            "quantity": 79,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "06/02/2025 16:13:42 EDT",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "17.69"
-      }
-    ],
-    "notes": "VIXW250603P00019000 (Expired @ $17.69)"
-  },
-  {
-    "ticket": 1425,
-    "date": "2025-05-27",
-    "symbol": "VIXW",
-    "status": "WIN",
-    "exit_date": "2025-05-28",
-    "pnl": 400,
-    "strategies": [
-      {
-        "name": "VIXW250528P00019000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 19,
-            "expiry": "2025-05-28",
-            "premium": 0.04,
-            "quantity": 100,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "05/27/2025 09:40:32 EDT",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "19.31"
-      }
-    ],
-    "notes": "VIXW250528P00019000 (Expired @ $19.31)"
-  },
-  {
-    "ticket": 1426,
-    "date": "2025-05-21",
-    "symbol": "PANW",
-    "status": "WIN",
-    "exit_date": "2025-05-23",
-    "pnl": 1280,
-    "strategies": [
-      {
-        "name": "PANW250523P00182500",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 182.5,
-            "expiry": "2025-05-23",
-            "premium": 3.2,
-            "quantity": 4,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "05/21/2025 10:24:57 EDT",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "186.14"
-      }
-    ],
-    "notes": "PANW250523P00182500 (Expired @ $186.14)"
-  },
-  {
-    "ticket": 1427,
-    "date": "2025-05-20",
-    "symbol": "VIX",
-    "status": "WIN",
-    "exit_date": "2025-05-21",
-    "pnl": 360,
-    "strategies": [
-      {
-        "name": "VIX250521P00018000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 18,
-            "expiry": "2025-05-21",
-            "premium": 0.18,
-            "quantity": 20,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "05/20/2025 15:53:40 EDT",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "20.87"
-      }
-    ],
-    "notes": "VIX250521P00018000 (Expired @ $20.87)"
-  },
-  {
-    "ticket": 1428,
-    "date": "2025-05-20",
-    "symbol": "HD",
-    "status": "LOSS",
-    "exit_date": "2025-05-23",
-    "pnl": -260,
-    "strategies": [
-      {
-        "name": "HD250523P00370000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 370,
-            "expiry": "2025-05-23",
-            "premium": 1.27,
-            "quantity": 1,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "05/20/2025 09:37:15 EDT",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "366.13"
-      }
-    ],
-    "notes": "HD250523P00370000 (Expired @ $366.13)"
-  },
-  {
-    "ticket": 1429,
-    "date": "2025-05-19",
-    "symbol": "VIX",
-    "status": "WIN",
-    "exit_date": "2025-05-21",
-    "pnl": 496,
-    "strategies": [
-      {
-        "name": "VIX250521P00017000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 17,
-            "expiry": "2025-05-21",
-            "premium": 0.0501010101,
-            "quantity": 99,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "05/19/2025 12:45:47 EDT",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "20.87"
-      }
-    ],
-    "notes": "VIX250521P00017000 (Expired @ $20.87)"
-  },
-  {
-    "ticket": 1430,
-    "date": "2025-05-12",
-    "symbol": "VIXW",
-    "status": "LOSS",
-    "exit_date": "2025-05-14",
-    "pnl": -670,
-    "strategies": [
-      {
-        "name": "VIXW250514P00020000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 20,
-            "expiry": "2025-05-14",
-            "premium": 0.71,
-            "quantity": 10,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "05/12/2025 11:32:34 EDT",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "18.62"
-      }
-    ],
-    "notes": "VIXW250514P00020000 (Expired @ $18.62)"
-  },
-  {
-    "ticket": 1431,
-    "date": "2025-04-11",
-    "symbol": "SPY",
-    "status": "LOSS",
-    "exit_date": "2025-04-11",
-    "pnl": -275,
-    "strategies": [
-      {
-        "name": "SPY250411P00530000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 530,
-            "expiry": "2025-04-11",
-            "premium": 2.67,
-            "quantity": 1,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "04/11/2025 13:05:09 EDT",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "524.58"
-      }
-    ],
-    "notes": "SPY250411P00530000 (Expired @ $524.58)"
-  },
-  {
-    "ticket": 1432,
-    "date": "2025-04-10",
-    "symbol": "SPY",
-    "status": "WIN",
-    "exit_date": "2025-04-23",
-    "pnl": 617,
-    "strategies": [
-      {
-        "name": "SPY250423P00500000",
-        "legs": [
-          {
-            "type": "put",
-            "strike": 500,
-            "expiry": "2025-04-23",
-            "premium": 6.17,
-            "quantity": 1,
-            "action": "sell"
-          }
-        ],
-        "entry_time": "04/10/2025 10:16:52 EDT",
-        "entry_price": null,
-        "exit_time": "",
-        "exit_price": "527.25"
-      }
-    ],
-    "notes": "SPY250423P00500000 (Expired @ $527.25)"
   }
 ];
