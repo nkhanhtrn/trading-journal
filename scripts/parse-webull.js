@@ -192,7 +192,7 @@ function parseStrangles(strangleArray, startTicketId) {
 // Generate readable name for single option (same for long/short of same option)
 function generateSingleOptionName(opt) {
   const capitalType = opt.type.charAt(0).toUpperCase() + opt.type.slice(1)
-  return `${opt.underlying} ${capitalType} $${opt.strike} ${opt.date}`
+  return `${opt.underlying} ${capitalType} $${opt.strike}`
 }
 
 // Generate readable name for multi-leg strategy
