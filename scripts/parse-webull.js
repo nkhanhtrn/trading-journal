@@ -571,7 +571,6 @@ async function processExpiredTickets(tickets, startTicketId) {
 
   for (const ticket of tickets) {
     if (ticket.status !== 'OPEN') {
-      stillOpenTickets.push(ticket)
       continue
     }
 
