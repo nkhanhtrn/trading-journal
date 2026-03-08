@@ -89,6 +89,39 @@
 
       <!-- Trades Tab -->
       <div v-if="activeTab === 'trades'">
+        <!-- Open Positions Section -->
+        <div v-if="openPositions.length > 0" class="bg-gradient-to-r from-yellow-900/50 to-orange-900/50 border border-yellow-600/50 rounded-lg p-4 mb-6">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="text-lg font-bold text-yellow-300 flex items-center gap-2">
+              <i class="fas fa-exclamation-triangle"></i>
+              Open Positions ({{ openPositions.length }})
+            </h3>
+            <span class="text-xs text-yellow-400/80">Not yet expired</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div v-for="pos in openPositions" :key="pos.ticket" class="bg-gray-800/50 rounded p-3 border border-gray-700">
+              <div class="flex items-center justify-between mb-2">
+                <span class="font-bold text-white">#{{ pos.ticket }}</span>
+                <span class="text-lg font-bold text-yellow-300">{{ pos.symbol }}</span>
+              </div>
+              <div class="text-xs text-gray-400 mb-1">
+                Opened: {{ pos.date }} | Expires: {{ pos.strategies[0].legs[0].expiry }}
+              </div>
+              <div class="flex items-center gap-4 text-xs">
+                <div>
+                  <span class="text-gray-500">Spread:</span>
+                  <span class="text-white ml-1">{{ pos.strategies[0].legs[0].type.toUpperCase() }} {{ pos.strategies[0].legs.map(l => l.strike).sort((a,b) => a-b).join('/') }}</span>
+                </div>
+                <div>
+                  <span class="text-gray-500">Contracts:</span>
+                  <span class="text-white ml-1">{{ pos.strategies[0].legs[0].quantity }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- Filters -->
         <div class="bg-gray-800 rounded-lg p-3 mb-6 flex gap-3 flex-wrap items-center">
           <input v-model="filters.symbol" type="text" placeholder="Search symbol..." class="bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 text-sm flex-1 min-w-40">
@@ -345,6 +378,10 @@ const filters = ref({
 })
 
 const sortBy = ref('ticket')
+
+const openPositions = computed(() => {
+  return tickets.value.filter(t => t.status === 'OPEN').sort((a, b) => new Date(a.strategies[0]?.legs[0]?.expiry) - new Date(b.strategies[0]?.legs[0]?.expiry))
+})
 
 onMounted(() => {
   tickets.value = [...tradesData]
