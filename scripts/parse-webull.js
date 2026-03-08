@@ -189,6 +189,20 @@ function parseStrangles(strangleArray, startTicketId) {
   return []
 }
 
+// Generate readable name for single option (same for long/short of same option)
+function generateSingleOptionName(opt) {
+  const capitalType = opt.type.charAt(0).toUpperCase() + opt.type.slice(1)
+  return `${opt.underlying} ${capitalType} $${opt.strike} ${opt.date}`
+}
+
+// Generate readable name for multi-leg strategy
+function generateMultiLegName(header) {
+  // Use the original header name but make it more readable
+  // E.g., "GLD Vertical" → "GLD Vertical Spread"
+  // E.g., "SPXW Iron Condor" → "SPXW Iron Condor"
+  return header.name
+}
+
 // Single Options Parser - combines long/short and matches them
 function parseSingleOptions(longArray, shortArray, startTicketId) {
   // Process both arrays into trades data
@@ -196,7 +210,7 @@ function parseSingleOptions(longArray, shortArray, startTicketId) {
     const opt = parseOptionSymbol(row.symbol)
     if (!opt) return null
     return {
-      ticketName: row.symbol,
+      ticketName: generateSingleOptionName(opt),
       side: row.side,
       status: row.status,
       filledTime: row.filledTime,
@@ -208,7 +222,7 @@ function parseSingleOptions(longArray, shortArray, startTicketId) {
     const opt = parseOptionSymbol(row.symbol)
     if (!opt) return null
     return {
-      ticketName: row.symbol,
+      ticketName: generateSingleOptionName(opt),
       side: row.side,
       status: row.status,
       filledTime: row.filledTime,

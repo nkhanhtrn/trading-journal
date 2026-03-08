@@ -4161,7 +4161,7 @@ export const tradesData = [
     "pnl": -195,
     "strategies": [
       {
-        "name": "XSP260227C00691000",
+        "name": "XSP Call $691 2026-02-27",
         "legs": [
           {
             "type": "call",
@@ -4186,7 +4186,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "XSP260227C00691000"
+    "notes": "XSP Call $691 2026-02-27"
   },
   {
     "ticket": 1109,
@@ -4197,7 +4197,7 @@ export const tradesData = [
     "pnl": 300,
     "strategies": [
       {
-        "name": "GLD260227C00478000",
+        "name": "GLD Call $478 2026-02-27",
         "legs": [
           {
             "type": "call",
@@ -4222,7 +4222,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "GLD260227C00478000"
+    "notes": "GLD Call $478 2026-02-27"
   },
   {
     "ticket": 1110,
@@ -4233,7 +4233,7 @@ export const tradesData = [
     "pnl": 916,
     "strategies": [
       {
-        "name": "GLD260220C00470000",
+        "name": "GLD Call $470 2026-02-20",
         "legs": [
           {
             "type": "call",
@@ -4258,7 +4258,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "GLD260220C00470000"
+    "notes": "GLD Call $470 2026-02-20"
   },
   {
     "ticket": 1111,
@@ -4269,7 +4269,7 @@ export const tradesData = [
     "pnl": 193,
     "strategies": [
       {
-        "name": "GLD260220C00481000",
+        "name": "GLD Call $481 2026-02-20",
         "legs": [
           {
             "type": "call",
@@ -4294,7 +4294,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "GLD260220C00481000"
+    "notes": "GLD Call $481 2026-02-20"
   },
   {
     "ticket": 1112,
@@ -4305,7 +4305,7 @@ export const tradesData = [
     "pnl": 1463,
     "strategies": [
       {
-        "name": "FSLY270115C00022500",
+        "name": "FSLY Call $22.5 2027-01-15",
         "legs": [
           {
             "type": "call",
@@ -4330,7 +4330,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "FSLY270115C00022500"
+    "notes": "FSLY Call $22.5 2027-01-15"
   },
   {
     "ticket": 1113,
@@ -4341,7 +4341,7 @@ export const tradesData = [
     "pnl": 0,
     "strategies": [
       {
-        "name": "GLD261231C00404000",
+        "name": "GLD Call $404 2026-12-31",
         "legs": [
           {
             "type": "call",
@@ -4358,7 +4358,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "GLD261231C00404000"
+    "notes": "GLD Call $404 2026-12-31"
   },
   {
     "ticket": 1114,
@@ -4369,7 +4369,7 @@ export const tradesData = [
     "pnl": 0,
     "strategies": [
       {
-        "name": "GLD261231C00383000",
+        "name": "GLD Call $383 2026-12-31",
         "legs": [
           {
             "type": "call",
@@ -4386,7 +4386,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "GLD261231C00383000"
+    "notes": "GLD Call $383 2026-12-31"
   },
   {
     "ticket": 1115,
@@ -4397,7 +4397,7 @@ export const tradesData = [
     "pnl": 165,
     "strategies": [
       {
-        "name": "GLD260213C00480000",
+        "name": "GLD Call $480 2026-02-13",
         "legs": [
           {
             "type": "call",
@@ -4422,7 +4422,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "GLD260213C00480000"
+    "notes": "GLD Call $480 2026-02-13"
   },
   {
     "ticket": 1116,
@@ -4433,7 +4433,7 @@ export const tradesData = [
     "pnl": 214,
     "strategies": [
       {
-        "name": "GLD260211C00467000",
+        "name": "GLD Call $467 2026-02-11",
         "legs": [
           {
             "type": "call",
@@ -4458,7 +4458,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "GLD260211C00467000"
+    "notes": "GLD Call $467 2026-02-11"
   },
   {
     "ticket": 1117,
@@ -4469,7 +4469,7 @@ export const tradesData = [
     "pnl": 0,
     "strategies": [
       {
-        "name": "GLD261231C00391000",
+        "name": "GLD Call $391 2026-12-31",
         "legs": [
           {
             "type": "call",
@@ -4486,7 +4486,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "GLD261231C00391000"
+    "notes": "GLD Call $391 2026-12-31"
   },
   {
     "ticket": 1118,
@@ -4497,7 +4497,7 @@ export const tradesData = [
     "pnl": -169,
     "strategies": [
       {
-        "name": "GLD260202C00430000",
+        "name": "GLD Call $430 2026-02-02",
         "legs": [
           {
             "type": "call",
@@ -4522,7 +4522,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "GLD260202C00430000"
+    "notes": "GLD Call $430 2026-02-02"
   },
   {
     "ticket": 1119,
@@ -4533,7 +4533,7 @@ export const tradesData = [
     "pnl": 0,
     "strategies": [
       {
-        "name": "GLD261231C00500000",
+        "name": "GLD Call $500 2026-12-31",
         "legs": [
           {
             "type": "call",
@@ -4550,7 +4550,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "GLD261231C00500000"
+    "notes": "GLD Call $500 2026-12-31"
   },
   {
     "ticket": 1120,
@@ -4561,7 +4561,7 @@ export const tradesData = [
     "pnl": 0,
     "strategies": [
       {
-        "name": "GLD261231C00500000",
+        "name": "GLD Call $500 2026-12-31",
         "legs": [
           {
             "type": "call",
@@ -4578,7 +4578,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "GLD261231C00500000"
+    "notes": "GLD Call $500 2026-12-31"
   },
   {
     "ticket": 1121,
@@ -4589,7 +4589,7 @@ export const tradesData = [
     "pnl": -405,
     "strategies": [
       {
-        "name": "VIXW251224C00017000",
+        "name": "VIXW Call $17 2025-12-24",
         "legs": [
           {
             "type": "call",
@@ -4614,7 +4614,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "VIXW251224C00017000"
+    "notes": "VIXW Call $17 2025-12-24"
   },
   {
     "ticket": 1122,
@@ -4625,7 +4625,7 @@ export const tradesData = [
     "pnl": -360,
     "strategies": [
       {
-        "name": "VIXW251224C00020000",
+        "name": "VIXW Call $20 2025-12-24",
         "legs": [
           {
             "type": "call",
@@ -4650,7 +4650,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "VIXW251224C00020000"
+    "notes": "VIXW Call $20 2025-12-24"
   },
   {
     "ticket": 1123,
@@ -4661,7 +4661,7 @@ export const tradesData = [
     "pnl": -90,
     "strategies": [
       {
-        "name": "VIXW251210C00017000",
+        "name": "VIXW Call $17 2025-12-10",
         "legs": [
           {
             "type": "call",
@@ -4686,7 +4686,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "VIXW251210C00017000"
+    "notes": "VIXW Call $17 2025-12-10"
   },
   {
     "ticket": 1124,
@@ -4697,7 +4697,7 @@ export const tradesData = [
     "pnl": -200,
     "strategies": [
       {
-        "name": "VIXW251203C00020000",
+        "name": "VIXW Call $20 2025-12-03",
         "legs": [
           {
             "type": "call",
@@ -4722,7 +4722,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "VIXW251203C00020000"
+    "notes": "VIXW Call $20 2025-12-03"
   },
   {
     "ticket": 1125,
@@ -4733,7 +4733,7 @@ export const tradesData = [
     "pnl": -9,
     "strategies": [
       {
-        "name": "SPY251024C00670000",
+        "name": "SPY Call $670 2025-10-24",
         "legs": [
           {
             "type": "call",
@@ -4758,7 +4758,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "SPY251024C00670000"
+    "notes": "SPY Call $670 2025-10-24"
   },
   {
     "ticket": 1128,
@@ -4769,7 +4769,7 @@ export const tradesData = [
     "pnl": -36,
     "strategies": [
       {
-        "name": "HD250523C00390000",
+        "name": "HD Call $390 2025-05-23",
         "legs": [
           {
             "type": "call",
@@ -4794,7 +4794,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "HD250523C00390000"
+    "notes": "HD Call $390 2025-05-23"
   },
   {
     "ticket": 1129,
@@ -4805,7 +4805,7 @@ export const tradesData = [
     "pnl": 180,
     "strategies": [
       {
-        "name": "SPXW250411C05400000",
+        "name": "SPXW Call $5400 2025-04-11",
         "legs": [
           {
             "type": "call",
@@ -4830,7 +4830,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "SPXW250411C05400000"
+    "notes": "SPXW Call $5400 2025-04-11"
   },
   {
     "ticket": 1130,
@@ -4841,7 +4841,7 @@ export const tradesData = [
     "pnl": -104,
     "strategies": [
       {
-        "name": "SPY250423C00545000",
+        "name": "SPY Call $545 2025-04-23",
         "legs": [
           {
             "type": "call",
@@ -4866,7 +4866,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "SPY250423C00545000"
+    "notes": "SPY Call $545 2025-04-23"
   },
   {
     "ticket": 1131,
@@ -4877,7 +4877,7 @@ export const tradesData = [
     "pnl": 25,
     "strategies": [
       {
-        "name": "TSM250321C00200000",
+        "name": "TSM Call $200 2025-03-21",
         "legs": [
           {
             "type": "call",
@@ -4902,7 +4902,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "TSM250321C00200000"
+    "notes": "TSM Call $200 2025-03-21"
   },
   {
     "ticket": 1137,
@@ -4913,7 +4913,7 @@ export const tradesData = [
     "pnl": 263,
     "strategies": [
       {
-        "name": "GLD260313P00471000",
+        "name": "GLD Put $471 2026-03-13",
         "legs": [
           {
             "type": "put",
@@ -4938,7 +4938,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "GLD260313P00471000"
+    "notes": "GLD Put $471 2026-03-13"
   },
   {
     "ticket": 1138,
@@ -4949,7 +4949,7 @@ export const tradesData = [
     "pnl": 1100,
     "strategies": [
       {
-        "name": "GLD260313P00471000",
+        "name": "GLD Put $471 2026-03-13",
         "legs": [
           {
             "type": "put",
@@ -4974,7 +4974,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "GLD260313P00471000"
+    "notes": "GLD Put $471 2026-03-13"
   },
   {
     "ticket": 1139,
@@ -4985,7 +4985,7 @@ export const tradesData = [
     "pnl": 1125,
     "strategies": [
       {
-        "name": "GLD260311P00470000",
+        "name": "GLD Put $470 2026-03-11",
         "legs": [
           {
             "type": "put",
@@ -5010,7 +5010,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "GLD260311P00470000"
+    "notes": "GLD Put $470 2026-03-11"
   },
   {
     "ticket": 1140,
@@ -5021,7 +5021,7 @@ export const tradesData = [
     "pnl": 80,
     "strategies": [
       {
-        "name": "VIXW260311P00022000",
+        "name": "VIXW Put $22 2026-03-11",
         "legs": [
           {
             "type": "put",
@@ -5046,7 +5046,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "VIXW260311P00022000"
+    "notes": "VIXW Put $22 2026-03-11"
   },
   {
     "ticket": 1141,
@@ -5057,7 +5057,7 @@ export const tradesData = [
     "pnl": -180,
     "strategies": [
       {
-        "name": "XSP260223P00680000",
+        "name": "XSP Put $680 2026-02-23",
         "legs": [
           {
             "type": "put",
@@ -5082,7 +5082,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "XSP260223P00680000"
+    "notes": "XSP Put $680 2026-02-23"
   },
   {
     "ticket": 1142,
@@ -5093,7 +5093,7 @@ export const tradesData = [
     "pnl": -140,
     "strategies": [
       {
-        "name": "VIX260218P00018000",
+        "name": "VIX Put $18 2026-02-18",
         "legs": [
           {
             "type": "put",
@@ -5118,7 +5118,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "VIX260218P00018000"
+    "notes": "VIX Put $18 2026-02-18"
   },
   {
     "ticket": 1144,
@@ -5129,7 +5129,7 @@ export const tradesData = [
     "pnl": 68,
     "strategies": [
       {
-        "name": "VIXW260204P00017000",
+        "name": "VIXW Put $17 2026-02-04",
         "legs": [
           {
             "type": "put",
@@ -5154,7 +5154,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "VIXW260204P00017000"
+    "notes": "VIXW Put $17 2026-02-04"
   },
   {
     "ticket": 1145,
@@ -5165,7 +5165,7 @@ export const tradesData = [
     "pnl": 0,
     "strategies": [
       {
-        "name": "GLD260130P00475000",
+        "name": "GLD Put $475 2026-01-30",
         "legs": [
           {
             "type": "put",
@@ -5190,7 +5190,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "GLD260130P00475000"
+    "notes": "GLD Put $475 2026-01-30"
   },
   {
     "ticket": 1146,
@@ -5201,7 +5201,7 @@ export const tradesData = [
     "pnl": 161,
     "strategies": [
       {
-        "name": "GLD260128P00459000",
+        "name": "GLD Put $459 2026-01-28",
         "legs": [
           {
             "type": "put",
@@ -5226,7 +5226,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "GLD260128P00459000"
+    "notes": "GLD Put $459 2026-01-28"
   },
   {
     "ticket": 1147,
@@ -5237,7 +5237,7 @@ export const tradesData = [
     "pnl": 206,
     "strategies": [
       {
-        "name": "GLD260123P00445000",
+        "name": "GLD Put $445 2026-01-23",
         "legs": [
           {
             "type": "put",
@@ -5262,7 +5262,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "GLD260123P00445000"
+    "notes": "GLD Put $445 2026-01-23"
   },
   {
     "ticket": 1149,
@@ -5273,7 +5273,7 @@ export const tradesData = [
     "pnl": -210,
     "strategies": [
       {
-        "name": "VIXW260107P00014500",
+        "name": "VIXW Put $14.5 2026-01-07",
         "legs": [
           {
             "type": "put",
@@ -5298,7 +5298,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "VIXW260107P00014500"
+    "notes": "VIXW Put $14.5 2026-01-07"
   },
   {
     "ticket": 1150,
@@ -5309,7 +5309,7 @@ export const tradesData = [
     "pnl": 0,
     "strategies": [
       {
-        "name": "VIXW251224P00015000",
+        "name": "VIXW Put $15 2025-12-24",
         "legs": [
           {
             "type": "put",
@@ -5334,7 +5334,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "VIXW251224P00015000"
+    "notes": "VIXW Put $15 2025-12-24"
   },
   {
     "ticket": 1151,
@@ -5345,7 +5345,7 @@ export const tradesData = [
     "pnl": -100,
     "strategies": [
       {
-        "name": "SOFI260116P00028000",
+        "name": "SOFI Put $28 2026-01-16",
         "legs": [
           {
             "type": "put",
@@ -5370,7 +5370,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "SOFI260116P00028000"
+    "notes": "SOFI Put $28 2026-01-16"
   },
   {
     "ticket": 1152,
@@ -5381,7 +5381,7 @@ export const tradesData = [
     "pnl": -20,
     "strategies": [
       {
-        "name": "SOFI260116P00028000",
+        "name": "SOFI Put $28 2026-01-16",
         "legs": [
           {
             "type": "put",
@@ -5406,7 +5406,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "SOFI260116P00028000"
+    "notes": "SOFI Put $28 2026-01-16"
   },
   {
     "ticket": 1153,
@@ -5417,7 +5417,7 @@ export const tradesData = [
     "pnl": -50,
     "strategies": [
       {
-        "name": "VIX251217P00015500",
+        "name": "VIX Put $15.5 2025-12-17",
         "legs": [
           {
             "type": "put",
@@ -5442,7 +5442,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "VIX251217P00015500"
+    "notes": "VIX Put $15.5 2025-12-17"
   },
   {
     "ticket": 1154,
@@ -5453,7 +5453,7 @@ export const tradesData = [
     "pnl": 0,
     "strategies": [
       {
-        "name": "VIX251217P00015500",
+        "name": "VIX Put $15.5 2025-12-17",
         "legs": [
           {
             "type": "put",
@@ -5478,7 +5478,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "VIX251217P00015500"
+    "notes": "VIX Put $15.5 2025-12-17"
   },
   {
     "ticket": 1156,
@@ -5489,7 +5489,7 @@ export const tradesData = [
     "pnl": 216,
     "strategies": [
       {
-        "name": "VIXW251203P00017000",
+        "name": "VIXW Put $17 2025-12-03",
         "legs": [
           {
             "type": "put",
@@ -5514,7 +5514,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "VIXW251203P00017000"
+    "notes": "VIXW Put $17 2025-12-03"
   },
   {
     "ticket": 1158,
@@ -5525,7 +5525,7 @@ export const tradesData = [
     "pnl": 4400,
     "strategies": [
       {
-        "name": "SOFI260102P00030000",
+        "name": "SOFI Put $30 2026-01-02",
         "legs": [
           {
             "type": "put",
@@ -5550,7 +5550,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "SOFI260102P00030000"
+    "notes": "SOFI Put $30 2026-01-02"
   },
   {
     "ticket": 1159,
@@ -5561,7 +5561,7 @@ export const tradesData = [
     "pnl": -134,
     "strategies": [
       {
-        "name": "SPY251128P00650000",
+        "name": "SPY Put $650 2025-11-28",
         "legs": [
           {
             "type": "put",
@@ -5586,7 +5586,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "SPY251128P00650000"
+    "notes": "SPY Put $650 2025-11-28"
   },
   {
     "ticket": 1160,
@@ -5597,7 +5597,7 @@ export const tradesData = [
     "pnl": 971,
     "strategies": [
       {
-        "name": "VIXW251126P00020000",
+        "name": "VIXW Put $20 2025-11-26",
         "legs": [
           {
             "type": "put",
@@ -5622,7 +5622,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "VIXW251126P00020000"
+    "notes": "VIXW Put $20 2025-11-26"
   },
   {
     "ticket": 1161,
@@ -5633,7 +5633,7 @@ export const tradesData = [
     "pnl": 52,
     "strategies": [
       {
-        "name": "VIXW251126P00020000",
+        "name": "VIXW Put $20 2025-11-26",
         "legs": [
           {
             "type": "put",
@@ -5658,7 +5658,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "VIXW251126P00020000"
+    "notes": "VIXW Put $20 2025-11-26"
   },
   {
     "ticket": 1162,
@@ -5669,7 +5669,7 @@ export const tradesData = [
     "pnl": -8,
     "strategies": [
       {
-        "name": "VIX251119P00020000",
+        "name": "VIX Put $20 2025-11-19",
         "legs": [
           {
             "type": "put",
@@ -5694,7 +5694,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "VIX251119P00020000"
+    "notes": "VIX Put $20 2025-11-19"
   },
   {
     "ticket": 1163,
@@ -5705,7 +5705,7 @@ export const tradesData = [
     "pnl": -60,
     "strategies": [
       {
-        "name": "VIX251119P00019000",
+        "name": "VIX Put $19 2025-11-19",
         "legs": [
           {
             "type": "put",
@@ -5730,7 +5730,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "VIX251119P00019000"
+    "notes": "VIX Put $19 2025-11-19"
   },
   {
     "ticket": 1164,
@@ -5741,7 +5741,7 @@ export const tradesData = [
     "pnl": 1500,
     "strategies": [
       {
-        "name": "SOFI251219P00030000",
+        "name": "SOFI Put $30 2025-12-19",
         "legs": [
           {
             "type": "put",
@@ -5766,7 +5766,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "SOFI251219P00030000"
+    "notes": "SOFI Put $30 2025-12-19"
   },
   {
     "ticket": 1165,
@@ -5777,7 +5777,7 @@ export const tradesData = [
     "pnl": 1280,
     "strategies": [
       {
-        "name": "VIXW251112P00020000",
+        "name": "VIXW Put $20 2025-11-12",
         "legs": [
           {
             "type": "put",
@@ -5802,7 +5802,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "VIXW251112P00020000"
+    "notes": "VIXW Put $20 2025-11-12"
   },
   {
     "ticket": 1167,
@@ -5813,7 +5813,7 @@ export const tradesData = [
     "pnl": 100,
     "strategies": [
       {
-        "name": "SOFI251121P00039000",
+        "name": "SOFI Put $39 2025-11-21",
         "legs": [
           {
             "type": "put",
@@ -5838,7 +5838,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "SOFI251121P00039000"
+    "notes": "SOFI Put $39 2025-11-21"
   },
   {
     "ticket": 1168,
@@ -5849,7 +5849,7 @@ export const tradesData = [
     "pnl": -100,
     "strategies": [
       {
-        "name": "SOFI251121P00039000",
+        "name": "SOFI Put $39 2025-11-21",
         "legs": [
           {
             "type": "put",
@@ -5874,7 +5874,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "SOFI251121P00039000"
+    "notes": "SOFI Put $39 2025-11-21"
   },
   {
     "ticket": 1169,
@@ -5885,7 +5885,7 @@ export const tradesData = [
     "pnl": -261,
     "strategies": [
       {
-        "name": "SPY251024P00654000",
+        "name": "SPY Put $654 2025-10-24",
         "legs": [
           {
             "type": "put",
@@ -5910,7 +5910,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "SPY251024P00654000"
+    "notes": "SPY Put $654 2025-10-24"
   },
   {
     "ticket": 1170,
@@ -5921,7 +5921,7 @@ export const tradesData = [
     "pnl": -340,
     "strategies": [
       {
-        "name": "VIX251022P00018500",
+        "name": "VIX Put $18.5 2025-10-22",
         "legs": [
           {
             "type": "put",
@@ -5946,7 +5946,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "VIX251022P00018500"
+    "notes": "VIX Put $18.5 2025-10-22"
   },
   {
     "ticket": 1171,
@@ -5957,7 +5957,7 @@ export const tradesData = [
     "pnl": -20,
     "strategies": [
       {
-        "name": "VIXW251015P00019000",
+        "name": "VIXW Put $19 2025-10-15",
         "legs": [
           {
             "type": "put",
@@ -5982,7 +5982,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "VIXW251015P00019000"
+    "notes": "VIXW Put $19 2025-10-15"
   },
   {
     "ticket": 1172,
@@ -5993,7 +5993,7 @@ export const tradesData = [
     "pnl": -150,
     "strategies": [
       {
-        "name": "VIXW251015P00018000",
+        "name": "VIXW Put $18 2025-10-15",
         "legs": [
           {
             "type": "put",
@@ -6018,7 +6018,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "VIXW251015P00018000"
+    "notes": "VIXW Put $18 2025-10-15"
   },
   {
     "ticket": 1173,
@@ -6029,7 +6029,7 @@ export const tradesData = [
     "pnl": 189,
     "strategies": [
       {
-        "name": "VIXW251001P00016000",
+        "name": "VIXW Put $16 2025-10-01",
         "legs": [
           {
             "type": "put",
@@ -6054,7 +6054,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "VIXW251001P00016000"
+    "notes": "VIXW Put $16 2025-10-01"
   },
   {
     "ticket": 1175,
@@ -6065,7 +6065,7 @@ export const tradesData = [
     "pnl": -300,
     "strategies": [
       {
-        "name": "VIX250820P00015000",
+        "name": "VIX Put $15 2025-08-20",
         "legs": [
           {
             "type": "put",
@@ -6090,7 +6090,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "VIX250820P00015000"
+    "notes": "VIX Put $15 2025-08-20"
   },
   {
     "ticket": 1176,
@@ -6101,7 +6101,7 @@ export const tradesData = [
     "pnl": -100,
     "strategies": [
       {
-        "name": "VIX250820P00014500",
+        "name": "VIX Put $14.5 2025-08-20",
         "legs": [
           {
             "type": "put",
@@ -6126,7 +6126,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "VIX250820P00014500"
+    "notes": "VIX Put $14.5 2025-08-20"
   },
   {
     "ticket": 1177,
@@ -6137,7 +6137,7 @@ export const tradesData = [
     "pnl": 90,
     "strategies": [
       {
-        "name": "VIXW250806P00018000",
+        "name": "VIXW Put $18 2025-08-06",
         "legs": [
           {
             "type": "put",
@@ -6162,7 +6162,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "VIXW250806P00018000"
+    "notes": "VIXW Put $18 2025-08-06"
   },
   {
     "ticket": 1178,
@@ -6173,7 +6173,7 @@ export const tradesData = [
     "pnl": 448,
     "strategies": [
       {
-        "name": "UPS250801P00099000",
+        "name": "UPS Put $99 2025-08-01",
         "legs": [
           {
             "type": "put",
@@ -6198,7 +6198,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "UPS250801P00099000"
+    "notes": "UPS Put $99 2025-08-01"
   },
   {
     "ticket": 1179,
@@ -6209,7 +6209,7 @@ export const tradesData = [
     "pnl": 6,
     "strategies": [
       {
-        "name": "SBUX250801P00090000",
+        "name": "SBUX Put $90 2025-08-01",
         "legs": [
           {
             "type": "put",
@@ -6234,7 +6234,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "SBUX250801P00090000"
+    "notes": "SBUX Put $90 2025-08-01"
   },
   {
     "ticket": 1181,
@@ -6245,7 +6245,7 @@ export const tradesData = [
     "pnl": -2054,
     "strategies": [
       {
-        "name": "VIXW250723P00017000",
+        "name": "VIXW Put $17 2025-07-23",
         "legs": [
           {
             "type": "put",
@@ -6270,7 +6270,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "VIXW250723P00017000"
+    "notes": "VIXW Put $17 2025-07-23"
   },
   {
     "ticket": 1182,
@@ -6281,7 +6281,7 @@ export const tradesData = [
     "pnl": -150,
     "strategies": [
       {
-        "name": "VIX250716P00016500",
+        "name": "VIX Put $16.5 2025-07-16",
         "legs": [
           {
             "type": "put",
@@ -6306,7 +6306,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "VIX250716P00016500"
+    "notes": "VIX Put $16.5 2025-07-16"
   },
   {
     "ticket": 1184,
@@ -6317,7 +6317,7 @@ export const tradesData = [
     "pnl": -300,
     "strategies": [
       {
-        "name": "VIXW250702P00017000",
+        "name": "VIXW Put $17 2025-07-02",
         "legs": [
           {
             "type": "put",
@@ -6342,7 +6342,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "VIXW250702P00017000"
+    "notes": "VIXW Put $17 2025-07-02"
   },
   {
     "ticket": 1187,
@@ -6353,7 +6353,7 @@ export const tradesData = [
     "pnl": 510,
     "strategies": [
       {
-        "name": "VIXW250611P00019000",
+        "name": "VIXW Put $19 2025-06-11",
         "legs": [
           {
             "type": "put",
@@ -6378,7 +6378,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "VIXW250611P00019000"
+    "notes": "VIXW Put $19 2025-06-11"
   },
   {
     "ticket": 1189,
@@ -6389,7 +6389,7 @@ export const tradesData = [
     "pnl": 3239,
     "strategies": [
       {
-        "name": "VIXW250603P00019000",
+        "name": "VIXW Put $19 2025-06-03",
         "legs": [
           {
             "type": "put",
@@ -6414,7 +6414,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "VIXW250603P00019000"
+    "notes": "VIXW Put $19 2025-06-03"
   },
   {
     "ticket": 1191,
@@ -6425,7 +6425,7 @@ export const tradesData = [
     "pnl": -200,
     "strategies": [
       {
-        "name": "VIXW250528P00019000",
+        "name": "VIXW Put $19 2025-05-28",
         "legs": [
           {
             "type": "put",
@@ -6450,7 +6450,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "VIXW250528P00019000"
+    "notes": "VIXW Put $19 2025-05-28"
   },
   {
     "ticket": 1192,
@@ -6461,7 +6461,7 @@ export const tradesData = [
     "pnl": 260,
     "strategies": [
       {
-        "name": "PANW250523P00182500",
+        "name": "PANW Put $182.5 2025-05-23",
         "legs": [
           {
             "type": "put",
@@ -6486,7 +6486,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "PANW250523P00182500"
+    "notes": "PANW Put $182.5 2025-05-23"
   },
   {
     "ticket": 1193,
@@ -6497,7 +6497,7 @@ export const tradesData = [
     "pnl": -253,
     "strategies": [
       {
-        "name": "HD250523P00370000",
+        "name": "HD Put $370 2025-05-23",
         "legs": [
           {
             "type": "put",
@@ -6522,7 +6522,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "HD250523P00370000"
+    "notes": "HD Put $370 2025-05-23"
   },
   {
     "ticket": 1194,
@@ -6533,7 +6533,7 @@ export const tradesData = [
     "pnl": -40,
     "strategies": [
       {
-        "name": "VIX250521P00018000",
+        "name": "VIX Put $18 2025-05-21",
         "legs": [
           {
             "type": "put",
@@ -6558,7 +6558,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "VIX250521P00018000"
+    "notes": "VIX Put $18 2025-05-21"
   },
   {
     "ticket": 1196,
@@ -6569,7 +6569,7 @@ export const tradesData = [
     "pnl": -494,
     "strategies": [
       {
-        "name": "VIX250521P00017000",
+        "name": "VIX Put $17 2025-05-21",
         "legs": [
           {
             "type": "put",
@@ -6594,7 +6594,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "VIX250521P00017000"
+    "notes": "VIX Put $17 2025-05-21"
   },
   {
     "ticket": 1198,
@@ -6605,7 +6605,7 @@ export const tradesData = [
     "pnl": 620,
     "strategies": [
       {
-        "name": "VIXW250514P00020000",
+        "name": "VIXW Put $20 2025-05-14",
         "legs": [
           {
             "type": "put",
@@ -6630,7 +6630,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "VIXW250514P00020000"
+    "notes": "VIXW Put $20 2025-05-14"
   },
   {
     "ticket": 1200,
@@ -6641,7 +6641,7 @@ export const tradesData = [
     "pnl": -27,
     "strategies": [
       {
-        "name": "SPY250411P00530000",
+        "name": "SPY Put $530 2025-04-11",
         "legs": [
           {
             "type": "put",
@@ -6666,7 +6666,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "SPY250411P00530000"
+    "notes": "SPY Put $530 2025-04-11"
   },
   {
     "ticket": 1201,
@@ -6677,7 +6677,7 @@ export const tradesData = [
     "pnl": -175,
     "strategies": [
       {
-        "name": "SPY250423P00500000",
+        "name": "SPY Put $500 2025-04-23",
         "legs": [
           {
             "type": "put",
@@ -6702,7 +6702,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "SPY250423P00500000"
+    "notes": "SPY Put $500 2025-04-23"
   },
   {
     "ticket": 1203,
@@ -6713,7 +6713,7 @@ export const tradesData = [
     "pnl": 0,
     "strategies": [
       {
-        "name": "GLD260309P00466000",
+        "name": "GLD Put $466 2026-03-09",
         "legs": [
           {
             "type": "put",
@@ -6730,7 +6730,7 @@ export const tradesData = [
         "exit_price": null
       }
     ],
-    "notes": "GLD260309P00466000"
+    "notes": "GLD Put $466 2026-03-09"
   },
   {
     "ticket": 1207,
@@ -7677,7 +7677,7 @@ export const tradesData = [
     "pnl": -1104,
     "strategies": [
       {
-        "name": "CHYM250815C00035000",
+        "name": "CHYM Call $35 2025-08-15",
         "legs": [
           {
             "type": "call",
@@ -7694,7 +7694,7 @@ export const tradesData = [
         "exit_price": "29.25"
       }
     ],
-    "notes": "CHYM250815C00035000 (Expired @ $29.25)"
+    "notes": "CHYM Call $35 2025-08-15 (Expired @ $29.25)"
   },
   {
     "ticket": 1234,
@@ -7705,7 +7705,7 @@ export const tradesData = [
     "pnl": -1068,
     "strategies": [
       {
-        "name": "PANW250523C00207500",
+        "name": "PANW Call $207.5 2025-05-23",
         "legs": [
           {
             "type": "call",
@@ -7722,7 +7722,7 @@ export const tradesData = [
         "exit_price": "186.14"
       }
     ],
-    "notes": "PANW250523C00207500 (Expired @ $186.14)"
+    "notes": "PANW Call $207.5 2025-05-23 (Expired @ $186.14)"
   },
   {
     "ticket": 1235,
@@ -7733,7 +7733,7 @@ export const tradesData = [
     "pnl": -565,
     "strategies": [
       {
-        "name": "GLD260302C00480000",
+        "name": "GLD Call $480 2026-03-02",
         "legs": [
           {
             "type": "call",
@@ -7750,7 +7750,7 @@ export const tradesData = [
         "exit_price": "490.00"
       }
     ],
-    "notes": "GLD260302C00480000 (Expired @ $490.00)"
+    "notes": "GLD Call $480 2026-03-02 (Expired @ $490.00)"
   },
   {
     "ticket": 1236,
@@ -7761,7 +7761,7 @@ export const tradesData = [
     "pnl": -2896,
     "strategies": [
       {
-        "name": "GLD260223C00464000",
+        "name": "GLD Call $464 2026-02-23",
         "legs": [
           {
             "type": "call",
@@ -7778,7 +7778,7 @@ export const tradesData = [
         "exit_price": "481.28"
       }
     ],
-    "notes": "GLD260223C00464000 (Expired @ $481.28)"
+    "notes": "GLD Call $464 2026-02-23 (Expired @ $481.28)"
   },
   {
     "ticket": 1237,
@@ -7789,7 +7789,7 @@ export const tradesData = [
     "pnl": 485,
     "strategies": [
       {
-        "name": "GLD260213C00457000",
+        "name": "GLD Call $457 2026-02-13",
         "legs": [
           {
             "type": "call",
@@ -7806,7 +7806,7 @@ export const tradesData = [
         "exit_price": "451.39"
       }
     ],
-    "notes": "GLD260213C00457000 (Expired @ $451.39)"
+    "notes": "GLD Call $457 2026-02-13 (Expired @ $451.39)"
   },
   {
     "ticket": 1238,
@@ -7817,7 +7817,7 @@ export const tradesData = [
     "pnl": 510,
     "strategies": [
       {
-        "name": "GLD260213C00463000",
+        "name": "GLD Call $463 2026-02-13",
         "legs": [
           {
             "type": "call",
@@ -7834,7 +7834,7 @@ export const tradesData = [
         "exit_price": "451.39"
       }
     ],
-    "notes": "GLD260213C00463000 (Expired @ $451.39)"
+    "notes": "GLD Call $463 2026-02-13 (Expired @ $451.39)"
   },
   {
     "ticket": 1239,
@@ -7845,7 +7845,7 @@ export const tradesData = [
     "pnl": -2075,
     "strategies": [
       {
-        "name": "GLD260128C00450000",
+        "name": "GLD Call $450 2026-01-28",
         "legs": [
           {
             "type": "call",
@@ -7862,7 +7862,7 @@ export const tradesData = [
         "exit_price": "476.10"
       }
     ],
-    "notes": "GLD260128C00450000 (Expired @ $476.10)"
+    "notes": "GLD Call $450 2026-01-28 (Expired @ $476.10)"
   },
   {
     "ticket": 1240,
@@ -7873,7 +7873,7 @@ export const tradesData = [
     "pnl": -580,
     "strategies": [
       {
-        "name": "VIX260218P00018000",
+        "name": "VIX Put $18 2026-02-18",
         "legs": [
           {
             "type": "put",
@@ -7890,7 +7890,7 @@ export const tradesData = [
         "exit_price": "19.62"
       }
     ],
-    "notes": "VIX260218P00018000 (Expired @ $19.62)"
+    "notes": "VIX Put $18 2026-02-18 (Expired @ $19.62)"
   },
   {
     "ticket": 1241,
@@ -7901,7 +7901,7 @@ export const tradesData = [
     "pnl": -200,
     "strategies": [
       {
-        "name": "VIXW260107P00013500",
+        "name": "VIXW Put $13.5 2026-01-07",
         "legs": [
           {
             "type": "put",
@@ -7918,7 +7918,7 @@ export const tradesData = [
         "exit_price": "15.38"
       }
     ],
-    "notes": "VIXW260107P00013500 (Expired @ $15.38)"
+    "notes": "VIXW Put $13.5 2026-01-07 (Expired @ $15.38)"
   },
   {
     "ticket": 1242,
@@ -7929,7 +7929,7 @@ export const tradesData = [
     "pnl": 2200,
     "strategies": [
       {
-        "name": "VIXW251210P00016000",
+        "name": "VIXW Put $16 2025-12-10",
         "legs": [
           {
             "type": "put",
@@ -7946,7 +7946,7 @@ export const tradesData = [
         "exit_price": "15.77"
       }
     ],
-    "notes": "VIXW251210P00016000 (Expired @ $15.77)"
+    "notes": "VIXW Put $16 2025-12-10 (Expired @ $15.77)"
   },
   {
     "ticket": 1243,
@@ -7957,7 +7957,7 @@ export const tradesData = [
     "pnl": 73,
     "strategies": [
       {
-        "name": "VIXW251203P00017000",
+        "name": "VIXW Put $17 2025-12-03",
         "legs": [
           {
             "type": "put",
@@ -7974,7 +7974,7 @@ export const tradesData = [
         "exit_price": "16.08"
       }
     ],
-    "notes": "VIXW251203P00017000 (Expired @ $16.08)"
+    "notes": "VIXW Put $17 2025-12-03 (Expired @ $16.08)"
   },
   {
     "ticket": 1244,
@@ -7985,7 +7985,7 @@ export const tradesData = [
     "pnl": -305,
     "strategies": [
       {
-        "name": "VIXW251105P00018000",
+        "name": "VIXW Put $18 2025-11-05",
         "legs": [
           {
             "type": "put",
@@ -8002,7 +8002,7 @@ export const tradesData = [
         "exit_price": "18.01"
       }
     ],
-    "notes": "VIXW251105P00018000 (Expired @ $18.01)"
+    "notes": "VIXW Put $18 2025-11-05 (Expired @ $18.01)"
   },
   {
     "ticket": 1245,
@@ -8013,7 +8013,7 @@ export const tradesData = [
     "pnl": -400,
     "strategies": [
       {
-        "name": "VIXW250924P00015000",
+        "name": "VIXW Put $15 2025-09-24",
         "legs": [
           {
             "type": "put",
@@ -8030,7 +8030,7 @@ export const tradesData = [
         "exit_price": "16.18"
       }
     ],
-    "notes": "VIXW250924P00015000 (Expired @ $16.18)"
+    "notes": "VIXW Put $15 2025-09-24 (Expired @ $16.18)"
   },
   {
     "ticket": 1246,
@@ -8041,7 +8041,7 @@ export const tradesData = [
     "pnl": -600,
     "strategies": [
       {
-        "name": "VIXW250730P00015000",
+        "name": "VIXW Put $15 2025-07-30",
         "legs": [
           {
             "type": "put",
@@ -8058,7 +8058,7 @@ export const tradesData = [
         "exit_price": "15.48"
       }
     ],
-    "notes": "VIXW250730P00015000 (Expired @ $15.48)"
+    "notes": "VIXW Put $15 2025-07-30 (Expired @ $15.48)"
   },
   {
     "ticket": 1247,
@@ -8069,7 +8069,7 @@ export const tradesData = [
     "pnl": 36600,
     "strategies": [
       {
-        "name": "VIXW250723P00018000",
+        "name": "VIXW Put $18 2025-07-23",
         "legs": [
           {
             "type": "put",
@@ -8086,7 +8086,7 @@ export const tradesData = [
         "exit_price": "15.37"
       }
     ],
-    "notes": "VIXW250723P00018000 (Expired @ $15.37)"
+    "notes": "VIXW Put $18 2025-07-23 (Expired @ $15.37)"
   },
   {
     "ticket": 1248,
@@ -8097,7 +8097,7 @@ export const tradesData = [
     "pnl": 700,
     "strategies": [
       {
-        "name": "VIXW250702P00017000",
+        "name": "VIXW Put $17 2025-07-02",
         "legs": [
           {
             "type": "put",
@@ -8114,7 +8114,7 @@ export const tradesData = [
         "exit_price": "16.64"
       }
     ],
-    "notes": "VIXW250702P00017000 (Expired @ $16.64)"
+    "notes": "VIXW Put $17 2025-07-02 (Expired @ $16.64)"
   },
   {
     "ticket": 1249,
@@ -8125,7 +8125,7 @@ export const tradesData = [
     "pnl": -1110,
     "strategies": [
       {
-        "name": "VIX250618P00017500",
+        "name": "VIX Put $17.5 2025-06-18",
         "legs": [
           {
             "type": "put",
@@ -8142,7 +8142,7 @@ export const tradesData = [
         "exit_price": "20.14"
       }
     ],
-    "notes": "VIX250618P00017500 (Expired @ $20.14)"
+    "notes": "VIX Put $17.5 2025-06-18 (Expired @ $20.14)"
   },
   {
     "ticket": 1250,
@@ -8153,7 +8153,7 @@ export const tradesData = [
     "pnl": 445,
     "strategies": [
       {
-        "name": "VIXW250611P00019000",
+        "name": "VIXW Put $19 2025-06-11",
         "legs": [
           {
             "type": "put",
@@ -8170,7 +8170,7 @@ export const tradesData = [
         "exit_price": "17.26"
       }
     ],
-    "notes": "VIXW250611P00019000 (Expired @ $17.26)"
+    "notes": "VIXW Put $19 2025-06-11 (Expired @ $17.26)"
   },
   {
     "ticket": 1251,
@@ -8181,7 +8181,7 @@ export const tradesData = [
     "pnl": 119,
     "strategies": [
       {
-        "name": "VIXW250603P00019000",
+        "name": "VIXW Put $19 2025-06-03",
         "legs": [
           {
             "type": "put",
@@ -8198,7 +8198,7 @@ export const tradesData = [
         "exit_price": "17.69"
       }
     ],
-    "notes": "VIXW250603P00019000 (Expired @ $17.69)"
+    "notes": "VIXW Put $19 2025-06-03 (Expired @ $17.69)"
   },
   {
     "ticket": 1252,
@@ -8209,7 +8209,7 @@ export const tradesData = [
     "pnl": -382,
     "strategies": [
       {
-        "name": "VIX250521P00016000",
+        "name": "VIX Put $16 2025-05-21",
         "legs": [
           {
             "type": "put",
@@ -8226,7 +8226,7 @@ export const tradesData = [
         "exit_price": "20.87"
       }
     ],
-    "notes": "VIX250521P00016000 (Expired @ $20.87)"
+    "notes": "VIX Put $16 2025-05-21 (Expired @ $20.87)"
   },
   {
     "ticket": 1253,
@@ -8237,7 +8237,7 @@ export const tradesData = [
     "pnl": -10,
     "strategies": [
       {
-        "name": "VIX250521P00017000",
+        "name": "VIX Put $17 2025-05-21",
         "legs": [
           {
             "type": "put",
@@ -8254,7 +8254,7 @@ export const tradesData = [
         "exit_price": "20.87"
       }
     ],
-    "notes": "VIX250521P00017000 (Expired @ $20.87)"
+    "notes": "VIX Put $17 2025-05-21 (Expired @ $20.87)"
   },
   {
     "ticket": 1254,
@@ -8265,7 +8265,7 @@ export const tradesData = [
     "pnl": 11610,
     "strategies": [
       {
-        "name": "VIXW250514P00020000",
+        "name": "VIXW Put $20 2025-05-14",
         "legs": [
           {
             "type": "put",
@@ -8282,7 +8282,7 @@ export const tradesData = [
         "exit_price": "18.62"
       }
     ],
-    "notes": "VIXW250514P00020000 (Expired @ $18.62)"
+    "notes": "VIXW Put $20 2025-05-14 (Expired @ $18.62)"
   },
   {
     "ticket": 1255,
@@ -8293,7 +8293,7 @@ export const tradesData = [
     "pnl": -2200,
     "strategies": [
       {
-        "name": "SPXW250408P04930000",
+        "name": "SPXW Put $4930 2025-04-08",
         "legs": [
           {
             "type": "put",
@@ -8310,7 +8310,7 @@ export const tradesData = [
         "exit_price": "5062.25"
       }
     ],
-    "notes": "SPXW250408P04930000 (Expired @ $5062.25)"
+    "notes": "SPXW Put $4930 2025-04-08 (Expired @ $5062.25)"
   },
   {
     "ticket": 1256,
@@ -8321,7 +8321,7 @@ export const tradesData = [
     "pnl": 300,
     "strategies": [
       {
-        "name": "GLD260130P00478000",
+        "name": "GLD Put $478 2026-01-30",
         "legs": [
           {
             "type": "put",
@@ -8338,7 +8338,7 @@ export const tradesData = [
         "exit_price": "495.90"
       }
     ],
-    "notes": "GLD260130P00478000 (Expired @ $495.90)"
+    "notes": "GLD Put $478 2026-01-30 (Expired @ $495.90)"
   },
   {
     "ticket": 1257,
@@ -8349,7 +8349,7 @@ export const tradesData = [
     "pnl": 201,
     "strategies": [
       {
-        "name": "GLD260126P00453000",
+        "name": "GLD Put $453 2026-01-26",
         "legs": [
           {
             "type": "put",
@@ -8366,7 +8366,7 @@ export const tradesData = [
         "exit_price": "464.70"
       }
     ],
-    "notes": "GLD260126P00453000 (Expired @ $464.70)"
+    "notes": "GLD Put $453 2026-01-26 (Expired @ $464.70)"
   },
   {
     "ticket": 1258,
@@ -8377,7 +8377,7 @@ export const tradesData = [
     "pnl": 1221,
     "strategies": [
       {
-        "name": "DJT250829P00019000",
+        "name": "DJT Put $19 2025-08-29",
         "legs": [
           {
             "type": "put",
@@ -8394,6 +8394,6 @@ export const tradesData = [
         "exit_price": "17.95"
       }
     ],
-    "notes": "DJT250829P00019000 (Expired @ $17.95)"
+    "notes": "DJT Put $19 2025-08-29 (Expired @ $17.95)"
   }
 ];
