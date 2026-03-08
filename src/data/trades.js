@@ -4045,7 +4045,447 @@ export const tradesData = [
     "notes": "VIXW Vertical"
   },
   {
-    "ticket": 1105,
+    "ticket": 1106,
+    "date": "2025-11-10",
+    "symbol": "SPXW",
+    "status": "LOSS",
+    "exit_date": "2025-11-10",
+    "pnl": -450,
+    "strategies": [
+      {
+        "name": "SPXW IronCondor",
+        "legs": [
+          {
+            "type": "call",
+            "strike": 6805,
+            "expiry": "2025-11-10",
+            "premium": 3.9,
+            "quantity": 10,
+            "action": "buy"
+          },
+          {
+            "type": "call",
+            "strike": 6800,
+            "expiry": "2025-11-10",
+            "premium": 5.6,
+            "quantity": 10,
+            "action": "sell"
+          },
+          {
+            "type": "put",
+            "strike": 6795,
+            "expiry": "2025-11-10",
+            "premium": 12.3,
+            "quantity": 10,
+            "action": "sell"
+          },
+          {
+            "type": "put",
+            "strike": 6790,
+            "expiry": "2025-11-10",
+            "premium": 9.9,
+            "quantity": 10,
+            "action": "buy"
+          },
+          {
+            "type": "call",
+            "strike": 6805,
+            "expiry": "2025-11-10",
+            "premium": 15.11,
+            "quantity": 10,
+            "action": "sell"
+          },
+          {
+            "type": "call",
+            "strike": 6800,
+            "expiry": "2025-11-10",
+            "premium": 19.26,
+            "quantity": 10,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 6795,
+            "expiry": "2025-11-10",
+            "premium": 1.66,
+            "quantity": 10,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 6790,
+            "expiry": "2025-11-10",
+            "premium": 1.26,
+            "quantity": 10,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "11/10/2025 12:13:01 EST",
+        "entry_price": null,
+        "exit_time": "11/10/2025 13:12:17 EST",
+        "exit_price": null
+      }
+    ],
+    "notes": "SPXW IronCondor"
+  },
+  {
+    "ticket": 1107,
+    "date": "2025-10-22",
+    "symbol": "SPXW",
+    "status": "LOSS",
+    "exit_date": "2025-10-24",
+    "pnl": -1425,
+    "strategies": [
+      {
+        "name": "SPXW IronCondor",
+        "legs": [
+          {
+            "type": "call",
+            "strike": 6795,
+            "expiry": "2025-10-24",
+            "premium": 4,
+            "quantity": 1,
+            "action": "buy"
+          },
+          {
+            "type": "call",
+            "strike": 6755,
+            "expiry": "2025-10-24",
+            "premium": 14.4,
+            "quantity": 1,
+            "action": "sell"
+          },
+          {
+            "type": "put",
+            "strike": 6715,
+            "expiry": "2025-10-24",
+            "premium": 27.5,
+            "quantity": 1,
+            "action": "sell"
+          },
+          {
+            "type": "put",
+            "strike": 6675,
+            "expiry": "2025-10-24",
+            "premium": 15.95,
+            "quantity": 1,
+            "action": "buy"
+          },
+          {
+            "type": "call",
+            "strike": 6795,
+            "expiry": "2025-10-24",
+            "premium": 14.96,
+            "quantity": 1,
+            "action": "sell"
+          },
+          {
+            "type": "call",
+            "strike": 6755,
+            "expiry": "2025-10-24",
+            "premium": 50.84,
+            "quantity": 1,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 6715,
+            "expiry": "2025-10-24",
+            "premium": 1.02,
+            "quantity": 1,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 6675,
+            "expiry": "2025-10-24",
+            "premium": 0.7,
+            "quantity": 1,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "10/22/2025 11:55:30 EDT",
+        "entry_price": null,
+        "exit_time": "10/24/2025 11:37:19 EDT",
+        "exit_price": null
+      }
+    ],
+    "notes": "SPXW IronCondor"
+  },
+  {
+    "ticket": 1113,
+    "date": "2025-04-11",
+    "symbol": "SPXW",
+    "status": "WIN",
+    "exit_date": "2025-04-11",
+    "pnl": 3225,
+    "strategies": [
+      {
+        "name": "SPXW IronCondor",
+        "legs": [
+          {
+            "type": "call",
+            "strike": 5380,
+            "expiry": "2025-04-11",
+            "premium": 5.9,
+            "quantity": 5,
+            "action": "buy"
+          },
+          {
+            "type": "call",
+            "strike": 5370,
+            "expiry": "2025-04-11",
+            "premium": 9.32,
+            "quantity": 5,
+            "action": "sell"
+          },
+          {
+            "type": "put",
+            "strike": 5360,
+            "expiry": "2025-04-11",
+            "premium": 9.4,
+            "quantity": 5,
+            "action": "sell"
+          },
+          {
+            "type": "put",
+            "strike": 5350,
+            "expiry": "2025-04-11",
+            "premium": 5.82,
+            "quantity": 5,
+            "action": "buy"
+          },
+          {
+            "type": "call",
+            "strike": 5380,
+            "expiry": "2025-04-11",
+            "premium": 0.12,
+            "quantity": 5,
+            "action": "sell"
+          },
+          {
+            "type": "call",
+            "strike": 5370,
+            "expiry": "2025-04-11",
+            "premium": 0.43,
+            "quantity": 5,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 5360,
+            "expiry": "2025-04-11",
+            "premium": 0.31,
+            "quantity": 5,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 5350,
+            "expiry": "2025-04-11",
+            "premium": 0.07,
+            "quantity": 5,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "04/11/2025 15:33:06 EDT",
+        "entry_price": null,
+        "exit_time": "04/11/2025 15:57:52 EDT",
+        "exit_price": null
+      }
+    ],
+    "notes": "SPXW IronCondor"
+  },
+  {
+    "ticket": 1119,
+    "date": "2025-01-29",
+    "symbol": "QQQ",
+    "status": "LOSS",
+    "exit_date": "2025-01-29",
+    "pnl": -189,
+    "strategies": [
+      {
+        "name": "QQQ IronCondor",
+        "legs": [
+          {
+            "type": "call",
+            "strike": 524,
+            "expiry": "2025-01-29",
+            "premium": 0.52,
+            "quantity": 100,
+            "action": "buy"
+          },
+          {
+            "type": "call",
+            "strike": 523,
+            "expiry": "2025-01-29",
+            "premium": 0.78,
+            "quantity": 100,
+            "action": "sell"
+          },
+          {
+            "type": "put",
+            "strike": 522,
+            "expiry": "2025-01-29",
+            "premium": 2.41,
+            "quantity": 100,
+            "action": "sell"
+          },
+          {
+            "type": "put",
+            "strike": 521,
+            "expiry": "2025-01-29",
+            "premium": 1.87,
+            "quantity": 100,
+            "action": "buy"
+          },
+          {
+            "type": "call",
+            "strike": 524,
+            "expiry": "2025-01-29",
+            "premium": 0.5911,
+            "quantity": 100,
+            "action": "sell"
+          },
+          {
+            "type": "call",
+            "strike": 523,
+            "expiry": "2025-01-29",
+            "premium": 0.92,
+            "quantity": 100,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 522,
+            "expiry": "2025-01-29",
+            "premium": 1.65,
+            "quantity": 100,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 521,
+            "expiry": "2025-01-29",
+            "premium": 1.16,
+            "quantity": 100,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "01/29/2025 14:56:31 EST",
+        "entry_price": null,
+        "exit_time": "01/29/2025 15:28:07 EST",
+        "exit_price": null
+      }
+    ],
+    "notes": "QQQ IronCondor"
+  },
+  {
+    "ticket": 1120,
+    "date": "2025-07-30",
+    "symbol": "MSFT",
+    "status": "WIN",
+    "exit_date": "2025-07-31",
+    "pnl": 444,
+    "strategies": [
+      {
+        "name": "MSFT Strangle",
+        "legs": [
+          {
+            "type": "call",
+            "strike": 525,
+            "expiry": "2025-08-29",
+            "premium": 8.98,
+            "quantity": 1,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 500,
+            "expiry": "2025-08-29",
+            "premium": 8.2,
+            "quantity": 1,
+            "action": "buy"
+          },
+          {
+            "type": "call",
+            "strike": 525,
+            "expiry": "2025-08-29",
+            "premium": 19.7,
+            "quantity": 1,
+            "action": "sell"
+          },
+          {
+            "type": "put",
+            "strike": 500,
+            "expiry": "2025-08-29",
+            "premium": 1.92,
+            "quantity": 1,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "07/30/2025 11:03:24 EDT",
+        "entry_price": null,
+        "exit_time": "07/31/2025 10:12:14 EDT",
+        "exit_price": null
+      }
+    ],
+    "notes": "MSFT Strangle"
+  },
+  {
+    "ticket": 1121,
+    "date": "2025-04-10",
+    "symbol": "SPY",
+    "status": "LOSS",
+    "exit_date": "2025-04-11",
+    "pnl": -569,
+    "strategies": [
+      {
+        "name": "SPY Strangle",
+        "legs": [
+          {
+            "type": "call",
+            "strike": 530,
+            "expiry": "2025-04-11",
+            "premium": 4.86,
+            "quantity": 1,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 515,
+            "expiry": "2025-04-11",
+            "premium": 4.34,
+            "quantity": 1,
+            "action": "buy"
+          },
+          {
+            "type": "call",
+            "strike": 530,
+            "expiry": "2025-04-11",
+            "premium": 2.34,
+            "quantity": 1,
+            "action": "sell"
+          },
+          {
+            "type": "put",
+            "strike": 515,
+            "expiry": "2025-04-11",
+            "premium": 1.17,
+            "quantity": 1,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "04/10/2025 15:36:11 EDT",
+        "entry_price": null,
+        "exit_time": "04/11/2025 11:50:36 EDT",
+        "exit_price": null
+      }
+    ],
+    "notes": "SPY Strangle"
+  },
+  {
+    "ticket": 1122,
     "date": "2026-02-26",
     "symbol": "XSP",
     "status": "LOSS",
@@ -4081,7 +4521,7 @@ export const tradesData = [
     "notes": "XSP Call $691 02/27"
   },
   {
-    "ticket": 1106,
+    "ticket": 1123,
     "date": "2026-02-18",
     "symbol": "GLD",
     "status": "LOSS",
@@ -4117,7 +4557,7 @@ export const tradesData = [
     "notes": "GLD Call $464 02/23"
   },
   {
-    "ticket": 1107,
+    "ticket": 1124,
     "date": "2026-02-13",
     "symbol": "GLD",
     "status": "WIN",
@@ -4153,7 +4593,7 @@ export const tradesData = [
     "notes": "GLD Call $478 02/27"
   },
   {
-    "ticket": 1108,
+    "ticket": 1125,
     "date": "2026-02-10",
     "symbol": "GLD",
     "status": "WIN",
@@ -4189,7 +4629,7 @@ export const tradesData = [
     "notes": "GLD Call $470 02/20"
   },
   {
-    "ticket": 1109,
+    "ticket": 1126,
     "date": "2026-02-05",
     "symbol": "GLD",
     "status": "WIN",
@@ -4225,7 +4665,7 @@ export const tradesData = [
     "notes": "GLD Call $481 02/20"
   },
   {
-    "ticket": 1110,
+    "ticket": 1127,
     "date": "2026-02-12",
     "symbol": "FSLY",
     "status": "WIN",
@@ -4261,7 +4701,7 @@ export const tradesData = [
     "notes": "FSLY Call $22.5 01/15"
   },
   {
-    "ticket": 1111,
+    "ticket": 1128,
     "date": "2026-02-10",
     "symbol": "GLD",
     "status": "WIN",
@@ -4297,7 +4737,7 @@ export const tradesData = [
     "notes": "GLD Call $404 12/31"
   },
   {
-    "ticket": 1112,
+    "ticket": 1129,
     "date": "2026-02-05",
     "symbol": "GLD",
     "status": "LOSS",
@@ -4333,7 +4773,7 @@ export const tradesData = [
     "notes": "GLD Call $463 02/13"
   },
   {
-    "ticket": 1113,
+    "ticket": 1130,
     "date": "2026-02-05",
     "symbol": "GLD",
     "status": "LOSS",
@@ -4369,7 +4809,7 @@ export const tradesData = [
     "notes": "GLD Call $457 02/13"
   },
   {
-    "ticket": 1114,
+    "ticket": 1131,
     "date": "2026-02-05",
     "symbol": "GLD",
     "status": "WIN",
@@ -4405,7 +4845,7 @@ export const tradesData = [
     "notes": "GLD Call $383 12/31"
   },
   {
-    "ticket": 1115,
+    "ticket": 1132,
     "date": "2026-02-04",
     "symbol": "GLD",
     "status": "WIN",
@@ -4441,7 +4881,7 @@ export const tradesData = [
     "notes": "GLD Call $480 02/13"
   },
   {
-    "ticket": 1116,
+    "ticket": 1133,
     "date": "2026-02-04",
     "symbol": "GLD",
     "status": "WIN",
@@ -4477,7 +4917,7 @@ export const tradesData = [
     "notes": "GLD Call $467 02/11"
   },
   {
-    "ticket": 1117,
+    "ticket": 1134,
     "date": "2026-02-04",
     "symbol": "GLD",
     "status": "WIN",
@@ -4513,7 +4953,7 @@ export const tradesData = [
     "notes": "GLD Call $391 12/31"
   },
   {
-    "ticket": 1118,
+    "ticket": 1135,
     "date": "2026-02-02",
     "symbol": "GLD",
     "status": "LOSS",
@@ -4549,7 +4989,7 @@ export const tradesData = [
     "notes": "GLD Call $430 02/02"
   },
   {
-    "ticket": 1119,
+    "ticket": 1136,
     "date": "2026-01-29",
     "symbol": "GLD",
     "status": "OPEN",
@@ -4577,7 +5017,7 @@ export const tradesData = [
     "notes": "GLD Call $500 12/31"
   },
   {
-    "ticket": 1120,
+    "ticket": 1137,
     "date": "2026-01-29",
     "symbol": "GLD",
     "status": "OPEN",
@@ -4605,7 +5045,7 @@ export const tradesData = [
     "notes": "GLD Call $500 12/31"
   },
   {
-    "ticket": 1121,
+    "ticket": 1138,
     "date": "2025-12-19",
     "symbol": "VIXW",
     "status": "LOSS",
@@ -4641,7 +5081,7 @@ export const tradesData = [
     "notes": "VIXW Call $17 12/24"
   },
   {
-    "ticket": 1122,
+    "ticket": 1139,
     "date": "2025-12-17",
     "symbol": "VIXW",
     "status": "LOSS",
@@ -4677,7 +5117,7 @@ export const tradesData = [
     "notes": "VIXW Call $20 12/24"
   },
   {
-    "ticket": 1123,
+    "ticket": 1140,
     "date": "2025-12-05",
     "symbol": "VIXW",
     "status": "LOSS",
@@ -4713,7 +5153,7 @@ export const tradesData = [
     "notes": "VIXW Call $17 12/10"
   },
   {
-    "ticket": 1124,
+    "ticket": 1141,
     "date": "2025-11-26",
     "symbol": "VIXW",
     "status": "LOSS",
@@ -4749,7 +5189,7 @@ export const tradesData = [
     "notes": "VIXW Call $20 12/03"
   },
   {
-    "ticket": 1125,
+    "ticket": 1142,
     "date": "2025-10-17",
     "symbol": "SPY",
     "status": "LOSS",
@@ -4785,7 +5225,7 @@ export const tradesData = [
     "notes": "SPY Call $670 10/24"
   },
   {
-    "ticket": 1128,
+    "ticket": 1145,
     "date": "2025-05-19",
     "symbol": "HD",
     "status": "LOSS",
@@ -4821,7 +5261,7 @@ export const tradesData = [
     "notes": "HD Call $390 05/23"
   },
   {
-    "ticket": 1129,
+    "ticket": 1146,
     "date": "2025-04-11",
     "symbol": "SPXW",
     "status": "WIN",
@@ -4857,7 +5297,7 @@ export const tradesData = [
     "notes": "SPXW Call $5400 04/11"
   },
   {
-    "ticket": 1130,
+    "ticket": 1147,
     "date": "2025-04-09",
     "symbol": "SPY",
     "status": "LOSS",
@@ -4893,7 +5333,7 @@ export const tradesData = [
     "notes": "SPY Call $545 04/23"
   },
   {
-    "ticket": 1131,
+    "ticket": 1148,
     "date": "2025-01-28",
     "symbol": "TSM",
     "status": "WIN",
@@ -4929,7 +5369,7 @@ export const tradesData = [
     "notes": "TSM Call $200 03/21"
   },
   {
-    "ticket": 1134,
+    "ticket": 1151,
     "date": "2026-03-04",
     "symbol": "GLD",
     "status": "WIN",
@@ -4965,7 +5405,7 @@ export const tradesData = [
     "notes": "GLD Put $471 03/13"
   },
   {
-    "ticket": 1135,
+    "ticket": 1152,
     "date": "2026-03-04",
     "symbol": "GLD",
     "status": "WIN",
@@ -5001,7 +5441,7 @@ export const tradesData = [
     "notes": "GLD Put $471 03/13"
   },
   {
-    "ticket": 1136,
+    "ticket": 1153,
     "date": "2026-03-03",
     "symbol": "GLD",
     "status": "WIN",
@@ -5037,7 +5477,7 @@ export const tradesData = [
     "notes": "GLD Put $470 03/11"
   },
   {
-    "ticket": 1137,
+    "ticket": 1154,
     "date": "2026-03-03",
     "symbol": "VIXW",
     "status": "WIN",
@@ -5073,7 +5513,7 @@ export const tradesData = [
     "notes": "VIXW Put $22 03/11"
   },
   {
-    "ticket": 1138,
+    "ticket": 1155,
     "date": "2026-02-23",
     "symbol": "XSP",
     "status": "LOSS",
@@ -5109,7 +5549,7 @@ export const tradesData = [
     "notes": "XSP Put $680 02/23"
   },
   {
-    "ticket": 1139,
+    "ticket": 1156,
     "date": "2026-02-12",
     "symbol": "VIX",
     "status": "LOSS",
@@ -5145,7 +5585,7 @@ export const tradesData = [
     "notes": "VIX Put $18 02/18"
   },
   {
-    "ticket": 1141,
+    "ticket": 1158,
     "date": "2026-01-29",
     "symbol": "VIXW",
     "status": "WIN",
@@ -5181,7 +5621,7 @@ export const tradesData = [
     "notes": "VIXW Put $17 02/04"
   },
   {
-    "ticket": 1142,
+    "ticket": 1159,
     "date": "2026-01-28",
     "symbol": "GLD",
     "status": "WIN",
@@ -5217,7 +5657,7 @@ export const tradesData = [
     "notes": "GLD Put $475 01/30"
   },
   {
-    "ticket": 1143,
+    "ticket": 1160,
     "date": "2026-01-27",
     "symbol": "GLD",
     "status": "WIN",
@@ -5253,7 +5693,7 @@ export const tradesData = [
     "notes": "GLD Put $459 01/28"
   },
   {
-    "ticket": 1144,
+    "ticket": 1161,
     "date": "2026-01-22",
     "symbol": "GLD",
     "status": "WIN",
@@ -5289,7 +5729,7 @@ export const tradesData = [
     "notes": "GLD Put $445 01/23"
   },
   {
-    "ticket": 1146,
+    "ticket": 1163,
     "date": "2026-01-02",
     "symbol": "VIXW",
     "status": "LOSS",
@@ -5325,7 +5765,7 @@ export const tradesData = [
     "notes": "VIXW Put $14.5 01/07"
   },
   {
-    "ticket": 1147,
+    "ticket": 1164,
     "date": "2025-12-17",
     "symbol": "VIXW",
     "status": "WIN",
@@ -5361,7 +5801,7 @@ export const tradesData = [
     "notes": "VIXW Put $15 12/24"
   },
   {
-    "ticket": 1148,
+    "ticket": 1165,
     "date": "2025-12-05",
     "symbol": "SOFI",
     "status": "LOSS",
@@ -5397,7 +5837,7 @@ export const tradesData = [
     "notes": "SOFI Put $28 01/16"
   },
   {
-    "ticket": 1149,
+    "ticket": 1166,
     "date": "2025-12-15",
     "symbol": "SOFI",
     "status": "LOSS",
@@ -5433,7 +5873,7 @@ export const tradesData = [
     "notes": "SOFI Put $28 01/16"
   },
   {
-    "ticket": 1150,
+    "ticket": 1167,
     "date": "2025-12-12",
     "symbol": "VIX",
     "status": "LOSS",
@@ -5469,7 +5909,7 @@ export const tradesData = [
     "notes": "VIX Put $15.5 12/17"
   },
   {
-    "ticket": 1151,
+    "ticket": 1168,
     "date": "2025-12-12",
     "symbol": "VIX",
     "status": "WIN",
@@ -5505,7 +5945,7 @@ export const tradesData = [
     "notes": "VIX Put $15.5 12/17"
   },
   {
-    "ticket": 1153,
+    "ticket": 1170,
     "date": "2025-11-26",
     "symbol": "VIXW",
     "status": "WIN",
@@ -5541,7 +5981,7 @@ export const tradesData = [
     "notes": "VIXW Put $17 12/03"
   },
   {
-    "ticket": 1155,
+    "ticket": 1172,
     "date": "2025-11-20",
     "symbol": "SOFI",
     "status": "WIN",
@@ -5577,7 +6017,7 @@ export const tradesData = [
     "notes": "SOFI Put $30 01/02"
   },
   {
-    "ticket": 1156,
+    "ticket": 1173,
     "date": "2025-11-21",
     "symbol": "SPY",
     "status": "LOSS",
@@ -5613,7 +6053,7 @@ export const tradesData = [
     "notes": "SPY Put $650 11/28"
   },
   {
-    "ticket": 1157,
+    "ticket": 1174,
     "date": "2025-11-19",
     "symbol": "VIXW",
     "status": "WIN",
@@ -5649,7 +6089,7 @@ export const tradesData = [
     "notes": "VIXW Put $20 11/26"
   },
   {
-    "ticket": 1158,
+    "ticket": 1175,
     "date": "2025-11-19",
     "symbol": "VIXW",
     "status": "WIN",
@@ -5685,7 +6125,7 @@ export const tradesData = [
     "notes": "VIXW Put $20 11/26"
   },
   {
-    "ticket": 1159,
+    "ticket": 1176,
     "date": "2025-11-17",
     "symbol": "VIX",
     "status": "LOSS",
@@ -5721,7 +6161,7 @@ export const tradesData = [
     "notes": "VIX Put $20 11/19"
   },
   {
-    "ticket": 1160,
+    "ticket": 1177,
     "date": "2025-11-13",
     "symbol": "VIX",
     "status": "LOSS",
@@ -5757,7 +6197,7 @@ export const tradesData = [
     "notes": "VIX Put $19 11/19"
   },
   {
-    "ticket": 1161,
+    "ticket": 1178,
     "date": "2025-11-07",
     "symbol": "SOFI",
     "status": "WIN",
@@ -5793,7 +6233,7 @@ export const tradesData = [
     "notes": "SOFI Put $30 12/19"
   },
   {
-    "ticket": 1162,
+    "ticket": 1179,
     "date": "2025-11-07",
     "symbol": "VIXW",
     "status": "WIN",
@@ -5829,7 +6269,7 @@ export const tradesData = [
     "notes": "VIXW Put $20 11/12"
   },
   {
-    "ticket": 1164,
+    "ticket": 1181,
     "date": "2025-09-24",
     "symbol": "SOFI",
     "status": "WIN",
@@ -5865,7 +6305,7 @@ export const tradesData = [
     "notes": "SOFI Put $39 11/21"
   },
   {
-    "ticket": 1165,
+    "ticket": 1182,
     "date": "2025-09-24",
     "symbol": "SOFI",
     "status": "LOSS",
@@ -5901,7 +6341,7 @@ export const tradesData = [
     "notes": "SOFI Put $39 11/21"
   },
   {
-    "ticket": 1166,
+    "ticket": 1183,
     "date": "2025-10-17",
     "symbol": "SPY",
     "status": "LOSS",
@@ -5937,7 +6377,7 @@ export const tradesData = [
     "notes": "SPY Put $654 10/24"
   },
   {
-    "ticket": 1167,
+    "ticket": 1184,
     "date": "2025-10-14",
     "symbol": "VIX",
     "status": "LOSS",
@@ -5973,7 +6413,7 @@ export const tradesData = [
     "notes": "VIX Put $18.5 10/22"
   },
   {
-    "ticket": 1168,
+    "ticket": 1185,
     "date": "2025-10-10",
     "symbol": "VIXW",
     "status": "LOSS",
@@ -6009,7 +6449,7 @@ export const tradesData = [
     "notes": "VIXW Put $19 10/15"
   },
   {
-    "ticket": 1169,
+    "ticket": 1186,
     "date": "2025-10-10",
     "symbol": "VIXW",
     "status": "LOSS",
@@ -6045,7 +6485,7 @@ export const tradesData = [
     "notes": "VIXW Put $18 10/15"
   },
   {
-    "ticket": 1170,
+    "ticket": 1187,
     "date": "2025-09-23",
     "symbol": "VIXW",
     "status": "WIN",
@@ -6081,7 +6521,7 @@ export const tradesData = [
     "notes": "VIXW Put $16 10/01"
   },
   {
-    "ticket": 1172,
+    "ticket": 1189,
     "date": "2025-08-18",
     "symbol": "VIX",
     "status": "LOSS",
@@ -6117,7 +6557,7 @@ export const tradesData = [
     "notes": "VIX Put $15 08/20"
   },
   {
-    "ticket": 1173,
+    "ticket": 1190,
     "date": "2025-08-15",
     "symbol": "VIX",
     "status": "LOSS",
@@ -6153,7 +6593,7 @@ export const tradesData = [
     "notes": "VIX Put $14.5 08/20"
   },
   {
-    "ticket": 1174,
+    "ticket": 1191,
     "date": "2025-08-01",
     "symbol": "VIXW",
     "status": "WIN",
@@ -6189,7 +6629,7 @@ export const tradesData = [
     "notes": "VIXW Put $18 08/06"
   },
   {
-    "ticket": 1175,
+    "ticket": 1192,
     "date": "2025-07-28",
     "symbol": "UPS",
     "status": "WIN",
@@ -6225,7 +6665,7 @@ export const tradesData = [
     "notes": "UPS Put $99 08/01"
   },
   {
-    "ticket": 1176,
+    "ticket": 1193,
     "date": "2025-07-28",
     "symbol": "SBUX",
     "status": "WIN",
@@ -6261,7 +6701,7 @@ export const tradesData = [
     "notes": "SBUX Put $90 08/01"
   },
   {
-    "ticket": 1178,
+    "ticket": 1195,
     "date": "2025-07-16",
     "symbol": "VIXW",
     "status": "LOSS",
@@ -6297,7 +6737,7 @@ export const tradesData = [
     "notes": "VIXW Put $17 07/23"
   },
   {
-    "ticket": 1179,
+    "ticket": 1196,
     "date": "2025-07-14",
     "symbol": "VIX",
     "status": "LOSS",
@@ -6333,7 +6773,7 @@ export const tradesData = [
     "notes": "VIX Put $16.5 07/16"
   },
   {
-    "ticket": 1181,
+    "ticket": 1198,
     "date": "2025-06-30",
     "symbol": "VIXW",
     "status": "LOSS",
@@ -6369,7 +6809,7 @@ export const tradesData = [
     "notes": "VIXW Put $17 07/02"
   },
   {
-    "ticket": 1184,
+    "ticket": 1201,
     "date": "2025-06-05",
     "symbol": "VIXW",
     "status": "WIN",
@@ -6405,7 +6845,7 @@ export const tradesData = [
     "notes": "VIXW Put $19 06/11"
   },
   {
-    "ticket": 1186,
+    "ticket": 1203,
     "date": "2025-05-30",
     "symbol": "VIXW",
     "status": "WIN",
@@ -6441,7 +6881,7 @@ export const tradesData = [
     "notes": "VIXW Put $19 06/03"
   },
   {
-    "ticket": 1188,
+    "ticket": 1205,
     "date": "2025-05-23",
     "symbol": "VIXW",
     "status": "LOSS",
@@ -6477,7 +6917,7 @@ export const tradesData = [
     "notes": "VIXW Put $19 05/28"
   },
   {
-    "ticket": 1189,
+    "ticket": 1206,
     "date": "2025-05-20",
     "symbol": "PANW",
     "status": "WIN",
@@ -6513,7 +6953,7 @@ export const tradesData = [
     "notes": "PANW Put $182.5 05/23"
   },
   {
-    "ticket": 1190,
+    "ticket": 1207,
     "date": "2025-05-19",
     "symbol": "HD",
     "status": "LOSS",
@@ -6549,7 +6989,7 @@ export const tradesData = [
     "notes": "HD Put $370 05/23"
   },
   {
-    "ticket": 1191,
+    "ticket": 1208,
     "date": "2025-05-19",
     "symbol": "VIX",
     "status": "LOSS",
@@ -6585,7 +7025,7 @@ export const tradesData = [
     "notes": "VIX Put $18 05/21"
   },
   {
-    "ticket": 1193,
+    "ticket": 1210,
     "date": "2025-05-15",
     "symbol": "VIX",
     "status": "LOSS",
@@ -6621,7 +7061,7 @@ export const tradesData = [
     "notes": "VIX Put $17 05/21"
   },
   {
-    "ticket": 1195,
+    "ticket": 1212,
     "date": "2025-05-08",
     "symbol": "VIXW",
     "status": "WIN",
@@ -6657,7 +7097,7 @@ export const tradesData = [
     "notes": "VIXW Put $20 05/14"
   },
   {
-    "ticket": 1197,
+    "ticket": 1214,
     "date": "2025-04-11",
     "symbol": "SPY",
     "status": "LOSS",
@@ -6693,7 +7133,7 @@ export const tradesData = [
     "notes": "SPY Put $530 04/11"
   },
   {
-    "ticket": 1198,
+    "ticket": 1215,
     "date": "2025-04-09",
     "symbol": "SPY",
     "status": "LOSS",
@@ -6729,7 +7169,7 @@ export const tradesData = [
     "notes": "SPY Put $500 04/23"
   },
   {
-    "ticket": 1200,
+    "ticket": 1217,
     "date": "2026-03-06",
     "symbol": "GLD",
     "status": "OPEN",
@@ -6757,7 +7197,7 @@ export const tradesData = [
     "notes": "GLD Put $466 03/09"
   },
   {
-    "ticket": 1204,
+    "ticket": 1221,
     "date": "2026-03-02",
     "symbol": "VIXW",
     "status": "LOSS",
@@ -6793,7 +7233,7 @@ export const tradesData = [
     "notes": "VIXW Vertical (Expired @ $23.57)"
   },
   {
-    "ticket": 1205,
+    "ticket": 1222,
     "date": "2026-03-02",
     "symbol": "VIXW",
     "status": "LOSS",
@@ -6829,7 +7269,7 @@ export const tradesData = [
     "notes": "VIXW Vertical (Expired @ $23.57)"
   },
   {
-    "ticket": 1206,
+    "ticket": 1223,
     "date": "2025-10-23",
     "symbol": "SPXW",
     "status": "LOSS",
@@ -6865,7 +7305,7 @@ export const tradesData = [
     "notes": "SPXW Vertical (Expired @ $6738.44)"
   },
   {
-    "ticket": 1207,
+    "ticket": 1224,
     "date": "2025-08-22",
     "symbol": "DJT",
     "status": "WIN",
@@ -6901,7 +7341,7 @@ export const tradesData = [
     "notes": "DJT Vertical (Expired @ $17.95)"
   },
   {
-    "ticket": 1208,
+    "ticket": 1225,
     "date": "2025-07-16",
     "symbol": "VIXW",
     "status": "WIN",
@@ -6937,7 +7377,7 @@ export const tradesData = [
     "notes": "VIXW Vertical (Expired @ $15.37)"
   },
   {
-    "ticket": 1209,
+    "ticket": 1226,
     "date": "2025-07-23",
     "symbol": "DJT",
     "status": "LOSS",
@@ -6973,7 +7413,7 @@ export const tradesData = [
     "notes": "DJT Vertical (Expired @ $19.11)"
   },
   {
-    "ticket": 1210,
+    "ticket": 1227,
     "date": "2025-07-10",
     "symbol": "VIXW",
     "status": "LOSS",
@@ -7009,7 +7449,7 @@ export const tradesData = [
     "notes": "VIXW Vertical (Expired @ $15.37)"
   },
   {
-    "ticket": 1211,
+    "ticket": 1228,
     "date": "2025-05-28",
     "symbol": "DJT",
     "status": "LOSS",
@@ -7045,7 +7485,7 @@ export const tradesData = [
     "notes": "DJT Vertical (Expired @ $19.16)"
   },
   {
-    "ticket": 1212,
+    "ticket": 1229,
     "date": "2025-06-27",
     "symbol": "DJT",
     "status": "LOSS",
@@ -7081,7 +7521,7 @@ export const tradesData = [
     "notes": "DJT Vertical (Expired @ $17.82)"
   },
   {
-    "ticket": 1213,
+    "ticket": 1230,
     "date": "2025-06-24",
     "symbol": "VIXW",
     "status": "LOSS",
@@ -7117,7 +7557,7 @@ export const tradesData = [
     "notes": "VIXW Vertical (Expired @ $15.37)"
   },
   {
-    "ticket": 1214,
+    "ticket": 1231,
     "date": "2025-06-24",
     "symbol": "VIXW",
     "status": "LOSS",
@@ -7153,7 +7593,7 @@ export const tradesData = [
     "notes": "VIXW Vertical (Expired @ $15.37)"
   },
   {
-    "ticket": 1215,
+    "ticket": 1232,
     "date": "2025-06-02",
     "symbol": "VIXW",
     "status": "LOSS",
@@ -7189,7 +7629,7 @@ export const tradesData = [
     "notes": "VIXW Vertical (Expired @ $17.69)"
   },
   {
-    "ticket": 1216,
+    "ticket": 1233,
     "date": "2025-04-17",
     "symbol": "VIXW",
     "status": "LOSS",
@@ -7225,7 +7665,7 @@ export const tradesData = [
     "notes": "VIXW Vertical (Expired @ $28.45)"
   },
   {
-    "ticket": 1217,
+    "ticket": 1234,
     "date": "2025-04-17",
     "symbol": "VIX",
     "status": "LOSS",
@@ -7261,7 +7701,7 @@ export const tradesData = [
     "notes": "VIX Vertical (Expired @ $17.16)"
   },
   {
-    "ticket": 1218,
+    "ticket": 1235,
     "date": "2025-04-17",
     "symbol": "VIX",
     "status": "LOSS",
@@ -7297,7 +7737,7 @@ export const tradesData = [
     "notes": "VIX Vertical (Expired @ $17.16)"
   },
   {
-    "ticket": 1219,
+    "ticket": 1236,
     "date": "2025-04-17",
     "symbol": "VIX",
     "status": "LOSS",
@@ -7333,7 +7773,7 @@ export const tradesData = [
     "notes": "VIX Vertical (Expired @ $17.16)"
   },
   {
-    "ticket": 1220,
+    "ticket": 1237,
     "date": "2025-04-17",
     "symbol": "VIX",
     "status": "LOSS",
@@ -7369,7 +7809,7 @@ export const tradesData = [
     "notes": "VIX Vertical (Expired @ $17.16)"
   },
   {
-    "ticket": 1221,
+    "ticket": 1238,
     "date": "2025-04-17",
     "symbol": "VIX",
     "status": "LOSS",
@@ -7405,7 +7845,7 @@ export const tradesData = [
     "notes": "VIX Vertical (Expired @ $17.16)"
   },
   {
-    "ticket": 1222,
+    "ticket": 1239,
     "date": "2025-04-14",
     "symbol": "SPXW",
     "status": "LOSS",
@@ -7441,7 +7881,7 @@ export const tradesData = [
     "notes": "SPXW Vertical (Expired @ $5405.97)"
   },
   {
-    "ticket": 1223,
+    "ticket": 1240,
     "date": "2025-04-11",
     "symbol": "SPXW",
     "status": "LOSS",
@@ -7477,7 +7917,7 @@ export const tradesData = [
     "notes": "SPXW Vertical (Expired @ $5268.05)"
   },
   {
-    "ticket": 1224,
+    "ticket": 1241,
     "date": "2025-04-10",
     "symbol": "SPXW",
     "status": "LOSS",
@@ -7513,7 +7953,7 @@ export const tradesData = [
     "notes": "SPXW Vertical (Expired @ $5456.90)"
   },
   {
-    "ticket": 1225,
+    "ticket": 1242,
     "date": "2025-03-04",
     "symbol": "VIX",
     "status": "LOSS",
@@ -7549,7 +7989,7 @@ export const tradesData = [
     "notes": "VIX Vertical (Expired @ $32.64)"
   },
   {
-    "ticket": 1226,
+    "ticket": 1243,
     "date": "2025-02-18",
     "symbol": "SPXW",
     "status": "WIN",
@@ -7585,7 +8025,7 @@ export const tradesData = [
     "notes": "SPXW Vertical (Expired @ $6129.58)"
   },
   {
-    "ticket": 1227,
+    "ticket": 1244,
     "date": "2025-02-18",
     "symbol": "SPXW",
     "status": "LOSS",
@@ -7621,7 +8061,7 @@ export const tradesData = [
     "notes": "SPXW Vertical (Expired @ $6129.58)"
   },
   {
-    "ticket": 1228,
+    "ticket": 1245,
     "date": "2025-01-21",
     "symbol": "SOFI",
     "status": "LOSS",
@@ -7657,7 +8097,7 @@ export const tradesData = [
     "notes": "SOFI Vertical (Expired @ $15.56)"
   },
   {
-    "ticket": 1229,
+    "ticket": 1246,
     "date": "2025-01-21",
     "symbol": "SOFI",
     "status": "LOSS",
@@ -7693,7 +8133,579 @@ export const tradesData = [
     "notes": "SOFI Vertical (Expired @ $15.56)"
   },
   {
-    "ticket": 1230,
+    "ticket": 1247,
+    "date": "2025-11-10",
+    "symbol": "SPXW",
+    "status": "LOSS",
+    "exit_date": "2025-11-10",
+    "pnl": -550,
+    "strategies": [
+      {
+        "name": "SPXW IronCondor",
+        "legs": [
+          {
+            "type": "call",
+            "strike": 6860,
+            "expiry": "2025-11-10",
+            "premium": 0.27,
+            "quantity": 5,
+            "action": "buy"
+          },
+          {
+            "type": "call",
+            "strike": 6855,
+            "expiry": "2025-11-10",
+            "premium": 0.56,
+            "quantity": 5,
+            "action": "sell"
+          },
+          {
+            "type": "put",
+            "strike": 6850,
+            "expiry": "2025-11-10",
+            "premium": 10.74,
+            "quantity": 5,
+            "action": "sell"
+          },
+          {
+            "type": "put",
+            "strike": 6845,
+            "expiry": "2025-11-10",
+            "premium": 7.13,
+            "quantity": 5,
+            "action": "buy"
+          }
+        ],
+        "entry_time": "11/10/2025 15:14:04 EST",
+        "entry_price": null,
+        "exit_time": "",
+        "exit_price": "6832.43"
+      }
+    ],
+    "notes": "SPXW IronCondor (Expired @ $6832.43)"
+  },
+  {
+    "ticket": 1248,
+    "date": "2025-10-23",
+    "symbol": "SPXW",
+    "status": "LOSS",
+    "exit_date": "2025-10-24",
+    "pnl": -330,
+    "strategies": [
+      {
+        "name": "SPXW IronCondor",
+        "legs": [
+          {
+            "type": "call",
+            "strike": 6780,
+            "expiry": "2025-10-24",
+            "premium": 6.5,
+            "quantity": 6,
+            "action": "buy"
+          },
+          {
+            "type": "call",
+            "strike": 6775,
+            "expiry": "2025-10-24",
+            "premium": 8.09,
+            "quantity": 6,
+            "action": "sell"
+          },
+          {
+            "type": "put",
+            "strike": 6770,
+            "expiry": "2025-10-24",
+            "premium": 30.37,
+            "quantity": 6,
+            "action": "sell"
+          },
+          {
+            "type": "put",
+            "strike": 6765,
+            "expiry": "2025-10-24",
+            "premium": 27.51,
+            "quantity": 6,
+            "action": "buy"
+          }
+        ],
+        "entry_time": "10/23/2025 14:34:09 EDT",
+        "entry_price": null,
+        "exit_time": "",
+        "exit_price": "6738.44"
+      }
+    ],
+    "notes": "SPXW IronCondor (Expired @ $6738.44)"
+  },
+  {
+    "ticket": 1249,
+    "date": "2025-10-21",
+    "symbol": "SPXW",
+    "status": "WIN",
+    "exit_date": "2025-10-24",
+    "pnl": 9400,
+    "strategies": [
+      {
+        "name": "SPXW IronCondor",
+        "legs": [
+          {
+            "type": "call",
+            "strike": 6745,
+            "expiry": "2025-10-24",
+            "premium": 32.39,
+            "quantity": 20,
+            "action": "buy"
+          },
+          {
+            "type": "call",
+            "strike": 6740,
+            "expiry": "2025-10-24",
+            "premium": 35.42,
+            "quantity": 20,
+            "action": "sell"
+          },
+          {
+            "type": "put",
+            "strike": 6735,
+            "expiry": "2025-10-24",
+            "premium": 25.56,
+            "quantity": 20,
+            "action": "sell"
+          },
+          {
+            "type": "put",
+            "strike": 6730,
+            "expiry": "2025-10-24",
+            "premium": 23.89,
+            "quantity": 20,
+            "action": "buy"
+          }
+        ],
+        "entry_time": "10/21/2025 14:32:45 EDT",
+        "entry_price": null,
+        "exit_time": "",
+        "exit_price": "6738.44"
+      }
+    ],
+    "notes": "SPXW IronCondor (Expired @ $6738.44)"
+  },
+  {
+    "ticket": 1250,
+    "date": "2025-10-16",
+    "symbol": "SPXW",
+    "status": "LOSS",
+    "exit_date": "2025-10-24",
+    "pnl": -900,
+    "strategies": [
+      {
+        "name": "SPXW IronCondor",
+        "legs": [
+          {
+            "type": "call",
+            "strike": 6685,
+            "expiry": "2025-10-24",
+            "premium": 49.4,
+            "quantity": 5,
+            "action": "buy"
+          },
+          {
+            "type": "call",
+            "strike": 6665,
+            "expiry": "2025-10-24",
+            "premium": 59.8,
+            "quantity": 5,
+            "action": "sell"
+          },
+          {
+            "type": "put",
+            "strike": 6645,
+            "expiry": "2025-10-24",
+            "premium": 82.75,
+            "quantity": 5,
+            "action": "sell"
+          },
+          {
+            "type": "put",
+            "strike": 6625,
+            "expiry": "2025-10-24",
+            "premium": 74.95,
+            "quantity": 5,
+            "action": "buy"
+          }
+        ],
+        "entry_time": "10/16/2025 14:59:20 EDT",
+        "entry_price": null,
+        "exit_time": "",
+        "exit_price": "6738.44"
+      }
+    ],
+    "notes": "SPXW IronCondor (Expired @ $6738.44)"
+  },
+  {
+    "ticket": 1251,
+    "date": "2025-07-14",
+    "symbol": "DJT",
+    "status": "LOSS",
+    "exit_date": "2025-07-18",
+    "pnl": -3360,
+    "strategies": [
+      {
+        "name": "DJT Condor",
+        "legs": [
+          {
+            "type": "put",
+            "strike": 19,
+            "expiry": "2025-07-18",
+            "premium": 0.72,
+            "quantity": 40,
+            "action": "sell"
+          },
+          {
+            "type": "put",
+            "strike": 24,
+            "expiry": "2025-07-18",
+            "premium": 5.65,
+            "quantity": 40,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 19,
+            "expiry": "2025-08-29",
+            "premium": 2.61,
+            "quantity": 40,
+            "action": "buy"
+          },
+          {
+            "type": "put",
+            "strike": 24,
+            "expiry": "2025-08-29",
+            "premium": 6.7,
+            "quantity": 40,
+            "action": "sell"
+          }
+        ],
+        "entry_time": "07/14/2025 09:33:28 EDT",
+        "entry_price": null,
+        "exit_time": "",
+        "exit_price": "19.16"
+      }
+    ],
+    "notes": "DJT Condor (Expired @ $19.16)"
+  },
+  {
+    "ticket": 1252,
+    "date": "2025-04-14",
+    "symbol": "SPXW",
+    "status": "LOSS",
+    "exit_date": "2025-04-14",
+    "pnl": -2000,
+    "strategies": [
+      {
+        "name": "SPXW IronCondor",
+        "legs": [
+          {
+            "type": "call",
+            "strike": 5425,
+            "expiry": "2025-04-14",
+            "premium": 0.1,
+            "quantity": 50,
+            "action": "buy"
+          },
+          {
+            "type": "call",
+            "strike": 5420,
+            "expiry": "2025-04-14",
+            "premium": 0.11,
+            "quantity": 50,
+            "action": "sell"
+          },
+          {
+            "type": "put",
+            "strike": 5415,
+            "expiry": "2025-04-14",
+            "premium": 10.66,
+            "quantity": 50,
+            "action": "sell"
+          },
+          {
+            "type": "put",
+            "strike": 5410,
+            "expiry": "2025-04-14",
+            "premium": 6.07,
+            "quantity": 50,
+            "action": "buy"
+          }
+        ],
+        "entry_time": "04/14/2025 15:57:03 EDT",
+        "entry_price": null,
+        "exit_time": "",
+        "exit_price": "5405.97"
+      }
+    ],
+    "notes": "SPXW IronCondor (Expired @ $5405.97)"
+  },
+  {
+    "ticket": 1253,
+    "date": "2025-04-11",
+    "symbol": "SPXW",
+    "status": "LOSS",
+    "exit_date": "2025-04-11",
+    "pnl": -1000,
+    "strategies": [
+      {
+        "name": "SPXW IronCondor",
+        "legs": [
+          {
+            "type": "call",
+            "strike": 5380,
+            "expiry": "2025-04-11",
+            "premium": 1.32,
+            "quantity": 10,
+            "action": "buy"
+          },
+          {
+            "type": "call",
+            "strike": 5375,
+            "expiry": "2025-04-11",
+            "premium": 2.09,
+            "quantity": 10,
+            "action": "sell"
+          },
+          {
+            "type": "put",
+            "strike": 5370,
+            "expiry": "2025-04-11",
+            "premium": 10.04,
+            "quantity": 10,
+            "action": "sell"
+          },
+          {
+            "type": "put",
+            "strike": 5365,
+            "expiry": "2025-04-11",
+            "premium": 6.81,
+            "quantity": 10,
+            "action": "buy"
+          }
+        ],
+        "entry_time": "04/11/2025 15:52:28 EDT",
+        "entry_price": null,
+        "exit_time": "",
+        "exit_price": "5268.05"
+      }
+    ],
+    "notes": "SPXW IronCondor (Expired @ $5268.05)"
+  },
+  {
+    "ticket": 1254,
+    "date": "2025-04-11",
+    "symbol": "SPXW",
+    "status": "WIN",
+    "exit_date": "2025-04-11",
+    "pnl": 4620,
+    "strategies": [
+      {
+        "name": "SPXW IronCondor",
+        "legs": [
+          {
+            "type": "call",
+            "strike": 5310,
+            "expiry": "2025-04-11",
+            "premium": 22.96,
+            "quantity": 2,
+            "action": "buy"
+          },
+          {
+            "type": "call",
+            "strike": 5280,
+            "expiry": "2025-04-11",
+            "premium": 34.02,
+            "quantity": 2,
+            "action": "sell"
+          },
+          {
+            "type": "put",
+            "strike": 5250,
+            "expiry": "2025-04-11",
+            "premium": 47.71,
+            "quantity": 2,
+            "action": "sell"
+          },
+          {
+            "type": "put",
+            "strike": 5220,
+            "expiry": "2025-04-11",
+            "premium": 35.67,
+            "quantity": 2,
+            "action": "buy"
+          }
+        ],
+        "entry_time": "04/11/2025 11:09:15 EDT",
+        "entry_price": null,
+        "exit_time": "",
+        "exit_price": "5268.05"
+      }
+    ],
+    "notes": "SPXW IronCondor (Expired @ $5268.05)"
+  },
+  {
+    "ticket": 1255,
+    "date": "2025-04-10",
+    "symbol": "SPXW",
+    "status": "LOSS",
+    "exit_date": "2025-04-10",
+    "pnl": -220,
+    "strategies": [
+      {
+        "name": "SPXW IronCondor",
+        "legs": [
+          {
+            "type": "call",
+            "strike": 5275,
+            "expiry": "2025-04-10",
+            "premium": 5.51,
+            "quantity": 2,
+            "action": "buy"
+          },
+          {
+            "type": "call",
+            "strike": 5270,
+            "expiry": "2025-04-10",
+            "premium": 8.91,
+            "quantity": 2,
+            "action": "sell"
+          },
+          {
+            "type": "put",
+            "strike": 5265,
+            "expiry": "2025-04-10",
+            "premium": 1.2,
+            "quantity": 2,
+            "action": "sell"
+          },
+          {
+            "type": "put",
+            "strike": 5260,
+            "expiry": "2025-04-10",
+            "premium": 0.7,
+            "quantity": 2,
+            "action": "buy"
+          }
+        ],
+        "entry_time": "04/10/2025 15:58:14 EDT",
+        "entry_price": null,
+        "exit_time": "",
+        "exit_price": "5456.90"
+      }
+    ],
+    "notes": "SPXW IronCondor (Expired @ $5456.90)"
+  },
+  {
+    "ticket": 1256,
+    "date": "2025-04-10",
+    "symbol": "SPXW",
+    "status": "LOSS",
+    "exit_date": "2025-04-10",
+    "pnl": -2500,
+    "strategies": [
+      {
+        "name": "SPXW IronCondor",
+        "legs": [
+          {
+            "type": "call",
+            "strike": 5345,
+            "expiry": "2025-04-10",
+            "premium": 36.41,
+            "quantity": 100,
+            "action": "buy"
+          },
+          {
+            "type": "call",
+            "strike": 5340,
+            "expiry": "2025-04-10",
+            "premium": 38.53,
+            "quantity": 100,
+            "action": "sell"
+          },
+          {
+            "type": "put",
+            "strike": 5335,
+            "expiry": "2025-04-10",
+            "premium": 51.89,
+            "quantity": 100,
+            "action": "sell"
+          },
+          {
+            "type": "put",
+            "strike": 5330,
+            "expiry": "2025-04-10",
+            "premium": 49.26,
+            "quantity": 100,
+            "action": "buy"
+          }
+        ],
+        "entry_time": "04/10/2025 10:39:27 EDT",
+        "entry_price": null,
+        "exit_time": "",
+        "exit_price": "5456.90"
+      }
+    ],
+    "notes": "SPXW IronCondor (Expired @ $5456.90)"
+  },
+  {
+    "ticket": 1257,
+    "date": "2025-02-18",
+    "symbol": "SPXW",
+    "status": "LOSS",
+    "exit_date": "2025-02-18",
+    "pnl": -2100,
+    "strategies": [
+      {
+        "name": "SPXW IronCondor",
+        "legs": [
+          {
+            "type": "call",
+            "strike": 6125,
+            "expiry": "2025-02-18",
+            "premium": 5.97,
+            "quantity": 20,
+            "action": "buy"
+          },
+          {
+            "type": "call",
+            "strike": 6120,
+            "expiry": "2025-02-18",
+            "premium": 8.56,
+            "quantity": 20,
+            "action": "sell"
+          },
+          {
+            "type": "put",
+            "strike": 6115,
+            "expiry": "2025-02-18",
+            "premium": 5.02,
+            "quantity": 20,
+            "action": "sell"
+          },
+          {
+            "type": "put",
+            "strike": 6110,
+            "expiry": "2025-02-18",
+            "premium": 3.66,
+            "quantity": 20,
+            "action": "buy"
+          }
+        ],
+        "entry_time": "02/18/2025 11:10:22 EST",
+        "entry_price": null,
+        "exit_time": "",
+        "exit_price": "6129.58"
+      }
+    ],
+    "notes": "SPXW IronCondor (Expired @ $6129.58)"
+  },
+  {
+    "ticket": 1258,
     "date": "2025-08-07",
     "symbol": "CHYM",
     "status": "LOSS",
@@ -7721,7 +8733,7 @@ export const tradesData = [
     "notes": "CHYM Call $35 08/15 (Expired @ $29.25)"
   },
   {
-    "ticket": 1231,
+    "ticket": 1259,
     "date": "2025-05-20",
     "symbol": "PANW",
     "status": "LOSS",
@@ -7749,7 +8761,7 @@ export const tradesData = [
     "notes": "PANW Call $207.5 05/23 (Expired @ $186.14)"
   },
   {
-    "ticket": 1232,
+    "ticket": 1260,
     "date": "2026-02-20",
     "symbol": "GLD",
     "status": "LOSS",
@@ -7777,7 +8789,7 @@ export const tradesData = [
     "notes": "GLD Call $480 03/02 (Expired @ $490.00)"
   },
   {
-    "ticket": 1233,
+    "ticket": 1261,
     "date": "2026-01-21",
     "symbol": "GLD",
     "status": "LOSS",
@@ -7805,7 +8817,7 @@ export const tradesData = [
     "notes": "GLD Call $450 01/28 (Expired @ $476.10)"
   },
   {
-    "ticket": 1234,
+    "ticket": 1262,
     "date": "2026-02-12",
     "symbol": "VIX",
     "status": "LOSS",
@@ -7833,7 +8845,7 @@ export const tradesData = [
     "notes": "VIX Put $18 02/18 (Expired @ $19.62)"
   },
   {
-    "ticket": 1235,
+    "ticket": 1263,
     "date": "2026-01-02",
     "symbol": "VIXW",
     "status": "LOSS",
@@ -7861,7 +8873,7 @@ export const tradesData = [
     "notes": "VIXW Put $13.5 01/07 (Expired @ $15.38)"
   },
   {
-    "ticket": 1236,
+    "ticket": 1264,
     "date": "2025-12-09",
     "symbol": "VIXW",
     "status": "WIN",
@@ -7889,7 +8901,7 @@ export const tradesData = [
     "notes": "VIXW Put $16 12/10 (Expired @ $15.77)"
   },
   {
-    "ticket": 1237,
+    "ticket": 1265,
     "date": "2025-11-26",
     "symbol": "VIXW",
     "status": "WIN",
@@ -7917,7 +8929,7 @@ export const tradesData = [
     "notes": "VIXW Put $17 12/03 (Expired @ $16.08)"
   },
   {
-    "ticket": 1238,
+    "ticket": 1266,
     "date": "2025-10-31",
     "symbol": "VIXW",
     "status": "LOSS",
@@ -7945,7 +8957,7 @@ export const tradesData = [
     "notes": "VIXW Put $18 11/05 (Expired @ $18.01)"
   },
   {
-    "ticket": 1239,
+    "ticket": 1267,
     "date": "2025-09-22",
     "symbol": "VIXW",
     "status": "LOSS",
@@ -7973,7 +8985,7 @@ export const tradesData = [
     "notes": "VIXW Put $15 09/24 (Expired @ $16.18)"
   },
   {
-    "ticket": 1240,
+    "ticket": 1268,
     "date": "2025-07-24",
     "symbol": "VIXW",
     "status": "LOSS",
@@ -8001,7 +9013,7 @@ export const tradesData = [
     "notes": "VIXW Put $15 07/30 (Expired @ $15.48)"
   },
   {
-    "ticket": 1241,
+    "ticket": 1269,
     "date": "2025-07-14",
     "symbol": "VIXW",
     "status": "WIN",
@@ -8029,7 +9041,7 @@ export const tradesData = [
     "notes": "VIXW Put $18 07/23 (Expired @ $15.37)"
   },
   {
-    "ticket": 1242,
+    "ticket": 1270,
     "date": "2025-06-30",
     "symbol": "VIXW",
     "status": "WIN",
@@ -8057,7 +9069,7 @@ export const tradesData = [
     "notes": "VIXW Put $17 07/02 (Expired @ $16.64)"
   },
   {
-    "ticket": 1243,
+    "ticket": 1271,
     "date": "2025-06-11",
     "symbol": "VIX",
     "status": "LOSS",
@@ -8085,7 +9097,7 @@ export const tradesData = [
     "notes": "VIX Put $17.5 06/18 (Expired @ $20.14)"
   },
   {
-    "ticket": 1244,
+    "ticket": 1272,
     "date": "2025-06-05",
     "symbol": "VIXW",
     "status": "WIN",
@@ -8113,7 +9125,7 @@ export const tradesData = [
     "notes": "VIXW Put $19 06/11 (Expired @ $17.26)"
   },
   {
-    "ticket": 1245,
+    "ticket": 1273,
     "date": "2025-05-30",
     "symbol": "VIXW",
     "status": "WIN",
@@ -8141,7 +9153,7 @@ export const tradesData = [
     "notes": "VIXW Put $19 06/03 (Expired @ $17.69)"
   },
   {
-    "ticket": 1246,
+    "ticket": 1274,
     "date": "2025-05-15",
     "symbol": "VIX",
     "status": "LOSS",
@@ -8169,7 +9181,7 @@ export const tradesData = [
     "notes": "VIX Put $16 05/21 (Expired @ $20.87)"
   },
   {
-    "ticket": 1247,
+    "ticket": 1275,
     "date": "2025-05-15",
     "symbol": "VIX",
     "status": "LOSS",
@@ -8197,7 +9209,7 @@ export const tradesData = [
     "notes": "VIX Put $17 05/21 (Expired @ $20.87)"
   },
   {
-    "ticket": 1248,
+    "ticket": 1276,
     "date": "2025-05-08",
     "symbol": "VIXW",
     "status": "WIN",
@@ -8225,7 +9237,7 @@ export const tradesData = [
     "notes": "VIXW Put $20 05/14 (Expired @ $18.62)"
   },
   {
-    "ticket": 1249,
+    "ticket": 1277,
     "date": "2025-04-08",
     "symbol": "SPXW",
     "status": "LOSS",
@@ -8253,7 +9265,7 @@ export const tradesData = [
     "notes": "SPXW Put $4930 04/08 (Expired @ $5062.25)"
   },
   {
-    "ticket": 1250,
+    "ticket": 1278,
     "date": "2026-01-28",
     "symbol": "GLD",
     "status": "WIN",
@@ -8281,7 +9293,7 @@ export const tradesData = [
     "notes": "GLD Put $478 01/30 (Expired @ $495.90)"
   },
   {
-    "ticket": 1251,
+    "ticket": 1279,
     "date": "2026-01-23",
     "symbol": "GLD",
     "status": "WIN",
@@ -8309,7 +9321,7 @@ export const tradesData = [
     "notes": "GLD Put $453 01/26 (Expired @ $464.70)"
   },
   {
-    "ticket": 1252,
+    "ticket": 1280,
     "date": "2025-08-22",
     "symbol": "DJT",
     "status": "WIN",

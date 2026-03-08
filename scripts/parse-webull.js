@@ -197,20 +197,80 @@ function parseVerticalSpreads(verticalSpreadArray, startTicketId) {
 
 // Iron Condor Parser
 function parseIronCondors(ironCondorArray, startTicketId) {
-  console.log(`  Iron Condors: ${ironCondorArray.length} headers (not yet implemented)`)
-  return []
+  const tradesData = []
+
+  for (const header of ironCondorArray) {
+    if (!header.legs || header.legs.length < 4) continue
+
+    const parsedLegs = header.legs.map(l => {
+      const opt = parseOptionSymbol(l.symbol)
+      return { ...opt, side: l.side, quantity: l.filled, premium: l.avgPrice, filledTime: l.filledTime }
+    }).filter(l => l.underlying)
+
+    if (parsedLegs.length >= 4) {
+      tradesData.push({
+        ticketName: header.name,
+        side: header.side,
+        status: header.status,
+        filledTime: header.filledTime,
+        legs: parsedLegs
+      })
+    }
+  }
+
+  return matchMultiLeg(tradesData, startTicketId)
 }
 
 // Straddle Parser
 function parseStraddles(straddleArray, startTicketId) {
-  console.log(`  Straddles: ${straddleArray.length} headers (not yet implemented)`)
-  return []
+  const tradesData = []
+
+  for (const header of straddleArray) {
+    if (!header.legs || header.legs.length < 2) continue
+
+    const parsedLegs = header.legs.map(l => {
+      const opt = parseOptionSymbol(l.symbol)
+      return { ...opt, side: l.side, quantity: l.filled, premium: l.avgPrice, filledTime: l.filledTime }
+    }).filter(l => l.underlying)
+
+    if (parsedLegs.length >= 2) {
+      tradesData.push({
+        ticketName: header.name,
+        side: header.side,
+        status: header.status,
+        filledTime: header.filledTime,
+        legs: parsedLegs
+      })
+    }
+  }
+
+  return matchMultiLeg(tradesData, startTicketId)
 }
 
 // Strangle Parser
 function parseStrangles(strangleArray, startTicketId) {
-  console.log(`  Strangles: ${strangleArray.length} headers (not yet implemented)`)
-  return []
+  const tradesData = []
+
+  for (const header of strangleArray) {
+    if (!header.legs || header.legs.length < 2) continue
+
+    const parsedLegs = header.legs.map(l => {
+      const opt = parseOptionSymbol(l.symbol)
+      return { ...opt, side: l.side, quantity: l.filled, premium: l.avgPrice, filledTime: l.filledTime }
+    }).filter(l => l.underlying)
+
+    if (parsedLegs.length >= 2) {
+      tradesData.push({
+        ticketName: header.name,
+        side: header.side,
+        status: header.status,
+        filledTime: header.filledTime,
+        legs: parsedLegs
+      })
+    }
+  }
+
+  return matchMultiLeg(tradesData, startTicketId)
 }
 
 // Generate readable name for single option (same for long/short of same option)
@@ -728,14 +788,17 @@ async function parseWebullCSV() {
   currentTicketId += vt.length
 
   const ic = parseIronCondors(categorized.iron_condor, currentTicketId)
+  console.log(`  Iron Condors: ${ic.length} tickets`)
   allTickets.push(...ic)
   currentTicketId += ic.length
 
-  const st = parseStraddles(categorized.straddle, currentTicketId)
-  allTickets.push(...st)
-  currentTicketId += st.length
+  const sd = parseStraddles(categorized.straddle, currentTicketId)
+  console.log(`  Straddles: ${sd.length} tickets`)
+  allTickets.push(...sd)
+  currentTicketId += sd.length
 
   const sg = parseStrangles(categorized.strangle, currentTicketId)
+  console.log(`  Strangles: ${sg.length} tickets`)
   allTickets.push(...sg)
   currentTicketId += sg.length
 
