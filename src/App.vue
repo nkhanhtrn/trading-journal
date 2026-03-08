@@ -1,18 +1,30 @@
 <template>
   <div class="min-h-screen bg-gray-900 flex flex-col">
-    <!-- Header -->
-    <header class="bg-gray-800 border-b border-gray-700">
-      <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-        <h1 class="text-xl font-bold text-white">📊 Options Journal</h1>
-        <button @click="showAddModal = true" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded text-sm">+ Add Trade</button>
-      </div>
-    </header>
-
     <!-- Main Content -->
-    <main class="flex-1 max-w-6xl mx-auto px-4 py-6 pb-24 overflow-auto">
+    <main class="flex-1 max-w-6xl mx-auto px-4 py-6 pb-16 overflow-auto">
       <!-- Calendar Tab -->
       <div v-if="activeTab === 'calendar'">
-        <SummaryCards :summary="stats" />
+        <!-- Monthly P&L Dashboard -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+          <div class="bg-gray-800 rounded-lg p-3">
+            <div class="text-lg font-bold" :class="monthlySummary.totalPnL >= 0 ? 'text-green-400' : 'text-red-400'">
+              {{ monthlySummary.totalPnL >= 0 ? '+' : '' }}${{ monthlySummary.totalPnL.toFixed(0) }}
+            </div>
+            <div class="text-xs text-gray-400">Month P&L</div>
+          </div>
+          <div class="bg-gray-800 rounded-lg p-3">
+            <div class="text-lg font-bold text-white">{{ monthlySummary.count }}</div>
+            <div class="text-xs text-gray-400">Trades Closed</div>
+          </div>
+          <div class="bg-gray-800 rounded-lg p-3">
+            <div class="text-lg font-bold text-green-400">{{ monthlySummary.winRate }}%</div>
+            <div class="text-xs text-gray-400">Win Rate</div>
+          </div>
+          <div class="bg-gray-800 rounded-lg p-3">
+            <div class="text-lg font-bold text-blue-400">{{ monthlySummary.profitFactor.toFixed(1) }}x</div>
+            <div class="text-xs text-gray-400">Profit Factor</div>
+          </div>
+        </div>
 
         <!-- Open Positions Section -->
         <div v-if="groupedOpenPositions.length > 0" class="mb-6">
@@ -60,7 +72,6 @@
             <div class="flex gap-1">
               <button @click="selectThisWeek" class="text-xs bg-gray-700 hover:bg-gray-600 text-white px-2 py-1 rounded">This Week</button>
               <button @click="selectThisMonth" class="text-xs bg-gray-700 hover:bg-gray-600 text-white px-2 py-1 rounded">This Month</button>
-              <button @click="selectAllTime" class="text-xs bg-gray-700 hover:bg-gray-600 text-white px-2 py-1 rounded">All Time</button>
             </div>
           </div>
 
@@ -148,18 +159,41 @@
           </div>
         </div>
 
-        <!-- Day Navigation -->
-        <div class="bg-gray-800 rounded-lg p-3 mb-6 flex items-center justify-between">
-          <button @click="prevDay" class="text-gray-400 hover:text-white px-3 py-1 rounded hover:bg-gray-700 transition-colors">
-            <i class="fas fa-chevron-left"></i>
-          </button>
-          <div class="text-center">
-            <div class="text-xs text-gray-500 mb-1">Viewing trades from</div>
-            <div class="text-lg font-semibold text-white">{{ selectedTradeDate || 'All dates' }}</div>
+        <!-- Day Navigation with P&L Dashboard -->
+        <div class="bg-gray-800 rounded-lg p-3 mb-6">
+          <!-- P&L Dashboard -->
+          <div class="grid grid-cols-4 gap-2 mb-3">
+            <div class="text-center">
+              <div class="text-base font-bold" :class="tradeSummary?.totalPnL >= 0 ? 'text-green-400' : 'text-red-400'">
+                {{ tradeSummary?.totalPnL >= 0 ? '+' : '' }}${{ (tradeSummary?.totalPnL || 0).toFixed(0) }}
+              </div>
+              <div class="text-xs text-gray-500">P&L</div>
+            </div>
+            <div class="text-center">
+              <div class="text-base font-bold text-white">{{ tradeSummary?.count || 0 }}</div>
+              <div class="text-xs text-gray-500">Trades</div>
+            </div>
+            <div class="text-center">
+              <div class="text-base font-bold text-green-400">{{ tradeSummary?.winRate || 0 }}%</div>
+              <div class="text-xs text-gray-500">Win Rate</div>
+            </div>
+            <div class="text-center">
+              <div class="text-base font-bold text-blue-400">{{ (tradeSummary?.profitFactor || 0).toFixed(1) }}x</div>
+              <div class="text-xs text-gray-500">Profit Factor</div>
+            </div>
           </div>
-          <button @click="nextDay" class="text-gray-400 hover:text-white px-3 py-1 rounded hover:bg-gray-700 transition-colors">
-            <i class="fas fa-chevron-right"></i>
-          </button>
+          <!-- Date Navigation -->
+          <div class="flex items-center justify-between">
+            <button @click="prevDay" class="text-gray-400 hover:text-white px-3 py-1 rounded hover:bg-gray-700 transition-colors">
+              <i class="fas fa-chevron-left"></i>
+            </button>
+            <div class="flex-1 text-center">
+              <input ref="datePickerInput" type="text" readonly :value="tradeDateDisplay" class="bg-transparent text-base font-semibold text-white text-center cursor-pointer hover:bg-gray-700 px-4 py-1 rounded focus:outline-none">
+            </div>
+            <button @click="nextDay" class="text-gray-400 hover:text-white px-3 py-1 rounded hover:bg-gray-700 transition-colors">
+              <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
         </div>
 
         <!-- Filters -->
@@ -170,13 +204,6 @@
             <option value="WIN">Win</option>
             <option value="LOSS">Loss</option>
           </select>
-          <select v-model="sortBy" class="bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 text-sm">
-            <option value="ticket">Ticket #</option>
-            <option value="pnl_high">P&L ↓</option>
-            <option value="pnl_low">P&L ↑</option>
-            <option value="date">Date</option>
-          </select>
-          <button @click="resetFilters" class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded text-sm">Clear</button>
           <button @click="toggleAllSymbols" class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded text-sm">
             {{ allSymbolsExpanded ? 'Collapse All' : 'Expand All' }}
           </button>
@@ -219,6 +246,13 @@
                   <!-- Price details inline -->
                   <div v-if="group.openCount === 0" class="flex items-center gap-4 text-sm">
                     <div class="flex items-center gap-1.5">
+                      <span class="text-gray-600 text-xs">P&L</span>
+                      <span class="font-mono font-bold text-base" :class="group.totalPnL >= 0 ? 'text-green-400' : 'text-red-400'">
+                        {{ group.totalPnL >= 0 ? '+' : '' }}${{ group.totalPnL.toFixed(0) }}
+                      </span>
+                    </div>
+                    <span class="text-gray-700">=</span>
+                    <div class="flex items-center gap-1.5">
                       <span class="text-gray-600 text-xs">Sold</span>
                       <span class="text-white font-mono font-medium">${{ Math.abs(getAverageEntryPrice(group)).toFixed(2) }}</span>
                     </div>
@@ -230,13 +264,6 @@
                     <div v-else class="flex items-center gap-1.5">
                       <span class="text-gray-600 text-xs">Expired</span>
                       <span class="text-yellow-400 font-mono font-medium">${{ getImpliedExitPrice(group).toFixed(2) }}</span>
-                    </div>
-                    <span class="text-gray-700">=</span>
-                    <div class="flex items-center gap-1.5">
-                      <span class="text-gray-600 text-xs">P&L</span>
-                      <span class="font-mono font-bold" :class="group.totalPnL >= 0 ? 'text-green-400' : 'text-red-400'">
-                        {{ group.totalPnL >= 0 ? '+' : '' }}${{ group.totalPnL.toFixed(0) }}
-                      </span>
                     </div>
                     <span class="text-xs text-gray-600 bg-gray-800 px-2 py-0.5 rounded ml-auto">
                       {{ group.totalQuantity }} × 100
@@ -265,21 +292,21 @@
           <button
             @click="activeTab = 'calendar'"
             :class="[
-              'flex-1 py-4 text-center transition-colors',
+              'flex-1 py-2 text-center transition-colors',
               activeTab === 'calendar' ? 'text-green-500 border-t-2 border-green-500' : 'text-gray-400 hover:text-gray-300'
             ]"
           >
-            <i class="fas fa-calendar-alt text-xl mb-1"></i>
+            <i class="fas fa-calendar-alt text-lg"></i>
             <div class="text-xs">Calendar</div>
           </button>
           <button
             @click="activeTab = 'trades'"
             :class="[
-              'flex-1 py-4 text-center transition-colors',
+              'flex-1 py-2 text-center transition-colors',
               activeTab === 'trades' ? 'text-green-500 border-t-2 border-green-500' : 'text-gray-400 hover:text-gray-300'
             ]"
           >
-            <i class="fas fa-list text-xl mb-1"></i>
+            <i class="fas fa-list text-lg"></i>
             <div class="text-xs">Trades</div>
           </button>
         </div>
@@ -421,18 +448,21 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, nextTick, watch } from 'vue'
 import { tradesData } from './data/trades.js'
 import SummaryCards from './components/SummaryCards.vue'
 import TradeFormModal from './components/TradeFormModal.vue'
 import MiniCalendarDots from './components/MiniCalendarDots.vue'
 import { fetchPrices, fetchHistoricalPrice } from './utils/priceFetcher.js'
+import flatpickr from 'flatpickr'
+import 'flatpickr/dist/flatpickr.css'
+import 'flatpickr/dist/themes/dark.css'
 
 const tickets = ref([])
 const showAddModal = ref(false)
 const activeTab = ref('calendar')
 const currentMonth = ref(new Date(2026, 2, 1)) // March 2026
-const openPositionsCollapsed = ref(false)
+const openPositionsCollapsed = ref(true)
 const expandedPositionKeys = ref(new Set())
 const expandedSymbols = ref(new Set())
 const equityPrices = ref({})
@@ -445,12 +475,78 @@ const dateRange = ref({
   single: null
 })
 
+// Trade view date picker state
+const datePickerInput = ref(null)
+
+// Set default to current month
+const now = new Date()
+const year = now.getFullYear()
+const month = now.getMonth()
+const startOfMonth = new Date(year, month, 1)
+const endOfMonth = new Date(year, month + 1, 0)
+
+const tradeDateRangeStart = ref(startOfMonth.toISOString().split('T')[0])
+const tradeDateRangeEnd = ref(endOfMonth.toISOString().split('T')[0])
+
+// Store pending date to set after flatpickr initializes
+const pendingDatePickerValue = ref(null)
+
+let fp = null
+
+// Initialize flatpickr date picker
+const initDatePicker = () => {
+  if (!datePickerInput.value) return
+  if (fp) return // Already initialized
+
+  fp = flatpickr(datePickerInput.value, {
+    mode: 'range',
+    dateFormat: 'Y-m-d',
+    theme: 'dark',
+    inline: false,
+    clickOpens: true,
+    allowInput: false,
+    onChange: function(selectedDates, dateStr, instance) {
+      if (selectedDates.length === 2) {
+        tradeDateRangeStart.value = formatFPDate(selectedDates[0])
+        tradeDateRangeEnd.value = formatFPDate(selectedDates[1])
+        selectedTradeDate.value = null
+      } else if (selectedDates.length === 1) {
+        tradeDateRangeStart.value = formatFPDate(selectedDates[0])
+        tradeDateRangeEnd.value = null
+        selectedTradeDate.value = null
+      }
+    }
+  })
+
+  // Apply any pending date value
+  if (pendingDatePickerValue.value) {
+    fp.setDate(pendingDatePickerValue.value)
+    pendingDatePickerValue.value = null
+  }
+}
+
+// Format flatpickr date to YYYY-MM-DD
+const formatFPDate = (date) => {
+  if (!date) return null
+  const d = new Date(date)
+  return d.toISOString().split('T')[0]
+}
+
+// Clear trade date filter
+const clearTradeDateFilter = () => {
+  tradeDateRangeStart.value = null
+  tradeDateRangeEnd.value = null
+  selectedTradeDate.value = null
+  if (fp) {
+    fp.clear()
+  }
+}
+
 const filters = ref({
   symbol: '',
   status: ''
 })
 
-const sortBy = ref('ticket')
 const selectedPositionGroup = ref(null)
 const selectedTradeDate = ref(null) // For day navigation in trades view
 
@@ -494,30 +590,33 @@ onMounted(() => {
   tickets.value = [...tradesData]
 })
 
+// Watch for trades tab to initialize date picker
+watch(activeTab, (newTab) => {
+  if (newTab === 'trades') {
+    nextTick(() => {
+      initDatePicker()
+    })
+  }
+})
+
 const filteredTickets = computed(() => {
   let filtered = tickets.value.filter(ticket => {
     const matchSymbol = !filters.value.symbol || ticket.symbol.toLowerCase().includes(filters.value.symbol.toLowerCase())
     const matchStatus = !filters.value.status || ticket.status === filters.value.status
     const matchDate = isTicketInDateRange(ticket)
-    // Match like calendar: entry or exit date matches
+    // Match trade date picker filter
+    let matchTradeDateFilter = true
+    if (tradeDateRangeStart.value) {
+      const end = tradeDateRangeEnd.value || tradeDateRangeStart.value
+      const entryInRange = ticket.date >= tradeDateRangeStart.value && ticket.date <= end
+      const exitInRange = ticket.exit_date && ticket.exit_date >= tradeDateRangeStart.value && ticket.exit_date <= end
+      const spansRange = ticket.date <= end && (!ticket.exit_date || ticket.exit_date >= tradeDateRangeStart.value)
+      matchTradeDateFilter = entryInRange || exitInRange || spansRange
+    }
+    // Match legacy selectedTradeDate for day navigation
     const matchSelectedDate = !selectedTradeDate.value || ticket.date === selectedTradeDate.value || ticket.exit_date === selectedTradeDate.value
-    return matchSymbol && matchStatus && matchDate && matchSelectedDate
+    return matchSymbol && matchStatus && matchDate && matchSelectedDate && matchTradeDateFilter
   })
-
-  switch (sortBy.value) {
-    case 'ticket':
-      filtered.sort((a, b) => a.ticket - b.ticket)
-      break
-    case 'pnl_high':
-      filtered.sort((a, b) => (b.pnl || 0) - (a.pnl || 0))
-      break
-    case 'pnl_low':
-      filtered.sort((a, b) => (a.pnl || 0) - (b.pnl || 0))
-      break
-    case 'date':
-      filtered.sort((a, b) => new Date(b.date) - new Date(a.date))
-      break
-  }
 
   return filtered
 })
@@ -534,6 +633,16 @@ const stats = computed(() => {
     totalPnL,
     totalStrategies
   }
+})
+
+// Computed display for trade date filter
+const tradeDateDisplay = computed(() => {
+  if (tradeDateRangeStart.value && tradeDateRangeEnd.value) {
+    return `${tradeDateRangeStart.value} → ${tradeDateRangeEnd.value}`
+  } else if (tradeDateRangeStart.value) {
+    return `${tradeDateRangeStart.value} → ...`
+  }
+  return selectedTradeDate.value || 'All dates'
 })
 
 const calendarDays = computed(() => {
@@ -605,6 +714,57 @@ const filteredSummary = computed(() => {
     losses: losers.length,
     profitFactor,
     bestTrade
+  }
+})
+
+// Monthly summary for the currently viewed month
+const monthlySummary = computed(() => {
+  const year = currentMonth.value.getFullYear()
+  const month = currentMonth.value.getMonth()
+  const startOfMonth = new Date(year, month, 1)
+  const endOfMonth = new Date(year, month + 1, 0)
+
+  const closedInMonth = tickets.value.filter(t => {
+    return t.status !== 'OPEN' && t.exit_date &&
+      t.exit_date >= startOfMonth.toISOString().split('T')[0] &&
+      t.exit_date <= endOfMonth.toISOString().split('T')[0]
+  })
+
+  const winners = closedInMonth.filter(t => t.status === 'WIN')
+  const losers = closedInMonth.filter(t => t.status === 'LOSS')
+
+  const totalPnL = closedInMonth.reduce((sum, t) => sum + (t.pnl || 0), 0)
+  const winsAmount = winners.reduce((sum, t) => sum + (t.pnl || 0), 0)
+  const lossesAmount = losers.reduce((sum, t) => sum + (t.pnl || 0), 0)
+
+  const profitFactor = lossesAmount !== 0 ? Math.abs(winsAmount / lossesAmount) : winsAmount > 0 ? 999 : 0
+
+  return {
+    count: closedInMonth.length,
+    totalPnL,
+    winRate: closedInMonth.length > 0 ? Math.round((winners.length / closedInMonth.length) * 100) : 0,
+    profitFactor
+  }
+})
+
+// Trade summary for currently filtered trades
+const tradeSummary = computed(() => {
+  const filtered = filteredTickets.value.filter(t => t.status !== 'OPEN')
+
+  const winners = filtered.filter(t => t.status === 'WIN')
+  const losers = filtered.filter(t => t.status === 'LOSS')
+
+  const totalPnL = filtered.reduce((sum, t) => sum + (t.pnl || 0), 0)
+  const winsAmount = winners.reduce((sum, t) => sum + (t.pnl || 0), 0)
+  const lossesAmount = losers.reduce((sum, t) => sum + (t.pnl || 0), 0)
+
+  const profitFactor = lossesAmount !== 0 ? Math.abs(winsAmount / lossesAmount) : winsAmount > 0 ? 999 : 0
+
+  return {
+    count: filtered.length,
+    totalPnL,
+    winRate: filtered.length > 0 ? Math.round((winners.length / filtered.length) * 100) : 0,
+    profitFactor
   }
 })
 
@@ -990,6 +1150,9 @@ const selectDate = (date) => {
     end: null
   }
   selectedTradeDate.value = date
+  tradeDateRangeStart.value = date
+  tradeDateRangeEnd.value = null
+  pendingDatePickerValue.value = date
   activeTab.value = 'trades'
 }
 
@@ -1001,12 +1164,18 @@ const selectThisWeek = () => {
   const endOfWeek = new Date(startOfWeek)
   endOfWeek.setDate(startOfWeek.getDate() + 6)
 
+  const startDate = startOfWeek.toISOString().split('T')[0]
+  const endDate = endOfWeek.toISOString().split('T')[0]
+
   dateRange.value = {
     mode: 'week',
-    start: startOfWeek.toISOString().split('T')[0],
-    end: endOfWeek.toISOString().split('T')[0],
+    start: startDate,
+    end: endDate,
     single: null
   }
+  tradeDateRangeStart.value = startDate
+  tradeDateRangeEnd.value = endDate
+  pendingDatePickerValue.value = [startOfWeek, endOfWeek]
   activeTab.value = 'trades'
 }
 
@@ -1016,12 +1185,18 @@ const selectThisMonth = () => {
   const startOfMonth = new Date(year, month, 1)
   const endOfMonth = new Date(year, month + 1, 0)
 
+  const startDate = startOfMonth.toISOString().split('T')[0]
+  const endDate = endOfMonth.toISOString().split('T')[0]
+
   dateRange.value = {
     mode: 'month',
-    start: startOfMonth.toISOString().split('T')[0],
-    end: endOfMonth.toISOString().split('T')[0],
+    start: startDate,
+    end: endDate,
     single: null
   }
+  tradeDateRangeStart.value = startDate
+  tradeDateRangeEnd.value = endDate
+  pendingDatePickerValue.value = [startOfMonth, endOfMonth]
   activeTab.value = 'trades'
 }
 
@@ -1032,6 +1207,9 @@ const selectAllTime = () => {
     end: null,
     single: null
   }
+  tradeDateRangeStart.value = null
+  tradeDateRangeEnd.value = null
+  if (fp) fp.clear()
   activeTab.value = 'trades'
 }
 
@@ -1084,16 +1262,11 @@ const isTicketInDateRange = (ticket) => {
   }
 }
 
-const resetFilters = () => {
-  filters.value = { symbol: '', status: '' }
-  sortBy.value = 'ticket'
-  clearDateRange()
-  selectedTradeDate.value = null
-}
-
 const prevDay = () => {
   // Clear date range filter when using day navigation
   dateRange.value = { mode: null, start: null, end: null, single: null }
+  tradeDateRangeStart.value = null
+  tradeDateRangeEnd.value = null
 
   if (!selectedTradeDate.value) {
     // Set to latest trade date if no date selected
@@ -1112,6 +1285,8 @@ const prevDay = () => {
 const nextDay = () => {
   // Clear date range filter when using day navigation
   dateRange.value = { mode: null, start: null, end: null, single: null }
+  tradeDateRangeStart.value = null
+  tradeDateRangeEnd.value = null
 
   if (!selectedTradeDate.value) {
     // Set to latest trade date if no date selected
@@ -1166,6 +1341,7 @@ const groupedTrades = computed(() => {
     else if (ticket.status === 'OPEN') group.openCount++
   })
 
+  // Sort groups by P&L (highest first)
   return Array.from(groups.values()).sort((a, b) => b.totalPnL - a.totalPnL)
 })
 
