@@ -646,8 +646,13 @@ const handleCsvUpload = async (event) => {
       return
     }
 
-    // Replace all tickets with the parsed ones
-    tickets.value = parsedTickets.sort((a, b) => a.ticket - b.ticket)
+    // Get existing ticket IDs to prevent duplicates
+    const existingTicketIds = new Set(tickets.value.map(t => t.ticket))
+    const newTickets = parsedTickets.filter(t => !existingTicketIds.has(t.ticket))
+    const duplicateCount = parsedTickets.length - newTickets.length
+
+    // Merge new tickets with existing ones
+    tickets.value = [...tickets.value, ...newTickets].sort((a, b) => a.ticket - b.ticket)
 
     // Save to storage
     saveTicketsToStorage()
@@ -656,7 +661,11 @@ const handleCsvUpload = async (event) => {
     console.log('Tickets value:', tickets.value)
 
     // Show message
-    uploadMessage.value = `Loaded ${parsedTickets.length} ticket${parsedTickets.length > 1 ? 's' : ''}`
+    if (duplicateCount > 0) {
+      uploadMessage.value = `Added ${newTickets.length} new ticket${newTickets.length !== 1 ? 's' : ''} (${duplicateCount} duplicate${duplicateCount > 1 ? 's' : ''} skipped)`
+    } else {
+      uploadMessage.value = `Loaded ${newTickets.length} ticket${newTickets.length > 1 ? 's' : ''}`
+    }
     setTimeout(() => uploadMessage.value = '', 3000)
 
   } catch (e) {
