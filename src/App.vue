@@ -3,269 +3,136 @@
     <!-- Main Content -->
     <div class="pl-14">
       <main class="flex-1 max-w-6xl mx-auto px-4 py-6 pb-16 overflow-auto">
-      <!-- Calendar Tab -->
-      <div v-if="activeTab === 'calendar'" class="w-[630px] max-w-full mx-auto">
-        <!-- Monthly P&L Dashboard -->
-        <div class="bg-gray-800 rounded-lg p-4 mb-6">
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div class="text-center">
-              <div class="text-2xl font-bold" :class="monthlySummary.totalPnL >= 0 ? 'text-green-400' : 'text-red-400'">
-                {{ monthlySummary.totalPnL >= 0 ? '+' : '' }}${{ monthlySummary.totalPnL.toFixed(0) }}
-              </div>
-              <div class="text-xs text-gray-500">Month P&L</div>
-            </div>
-            <div class="text-center">
-              <div class="text-2xl font-bold text-white">{{ monthlySummary.count }}</div>
-              <div class="text-xs text-gray-500">Trades Closed</div>
-            </div>
-            <div class="text-center">
-              <div class="text-2xl font-bold text-green-400">{{ monthlySummary.winRate }}%</div>
-              <div class="text-xs text-gray-500">Win Rate</div>
-            </div>
-            <div class="text-center">
-              <div class="text-2xl font-bold text-blue-400">{{ monthlySummary.profitFactor.toFixed(1) }}x</div>
-              <div class="text-xs text-gray-500">Profit Factor</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Open Positions Section -->
-        <div v-if="groupedOpenPositions.length > 0" class="mb-6">
-          <div class="flex items-center justify-between mb-3 cursor-pointer" @click="openPositionsCollapsed = !openPositionsCollapsed">
-            <h3 class="text-sm font-semibold text-yellow-400 flex items-center gap-2">
-              <i class="fas fa-exclamation-triangle"></i>
-              Open Positions ({{ openPositions.length }})
-            </h3>
-            <i class="fas fa-chevron-down text-yellow-400 transition-transform text-xs" :class="{ 'rotate-180': openPositionsCollapsed }"></i>
-          </div>
-
-          <div v-show="!openPositionsCollapsed" class="space-y-2">
-            <div v-for="group in groupedOpenPositions" :key="group.symbol + group.strategyName + group.strikes + group.expiry" class="border-b border-gray-800 last:border-0">
-              <div class="flex items-center gap-4 text-sm py-2 cursor-pointer hover:bg-gray-800/50 px-2 -mx-2 rounded" @click="togglePosition(group)">
-                <i class="fas fa-chevron-right text-gray-500 text-xs transition-transform" :class="{ 'rotate-90': expandedPositionKeys.has(group.symbol + group.strategyName + group.strikes + group.expiry) }"></i>
-                <span class="text-gray-400 w-20">{{ group.positions.length > 1 ? group.positions.map(p => p.ticket).join(', ') : '#' + group.positions[0].ticket }}</span>
-                <span class="font-semibold text-yellow-300 w-12">{{ group.symbol }}</span>
-                <span class="text-gray-400 flex-1">{{ group.strategyName }} {{ group.strikes }}</span>
-                <span class="text-gray-500 text-xs">{{ group.expiry }}</span>
-                <span class="text-gray-500 text-xs">{{ group.totalQuantity }}c</span>
-              </div>
-              <div v-show="expandedPositionKeys.has(group.symbol + group.strategyName + group.strikes + group.expiry)" class="px-2 py-2 bg-gray-800/50">
-                <div class="flex items-center justify-between">
-                  <span class="text-xs text-gray-500">Entry: ${{ getAverageEntryPrice(group).toFixed(2) }}</span>
-                  <button @click.stop="selectedPositionGroup = group" class="text-xs bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded">Details →</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Calendar -->
-        <div class="bg-gray-800 rounded-lg p-4">
-          <!-- Month Navigation & Quick Filters -->
-          <div class="flex items-center justify-between mb-3">
+      <!-- Calendar & Trades Merged View -->
+      <div v-if="activeTab === 'calendar' || activeTab === 'trades'" class="h-[calc(100vh-8rem)] grid grid-rows-[auto_1fr] gap-4">
+        <!-- Header: Month Selector + Summary Cards -->
+        <div class="grid grid-cols-[auto_1fr] gap-4">
+          <!-- Month Selector -->
+          <div class="bg-gray-800 rounded-lg px-4 py-2 flex items-center justify-between">
+            <h2 class="text-lg font-semibold text-white">Trades</h2>
             <div class="flex items-center gap-2">
               <button @click="prevMonth" class="text-gray-400 hover:text-white px-2 py-1 rounded hover:bg-gray-700">
                 <i class="fas fa-chevron-left"></i>
               </button>
-              <h2 class="text-lg font-semibold text-white w-32 text-center">{{ formatMonth(currentMonth) }}</h2>
+              <span class="text-white font-medium">{{ formatMonth(currentMonth) }}</span>
               <button @click="nextMonth" class="text-gray-400 hover:text-white px-2 py-1 rounded hover:bg-gray-700">
                 <i class="fas fa-chevron-right"></i>
               </button>
             </div>
           </div>
-
-          <!-- Date Range Picker -->
-          <div v-if="dateRange.mode === 'range'" class="mb-3 p-2 bg-gray-700 rounded flex items-center gap-2 text-sm">
-            <span class="text-gray-400">From:</span>
-            <input v-model="dateRange.start" type="date" class="bg-gray-600 text-white px-2 py-1 rounded border border-gray-500 text-xs">
-            <span class="text-gray-400">To:</span>
-            <input v-model="dateRange.end" type="date" class="bg-gray-600 text-white px-2 py-1 rounded border border-gray-500 text-xs">
-            <button @click="clearDateRange" class="text-gray-400 hover:text-white ml-auto">
-              <i class="fas fa-times"></i>
-            </button>
-          </div>
-
-          <!-- Calendar Grid -->
-          <div class="grid grid-cols-7 grid-rows-5 gap-1">
-            <div v-for="day in ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']" :key="day" class="text-center text-xs text-gray-500 py-2">
-              {{ day }}
-            </div>
-            <div
-              v-for="day in calendarDays"
-              :key="day.date"
-              @click="selectDate(day.date)"
-              :class="[
-                'p-2 text-center rounded cursor-pointer text-sm transition-colors h-16 flex flex-col justify-center',
-                !day.date ? 'pointer-events-none' : '',
-                day.pnl === 0 ? 'text-gray-600' : '',
-                day.pnl > 0 ? 'bg-green-900 hover:bg-green-800 text-green-300' : '',
-                day.pnl < 0 ? 'bg-red-900 hover:bg-red-800 text-red-300' : ''
-              ]"
-            >
-              <div v-if="day.date" class="font-semibold">{{ day.dayOfMonth }}</div>
-              <div v-if="day.date && day.pnl !== 0" class="text-xs font-bold mt-1">
-                {{ day.pnl >= 0 ? '+' : '' }}${{ day.pnl }}
+          <!-- Summary Cards -->
+          <div class="grid grid-cols-4 gap-3">
+            <div class="bg-gray-800 rounded-lg px-3 py-2 text-center">
+              <div class="text-xl font-bold" :class="monthlySummary.totalPnL >= 0 ? 'text-green-400' : 'text-red-400'">
+                {{ monthlySummary.totalPnL >= 0 ? '+' : '' }}${{ monthlySummary.totalPnL.toFixed(0) }}
               </div>
+              <div class="text-xs text-gray-400">P&L</div>
+            </div>
+            <div class="bg-gray-800 rounded-lg px-3 py-2 text-center">
+              <div class="text-xl font-bold text-white">{{ monthlySummary.count }}</div>
+              <div class="text-xs text-gray-400">Trades</div>
+            </div>
+            <div class="bg-gray-800 rounded-lg px-3 py-2 text-center">
+              <div class="text-xl font-bold text-green-400">{{ monthlySummary.winRate }}%</div>
+              <div class="text-xs text-gray-400">Win Rate</div>
+            </div>
+            <div class="bg-gray-800 rounded-lg px-3 py-2 text-center">
+              <div class="text-xl font-bold text-blue-400">{{ monthlySummary.profitFactor.toFixed(1) }}x</div>
+              <div class="text-xs text-gray-400">PF</div>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- Trades Tab -->
-      <div v-if="activeTab === 'trades'" class="w-[630px] max-w-full mx-auto">
-        <!-- Open Positions Section -->
-        <div v-if="groupedOpenPositions.length > 0" class="mb-6">
-          <div class="flex items-center justify-between mb-3 cursor-pointer" @click="openPositionsCollapsed = !openPositionsCollapsed">
-            <h3 class="text-sm font-semibold text-yellow-400 flex items-center gap-2">
-              <i class="fas fa-exclamation-triangle"></i>
-              Open Positions ({{ openPositions.length }})
-            </h3>
-            <i class="fas fa-chevron-down text-yellow-400 transition-transform text-xs" :class="{ 'rotate-180': openPositionsCollapsed }"></i>
-          </div>
-
-          <div v-show="!openPositionsCollapsed" class="space-y-2">
-            <div v-for="group in groupedOpenPositions" :key="group.symbol + group.strategyName + group.strikes + group.expiry" class="border-b border-gray-800 last:border-0">
-              <div class="flex items-center gap-4 text-sm py-2 cursor-pointer hover:bg-gray-800/50 px-2 -mx-2 rounded" @click="togglePosition(group)">
-                <i class="fas fa-chevron-right text-gray-500 text-xs transition-transform" :class="{ 'rotate-90': expandedPositionKeys.has(group.symbol + group.strategyName + group.strikes + group.expiry) }"></i>
-                <span class="text-gray-400 w-20">{{ group.positions.length > 1 ? group.positions.map(p => p.ticket).join(', ') : '#' + group.positions[0].ticket }}</span>
-                <span class="font-semibold text-yellow-300 w-12">{{ group.symbol }}</span>
-                <span class="text-gray-400 flex-1">{{ group.strategyName }} {{ group.strikes }}</span>
-                <span class="text-gray-500 text-xs">{{ group.expiry }}</span>
-                <span class="text-gray-500 text-xs">{{ group.totalQuantity }}c</span>
+        <!-- Main Content: Calendar + Trades List -->
+        <div class="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-4 min-h-0">
+          <!-- Left Column: Calendar -->
+          <div class="bg-gray-800 rounded-lg p-3 flex flex-col min-h-0">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-sm font-semibold text-gray-300">Calendar</h3>
+            </div>
+            <div class="grid grid-cols-7 grid-rows-5 gap-1 flex-1">
+              <div v-for="day in ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']" :key="day" class="text-center text-xs text-gray-500 py-1">
+                {{ day }}
               </div>
-              <div v-show="expandedPositionKeys.has(group.symbol + group.strategyName + group.strikes + group.expiry)" class="px-2 py-2 bg-gray-800/50">
-                <div class="flex items-center justify-between">
-                  <span class="text-xs text-gray-500">Entry: ${{ getAverageEntryPrice(group).toFixed(2) }}</span>
-                  <button @click.stop="selectedPositionGroup = group" class="text-xs bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded">Details →</button>
+              <div
+                v-for="day in calendarDays"
+                :key="day.date"
+                @click="selectDate(day.date)"
+                :class="[
+                  'p-1 text-center rounded cursor-pointer text-xs transition-colors flex flex-col justify-center',
+                  !day.date ? 'pointer-events-none' : '',
+                  day.pnl === 0 ? 'text-gray-600' : '',
+                  day.pnl > 0 ? 'bg-green-900 hover:bg-green-800 text-green-300' : '',
+                  day.pnl < 0 ? 'bg-red-900 hover:bg-red-800 text-red-300' : ''
+                ]"
+              >
+                <div v-if="day.date" class="text-sm">{{ day.dayOfMonth }}</div>
+                <div v-if="day.pnl !== 0" class="font-mono font-bold" :class="day.pnl >= 0 ? 'text-green-300' : 'text-red-300'">
+                  {{ day.pnl >= 0 ? '+' : '' }}${{ day.pnl.toFixed(0) }}
                 </div>
+                <div v-if="day.tradeCount > 0" class="text-xs opacity-70">{{ day.tradeCount }}</div>
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- Day Navigation with P&L Dashboard -->
-        <div class="bg-gray-800 rounded-lg p-4 mb-6">
-          <!-- P&L Dashboard -->
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-            <div class="text-center">
-              <div class="text-2xl font-bold" :class="tradeSummary?.totalPnL >= 0 ? 'text-green-400' : 'text-red-400'">
-                {{ tradeSummary?.totalPnL >= 0 ? '+' : '' }}${{ (tradeSummary?.totalPnL || 0).toFixed(0) }}
-              </div>
-              <div class="text-xs text-gray-500">P&L</div>
-            </div>
-            <div class="text-center">
-              <div class="text-2xl font-bold text-white">{{ tradeSummary?.count || 0 }}</div>
-              <div class="text-xs text-gray-500">Trades</div>
-            </div>
-            <div class="text-center">
-              <div class="text-2xl font-bold text-green-400">{{ tradeSummary?.winRate || 0 }}%</div>
-              <div class="text-xs text-gray-500">Win Rate</div>
-            </div>
-            <div class="text-center">
-              <div class="text-2xl font-bold text-blue-400">{{ (tradeSummary?.profitFactor || 0).toFixed(1) }}x</div>
-              <div class="text-xs text-gray-500">Profit Factor</div>
-            </div>
-          </div>
-          <!-- Date Navigation -->
-          <div class="flex items-center justify-between">
-            <button @click="prevDay" class="text-gray-400 hover:text-white px-3 py-1 rounded hover:bg-gray-700 transition-colors">
-              <i class="fas fa-chevron-left"></i>
-            </button>
-            <div class="flex-1 text-center">
-              <input ref="datePickerInput" type="text" readonly :value="tradeDateDisplay" class="bg-transparent text-base font-semibold text-white text-center cursor-pointer hover:bg-gray-700 px-4 py-1 rounded focus:outline-none">
-            </div>
-            <button @click="nextDay" class="text-gray-400 hover:text-white px-3 py-1 rounded hover:bg-gray-700 transition-colors">
-              <i class="fas fa-chevron-right"></i>
-            </button>
-          </div>
-        </div>
-
-        <!-- Filters -->
-        <div class="bg-gray-800 rounded-lg p-3 mb-6 flex gap-3 flex-wrap items-center">
-          <input v-model="filters.symbol" type="text" placeholder="Search symbol..." class="bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 text-sm flex-1 min-w-40">
-          <select v-model="filters.status" class="bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 text-sm">
-            <option value="">All Status</option>
-            <option value="WIN">Win</option>
-            <option value="LOSS">Loss</option>
-          </select>
-          <button @click="toggleAllSymbols" class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded text-sm">
-            {{ allSymbolsExpanded ? 'Collapse All' : 'Expand All' }}
-          </button>
-        </div>
-
-        <!-- Tickets List grouped by Symbol -->
-        <div class="space-y-2">
-          <div v-for="symbolGroup in groupedBySymbol" :key="symbolGroup.symbol" class="bg-gray-800 rounded-lg overflow-hidden">
-            <!-- Symbol Header -->
-            <div class="px-4 py-3 flex items-center justify-between cursor-pointer hover:bg-gray-700" @click="toggleSymbol(symbolGroup.symbol)">
-              <div class="flex items-center gap-3">
-                <i class="fas fa-chevron-right text-gray-500 text-xs transition-transform" :class="{ 'rotate-90': expandedSymbols.has(symbolGroup.symbol) }"></i>
-                <span class="text-lg font-bold text-white">{{ symbolGroup.symbol }}</span>
-                <span class="text-xs text-gray-500">{{ symbolGroup.groups.length }} position{{ symbolGroup.groups.length > 1 ? 's' : '' }}</span>
-              </div>
-              <div class="flex items-center gap-3">
-                <span class="text-base font-bold" :class="symbolGroup.totalPnL >= 0 ? 'text-green-400' : 'text-red-400'">
-                  {{ symbolGroup.totalPnL >= 0 ? '+' : '' }}${{ symbolGroup.totalPnL.toFixed(0) }}
-                </span>
-              </div>
+          <!-- Right Column: Trades List -->
+          <div class="bg-gray-800 rounded-lg flex flex-col min-h-0">
+            <!-- Filters -->
+            <div class="p-3 border-b border-gray-700 flex gap-2 flex-wrap items-center">
+              <input v-model="filters.symbol" type="text" placeholder="Search..." class="bg-gray-700 text-white px-3 py-1.5 rounded border border-gray-600 text-sm flex-1 min-w-32">
+              <select v-model="filters.status" class="bg-gray-700 text-white px-3 py-1.5 rounded border border-gray-600 text-sm">
+                <option value="">All</option>
+                <option value="WIN">Win</option>
+                <option value="LOSS">Loss</option>
+              </select>
+              <button @click="toggleAllSymbols" class="bg-gray-700 hover:bg-gray-600 text-white px-3 py-1.5 rounded text-sm">
+                {{ allSymbolsExpanded ? 'Collapse' : 'Expand' }}
+              </button>
             </div>
 
-            <!-- Positions under symbol -->
-            <div v-show="expandedSymbols.has(symbolGroup.symbol)" class="border-t border-gray-700">
-              <div v-for="group in symbolGroup.groups" :key="group.symbol + group.strategyName + group.strikes + group.expiry" class="border-b border-gray-700 last:border-0 cursor-pointer hover:bg-gray-700/50" @click="selectedPositionGroup = group">
-                <!-- Position Row with details inline -->
-                <div class="px-4 py-3">
-                  <div class="flex items-center justify-between mb-2">
+            <!-- Trades List -->
+            <div class="flex-1 overflow-y-auto p-2">
+              <div class="space-y-2">
+                <div v-for="symbolGroup in groupedBySymbol" :key="symbolGroup.symbol" class="bg-gray-700/50 rounded overflow-hidden">
+                  <div class="px-3 py-2 flex items-center justify-between cursor-pointer hover:bg-gray-700" @click="toggleSymbol(symbolGroup.symbol)">
                     <div class="flex items-center gap-2">
-                      <span class="text-sm font-medium text-white">{{ group.strategyName }}</span>
-                      <span class="text-sm text-gray-400">{{ group.strikes }}</span>
-                      <span class="text-xs bg-gray-700 text-gray-300 px-2 py-0.5 rounded">{{ group.expiry }}</span>
-                      <span class="text-xs bg-blue-900/30 text-blue-300 px-2 py-0.5 rounded">{{ group.totalQuantity }}c</span>
+                      <i class="fas fa-chevron-right text-gray-500 text-xs transition-transform" :class="{ 'rotate-90': expandedSymbols.has(symbolGroup.symbol) }"></i>
+                      <span class="text-sm font-bold text-white">{{ symbolGroup.symbol }}</span>
+                      <span class="text-xs text-gray-500">{{ symbolGroup.groups.length }}</span>
                     </div>
-                    <div class="flex items-center gap-3">
-                      <MiniCalendarDots :entry-dates="getEntryDates(group)" :exit-dates="getExitDates(group)" :expiry-dates="getExpiryDates(group)" />
-                    </div>
-                  </div>
-
-                  <!-- Price details inline -->
-                  <div v-if="group.openCount === 0" class="flex items-center gap-4 text-sm">
-                    <div class="flex items-center gap-1.5">
-                      <span class="text-gray-600 text-xs">P&L</span>
-                      <span class="font-mono font-bold text-base" :class="group.totalPnL >= 0 ? 'text-green-400' : 'text-red-400'">
-                        {{ group.totalPnL >= 0 ? '+' : '' }}${{ group.totalPnL.toFixed(0) }}
-                      </span>
-                    </div>
-                    <span class="text-gray-700">=</span>
-                    <div class="flex items-center gap-1.5">
-                      <span class="text-gray-600 text-xs">Sold</span>
-                      <span class="text-white font-mono font-medium">${{ Math.abs(getAverageEntryPrice(group)).toFixed(2) }}</span>
-                    </div>
-                    <span class="text-gray-700">×</span>
-                    <div v-if="hasClosingLegs(group)" class="flex items-center gap-1.5">
-                      <span class="text-gray-600 text-xs">Bought</span>
-                      <span class="text-white font-mono font-medium">${{ Math.abs(getAverageExitPrice(group)).toFixed(2) }}</span>
-                    </div>
-                    <div v-else class="flex items-center gap-1.5">
-                      <span class="text-gray-600 text-xs">Expired</span>
-                      <span class="text-yellow-400 font-mono font-medium">${{ getImpliedExitPrice(group).toFixed(2) }}</span>
-                    </div>
-                    <span class="text-xs text-gray-600 bg-gray-800 px-2 py-0.5 rounded ml-auto">
-                      {{ group.totalQuantity }} × 100
+                    <span class="font-mono font-bold text-sm" :class="symbolGroup.totalPnL >= 0 ? 'text-green-400' : 'text-red-400'">
+                      {{ symbolGroup.totalPnL >= 0 ? '+' : '' }}${{ symbolGroup.totalPnL.toFixed(0) }}
                     </span>
                   </div>
-                  <div v-else class="flex items-center gap-2 text-sm">
-                    <span class="text-gray-500 text-xs">Opening Price:</span>
-                    <span class="text-white font-mono">${{ getAverageEntryPrice(group).toFixed(2) }}</span>
-                    <span class="text-xs px-2 py-1 rounded bg-yellow-900 text-yellow-300 ml-auto">{{ group.openCount }} OPEN</span>
+                  <div v-show="expandedSymbols.has(symbolGroup.symbol)" class="border-t border-gray-600">
+                    <div v-for="group in symbolGroup.groups" :key="group.symbol + group.strategyName + group.strikes + group.expiry" class="border-b border-gray-600/50 last:border-0 cursor-pointer hover:bg-gray-700/50 p-2" @click="selectedPositionGroup = group">
+                      <div class="flex items-center justify-between mb-1">
+                        <div class="flex items-center gap-1.5">
+                          <span class="text-xs font-medium text-white">{{ group.strategyName }}</span>
+                          <span class="text-xs text-gray-400">{{ group.strikes }}</span>
+                          <span class="text-xs bg-gray-600 text-gray-300 px-1.5 py-0.5 rounded">{{ group.expiry }}</span>
+                        </div>
+                        <MiniCalendarDots :entry-dates="getEntryDates(group)" :exit-dates="getExitDates(group)" :expiry-dates="getExpiryDates(group)" />
+                      </div>
+                      <div v-if="group.openCount === 0" class="flex items-center gap-2 text-xs">
+                        <span class="font-mono font-bold" :class="group.totalPnL >= 0 ? 'text-green-400' : 'text-red-400'">
+                          {{ group.totalPnL >= 0 ? '+' : '' }}${{ group.totalPnL.toFixed(0) }}
+                        </span>
+                        <span class="text-gray-500">=</span>
+                        <span class="text-gray-400">Sold ${{ Math.abs(getAverageEntryPrice(group)).toFixed(2) }}</span>
+                        <span v-if="hasClosingLegs(group)" class="text-gray-400">Bought ${{ Math.abs(getAverageExitPrice(group)).toFixed(2) }}</span>
+                      </div>
+                      <div v-else class="text-xs bg-yellow-900/30 text-yellow-300 px-2 py-0.5 rounded">
+                        {{ group.openCount }} OPEN
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
+              <div v-if="filteredTickets.length === 0" class="text-center text-gray-500 py-8">No trades found</div>
             </div>
           </div>
         </div>
-
-        <!-- No tickets message -->
-        <div v-if="filteredTickets.length === 0" class="bg-gray-800 rounded-lg p-8 text-center text-gray-500">No tickets found</div>
       </div>
 
       <!-- Dashboard Tab -->
@@ -430,20 +297,10 @@
     <!-- Left Sidebar Navigation -->
     <nav class="fixed left-0 top-0 bottom-0 w-14 bg-gray-800 border-r border-gray-700 flex flex-col items-center py-4 gap-2 z-50">
       <button
-        @click="navigateTo('calendar')"
-        :class="[
-          'w-10 h-10 flex flex-col items-center justify-center rounded transition-colors',
-          activeTab === 'calendar' ? 'bg-gray-700 text-green-500' : 'text-gray-400 hover:text-gray-300 hover:bg-gray-700'
-        ]"
-        title="Calendar"
-      >
-        <i class="fas fa-calendar-alt"></i>
-      </button>
-      <button
         @click="navigateTo('trades')"
         :class="[
           'w-10 h-10 flex flex-col items-center justify-center rounded transition-colors',
-          activeTab === 'trades' ? 'bg-gray-700 text-green-500' : 'text-gray-400 hover:text-gray-300 hover:bg-gray-700'
+          activeTab === 'calendar' || activeTab === 'trades' ? 'bg-gray-700 text-green-500' : 'text-gray-400 hover:text-gray-300 hover:bg-gray-700'
         ]"
         title="Trades"
       >
@@ -496,222 +353,212 @@
     <TradeFormModal v-if="showAddModal" @close="showAddModal = false" @save="saveTrade" />
 
     <!-- Position Detail Modal -->
-    <div v-if="selectedPositionGroup" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4" @click.self="selectedPositionGroup = null">
-      <div class="bg-gray-800 rounded-lg max-w-2xl w-full max-h-[80vh] overflow-auto">
-        <div class="flex items-center justify-between p-4 border-b border-gray-700">
-          <h3 class="text-lg font-bold text-white">{{ selectedPositionGroup.symbol }} {{ selectedPositionGroup.strategyName || 'Strategy' }} {{ selectedPositionGroup.strikes }}</h3>
-          <button @click="selectedPositionGroup = null" class="text-gray-400 hover:text-white">
-            <i class="fas fa-times"></i>
-          </button>
+    <!-- Trade Detail Modal -->
+    <BaseModal
+      v-model:show="tradeDetailModalOpen"
+      :title="selectedPositionGroup ? `${selectedPositionGroup.symbol} ${selectedPositionGroup.strategyName || 'Strategy'} ${selectedPositionGroup.strikes}` : ''"
+      max-width="2xl"
+      content-class="p-4 space-y-4 max-h-[70vh] overflow-auto"
+    >
+      <template v-if="selectedPositionGroup">
+        <div class="flex items-center gap-4 text-sm text-gray-400">
+          <span>Expiry: <span class="text-yellow-300 ml-1">{{ selectedPositionGroup.expiry }}</span></span>
+          <span>Total: <span class="text-white ml-1">{{ selectedPositionGroup.totalQuantity }} contracts</span></span>
+          <span v-if="selectedPositionGroup.openCount === 0" :class="selectedPositionGroup.totalPnL >= 0 ? 'text-green-400' : 'text-red-400'">
+            P&L: {{ selectedPositionGroup.totalPnL >= 0 ? '+' : '' }}${{ selectedPositionGroup.totalPnL.toFixed(0) }}
+          </span>
         </div>
 
-        <div class="p-4 space-y-4">
-          <div class="flex items-center gap-4 text-sm text-gray-400">
-            <span>Expiry: <span class="text-yellow-300 ml-1">{{ selectedPositionGroup.expiry }}</span></span>
-            <span>Total: <span class="text-white ml-1">{{ selectedPositionGroup.totalQuantity }} contracts</span></span>
-            <span v-if="selectedPositionGroup.openCount === 0" :class="selectedPositionGroup.totalPnL >= 0 ? 'text-green-400' : 'text-red-400'">
-              P&L: {{ selectedPositionGroup.totalPnL >= 0 ? '+' : '' }}${{ selectedPositionGroup.totalPnL.toFixed(0) }}
-            </span>
-          </div>
+        <div class="border-t border-gray-700 pt-4">
+          <div class="text-sm font-semibold text-gray-300 mb-3">Tickets ({{ (selectedPositionGroup.tickets || selectedPositionGroup.positions).length }})</div>
+          <div v-for="pos in (selectedPositionGroup.tickets || selectedPositionGroup.positions)" :key="pos.ticket" class="bg-gray-900 rounded p-3 mb-3 last:mb-0">
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-3">
+                <span class="text-blue-400 font-mono">#{{ pos.ticket }}</span>
+                <span class="text-xs px-2 py-0.5 rounded" :class="getStatusClass(pos.status)">{{ pos.status }}</span>
+                <span v-if="pos.status !== 'OPEN'" class="text-sm font-bold" :class="pos.pnl >= 0 ? 'text-green-400' : 'text-red-400'">
+                  {{ pos.pnl >= 0 ? '+' : '' }}${{ pos.pnl }}
+                </span>
+              </div>
+              <span class="text-gray-500 text-xs">{{ pos.date }}{{ pos.exit_date ? ' → ' + pos.exit_date : '' }}</span>
+            </div>
 
-          <div class="border-t border-gray-700 pt-4">
-            <div class="text-sm font-semibold text-gray-300 mb-3">Tickets ({{ (selectedPositionGroup.tickets || selectedPositionGroup.positions).length }})</div>
-            <div v-for="pos in (selectedPositionGroup.tickets || selectedPositionGroup.positions)" :key="pos.ticket" class="bg-gray-900 rounded p-3 mb-3 last:mb-0">
-              <div class="flex items-center justify-between mb-3">
-                <div class="flex items-center gap-3">
-                  <span class="text-blue-400 font-mono">#{{ pos.ticket }}</span>
-                  <span class="text-xs px-2 py-0.5 rounded" :class="getStatusClass(pos.status)">{{ pos.status }}</span>
-                  <span v-if="pos.status !== 'OPEN'" class="text-sm font-bold" :class="pos.pnl >= 0 ? 'text-green-400' : 'text-red-400'">
+            <div class="grid grid-cols-2 gap-4 text-xs mb-3">
+              <!-- Opening Legs -->
+              <div>
+                <div class="text-green-400 font-semibold mb-1">Opening</div>
+                <div v-for="leg in openingLegs(pos)" :key="'open-' + leg.strike + leg.action" class="flex items-center gap-2 mb-1">
+                  <span class="px-1.5 py-0.5 rounded text-[10px]" :class="leg.action === 'buy' ? 'bg-green-900/30 text-green-300' : 'bg-red-900/30 text-red-300'">
+                    {{ leg.action === 'buy' ? 'LONG' : 'SHORT' }}
+                  </span>
+                  <span class="text-gray-300">{{ leg.type.toUpperCase() }} ${{ leg.strike }}</span>
+                  <span class="text-gray-500">{{ leg.quantity }}c</span>
+                  <span class="text-gray-500">@ ${{ leg.premium.toFixed(2) }}</span>
+                </div>
+              </div>
+
+              <!-- Closing Legs -->
+              <div v-if="pos.exit_date">
+                <div class="text-red-400 font-semibold mb-1">Closing</div>
+                <div v-for="leg in closingLegs(pos)" :key="'close-' + leg.strike + leg.action" class="flex items-center gap-2 mb-1">
+                  <span class="px-1.5 py-0.5 rounded text-[10px]" :class="leg.action === 'buy' ? 'bg-green-900/30 text-green-300' : 'bg-red-900/30 text-red-300'">
+                    {{ leg.action === 'buy' ? 'LONG' : 'SHORT' }}
+                  </span>
+                  <span class="text-gray-300">{{ leg.type.toUpperCase() }} ${{ leg.strike }}</span>
+                  <span class="text-gray-500">{{ leg.quantity }}c</span>
+                  <span class="text-gray-500">@ ${{ leg.premium.toFixed(2) }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- P&L Breakdown for closed trades -->
+            <div v-if="pos.exit_date" class="border-t border-gray-700 pt-3 mt-3">
+              <div class="text-xs text-gray-500 mb-2">P&L Breakdown</div>
+              <div class="flex items-center gap-3 text-sm">
+                <div class="flex items-center gap-1.5">
+                  <span class="text-gray-600 text-xs">Sold</span>
+                  <span class="text-white font-mono font-medium">${{ Math.abs(getTicketEntryPrice(pos)).toFixed(2) }}</span>
+                </div>
+                <span class="text-gray-700">×</span>
+                <div v-if="ticketHasClosingLegs(pos)" class="flex items-center gap-1.5">
+                  <span class="text-gray-600 text-xs">Bought</span>
+                  <span class="text-white font-mono font-medium">${{ Math.abs(getTicketExitPrice(pos)).toFixed(2) }}</span>
+                </div>
+                <div v-else class="flex items-center gap-1.5">
+                  <span class="text-gray-600 text-xs">Expired</span>
+                  <span class="text-yellow-400 font-mono font-medium">${{ getTicketImpliedExitPrice(pos).toFixed(2) }}</span>
+                </div>
+                <span class="text-gray-700">=</span>
+                <div class="flex items-center gap-1.5">
+                  <span class="text-gray-600 text-xs">P&L</span>
+                  <span class="font-mono font-bold" :class="pos.pnl >= 0 ? 'text-green-400' : 'text-red-400'">
                     {{ pos.pnl >= 0 ? '+' : '' }}${{ pos.pnl }}
                   </span>
                 </div>
-                <span class="text-gray-500 text-xs">{{ pos.date }}{{ pos.exit_date ? ' → ' + pos.exit_date : '' }}</span>
+                <span class="text-xs text-gray-600 bg-gray-800 px-2 py-0.5 rounded ml-auto">
+                  {{ getTicketContracts(pos) }} × 100
+                </span>
               </div>
+            </div>
 
-              <div class="grid grid-cols-2 gap-4 text-xs mb-3">
-                <!-- Opening Legs -->
-                <div>
-                  <div class="text-green-400 font-semibold mb-1">Opening</div>
-                  <div v-for="leg in openingLegs(pos)" :key="'open-' + leg.strike + leg.action" class="flex items-center gap-2 mb-1">
-                    <span class="px-1.5 py-0.5 rounded text-[10px]" :class="leg.action === 'buy' ? 'bg-green-900/30 text-green-300' : 'bg-red-900/30 text-red-300'">
-                      {{ leg.action === 'buy' ? 'LONG' : 'SHORT' }}
-                    </span>
-                    <span class="text-gray-300">{{ leg.type.toUpperCase() }} ${{ leg.strike }}</span>
-                    <span class="text-gray-500">{{ leg.quantity }}c</span>
-                    <span class="text-gray-500">@ ${{ leg.premium.toFixed(2) }}</span>
-                  </div>
-                </div>
+            <!-- P&L Graph -->
+            <div class="border-t border-gray-700 pt-3 mt-3">
+              <div class="text-xs text-gray-400 mb-3">Theoretical P&L at Expiration</div>
+              <svg viewBox="0 0 320 120" class="w-full h-28 bg-gray-900/50 rounded-lg">
+                <!-- P&L Fill area -->
+                <polygon :points="getPnLGraphArea(pos)" fill="#9ca3af" fill-opacity="0.1" />
 
-                <!-- Closing Legs -->
-                <div v-if="pos.exit_date">
-                  <div class="text-red-400 font-semibold mb-1">Closing</div>
-                  <div v-for="leg in closingLegs(pos)" :key="'close-' + leg.strike + leg.action" class="flex items-center gap-2 mb-1">
-                    <span class="px-1.5 py-0.5 rounded text-[10px]" :class="leg.action === 'buy' ? 'bg-green-900/30 text-green-300' : 'bg-red-900/30 text-red-300'">
-                      {{ leg.action === 'buy' ? 'LONG' : 'SHORT' }}
-                    </span>
-                    <span class="text-gray-300">{{ leg.type.toUpperCase() }} ${{ leg.strike }}</span>
-                    <span class="text-gray-500">{{ leg.quantity }}c</span>
-                    <span class="text-gray-500">@ ${{ leg.premium.toFixed(2) }}</span>
-                  </div>
-                </div>
-              </div>
+                <!-- Zero line (breakeven) -->
+                <line x1="20" y1="60" x2="300" y2="60" stroke="#6b7280" stroke-width="1" />
 
-              <!-- P&L Breakdown for closed trades -->
-              <div v-if="pos.exit_date" class="border-t border-gray-700 pt-3 mt-3">
-                <div class="text-xs text-gray-500 mb-2">P&L Breakdown</div>
-                <div class="flex items-center gap-3 text-sm">
-                  <div class="flex items-center gap-1.5">
-                    <span class="text-gray-600 text-xs">Sold</span>
-                    <span class="text-white font-mono font-medium">${{ Math.abs(getTicketEntryPrice(pos)).toFixed(2) }}</span>
-                  </div>
-                  <span class="text-gray-700">×</span>
-                  <div v-if="ticketHasClosingLegs(pos)" class="flex items-center gap-1.5">
-                    <span class="text-gray-600 text-xs">Bought</span>
-                    <span class="text-white font-mono font-medium">${{ Math.abs(getTicketExitPrice(pos)).toFixed(2) }}</span>
-                  </div>
-                  <div v-else class="flex items-center gap-1.5">
-                    <span class="text-gray-600 text-xs">Expired</span>
-                    <span class="text-yellow-400 font-mono font-medium">${{ getTicketImpliedExitPrice(pos).toFixed(2) }}</span>
-                  </div>
-                  <span class="text-gray-700">=</span>
-                  <div class="flex items-center gap-1.5">
-                    <span class="text-gray-600 text-xs">P&L</span>
-                    <span class="font-mono font-bold" :class="pos.pnl >= 0 ? 'text-green-400' : 'text-red-400'">
-                      {{ pos.pnl >= 0 ? '+' : '' }}${{ pos.pnl }}
-                    </span>
-                  </div>
-                  <span class="text-xs text-gray-600 bg-gray-800 px-2 py-0.5 rounded ml-auto">
-                    {{ getTicketContracts(pos) }} × 100
-                  </span>
-                </div>
-              </div>
+                <!-- P&L Line -->
+                <polyline :points="getPnLGraphPoints(pos)" fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
 
-              <!-- P&L Graph -->
-              <div class="border-t border-gray-700 pt-3 mt-3">
-                <div class="text-xs text-gray-400 mb-3">Theoretical P&L at Expiration</div>
-                <svg viewBox="0 0 320 120" class="w-full h-28 bg-gray-900/50 rounded-lg">
-                  <!-- P&L Fill area -->
-                  <polygon :points="getPnLGraphArea(pos)" fill="#9ca3af" fill-opacity="0.1" />
+                <!-- Max Profit/Loss Labels -->
+                <g v-if="getPnLGraphData(pos).maxProfit > 0">
+                  <text :x="isProfitOnLeft(pos) ? 25 : 295" y="10" :text-anchor="isProfitOnLeft(pos) ? 'start' : 'end'" class="text-[11px]" fill="#4ade80" font-family="monospace" font-weight="600">
+                    +${{ formatDollarAmount(getPnLGraphData(pos).maxProfit) }}
+                  </text>
+                </g>
+                <g v-if="getPnLGraphData(pos).maxLoss < 0">
+                  <text :x="isProfitOnLeft(pos) ? 295 : 25" y="116" :text-anchor="isProfitOnLeft(pos) ? 'end' : 'start'" class="text-[11px]" fill="#f87171" font-family="monospace" font-weight="600">
+                    -${{ formatDollarAmount(Math.abs(getPnLGraphData(pos).maxLoss)) }}
+                  </text>
+                </g>
 
-                  <!-- Zero line (breakeven) -->
-                  <line x1="20" y1="60" x2="300" y2="60" stroke="#6b7280" stroke-width="1" />
-
-                  <!-- P&L Line -->
-                  <polyline :points="getPnLGraphPoints(pos)" fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-
-                  <!-- Max Profit/Loss Labels -->
-                  <g v-if="getPnLGraphData(pos).maxProfit > 0">
-                    <text :x="isProfitOnLeft(pos) ? 25 : 295" y="10" :text-anchor="isProfitOnLeft(pos) ? 'start' : 'end'" class="text-[11px]" fill="#4ade80" font-family="monospace" font-weight="600">
-                      +${{ formatDollarAmount(getPnLGraphData(pos).maxProfit) }}
-                    </text>
-                  </g>
-                  <g v-if="getPnLGraphData(pos).maxLoss < 0">
-                    <text :x="isProfitOnLeft(pos) ? 295 : 25" y="116" :text-anchor="isProfitOnLeft(pos) ? 'end' : 'start'" class="text-[11px]" fill="#f87171" font-family="monospace" font-weight="600">
-                      -${{ formatDollarAmount(Math.abs(getPnLGraphData(pos).maxLoss)) }}
-                    </text>
-                  </g>
-
-                  <!-- Strikes markers -->
-                  <g v-for="strike in getPnLGraphData(pos).strikes" :key="strike">
-                    <line :x1="getStrikeX(strike, getPnLGraphData(pos))" y1="20" :x2="getStrikeX(strike, getPnLGraphData(pos))" y2="100" stroke="#4b5563" stroke-width="1" stroke-dasharray="4" />
-                    <text :x="getStrikeX(strike, getPnLGraphData(pos))" y="115" text-anchor="middle" class="text-[9px]" fill="#9ca3af" font-family="monospace">{{ strike }}</text>
-                  </g>
-                </svg>
-              </div>
+                <!-- Strikes markers -->
+                <g v-for="strike in getPnLGraphData(pos).strikes" :key="strike">
+                  <line :x1="getStrikeX(strike, getPnLGraphData(pos))" y1="20" :x2="getStrikeX(strike, getPnLGraphData(pos))" y2="100" stroke="#4b5563" stroke-width="1" stroke-dasharray="4" />
+                  <text :x="getStrikeX(strike, getPnLGraphData(pos))" y="115" text-anchor="middle" class="text-[9px]" fill="#9ca3af" font-family="monospace">{{ strike }}</text>
+                </g>
+              </svg>
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      </template>
+    </BaseModal>
 
     <!-- Settings Modal -->
-    <div v-if="showSettingsModal" class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4" @click.self="showSettingsModal = false">
-      <div class="bg-gray-800 rounded-lg max-w-md w-full">
-        <div class="flex items-center justify-between p-4 border-b border-gray-700">
-          <h3 class="text-lg font-bold text-white">Settings</h3>
-          <button @click="showSettingsModal = false" class="text-gray-400 hover:text-white">
-            <i class="fas fa-times"></i>
-          </button>
-        </div>
-
-        <div class="p-4 space-y-4">
-          <!-- Proxy URL Section -->
-          <div>
-            <h4 class="text-sm font-medium text-gray-300 mb-2">API Proxy</h4>
-            <label class="block text-xs text-gray-500 mb-1">Custom proxy URL (optional)</label>
-            <input
-              v-model="settings.proxyUrl"
-              type="text"
-              placeholder="https://your-proxy.com/fetchJson?url={url}"
-              class="w-full bg-gray-900 border border-gray-700 rounded px-3 py-2 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500"
-            >
-            <p class="text-xs text-gray-500 mt-1">Use {url} as placeholder for the target URL. Required for fetching prices.</p>
-          </div>
-
-          <!-- Backup Section -->
-          <div class="border-t border-gray-700 pt-4">
-            <h4 class="text-sm font-medium text-gray-300 mb-2">Backup & Restore</h4>
-            <div class="flex gap-2 mb-2">
-              <button
-                @click="exportBackup"
-                class="flex-1 text-sm bg-green-700 hover:bg-green-600 text-white px-3 py-2 rounded transition-colors"
-              >
-                <i class="fas fa-download mr-1"></i> Export Backup
-              </button>
-              <button
-                @click="triggerImportBackup"
-                class="flex-1 text-sm bg-blue-700 hover:bg-blue-600 text-white px-3 py-2 rounded transition-colors"
-              >
-                <i class="fas fa-upload mr-1"></i> Import Backup
-              </button>
-            </div>
-            <input
-              ref="backupFileInput"
-              type="file"
-              accept=".json"
-              @change="importBackup"
-              class="hidden"
-            >
-            <p class="text-xs text-gray-500 mt-1">Export all trades and settings, or restore from a backup file</p>
-          </div>
-
-          <!-- Data Management Section -->
-          <div class="border-t border-gray-700 pt-4">
-            <h4 class="text-sm font-medium text-gray-300 mb-2">Data Management</h4>
-            <div class="flex gap-2">
-              <button
-                @click="clearPriceCache"
-                class="flex-1 text-sm bg-gray-700 hover:bg-gray-600 text-white px-3 py-2 rounded transition-colors"
-              >
-                Clear Price Cache
-              </button>
-              <button
-                @click="clearAllData"
-                class="flex-1 text-sm bg-red-900/50 hover:bg-red-900/70 text-red-300 px-3 py-2 rounded transition-colors"
-              >
-                Clear All Trading Data
-              </button>
-            </div>
-            <p class="text-xs text-gray-500 mt-1">Clear cached prices or permanently delete all data</p>
-          </div>
-        </div>
-
-        <div class="flex justify-end gap-2 p-4 border-t border-gray-700">
-          <button
-            @click="showSettingsModal = false"
-            class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded text-sm transition-colors"
-          >
-            Close
-          </button>
-          <button
-            @click="saveSettings"
-            class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm transition-colors"
-          >
-            Save
-          </button>
-        </div>
+    <BaseModal
+      v-model:show="showSettingsModal"
+      title="Settings"
+      max-width="md"
+    >
+      <!-- Proxy URL Section -->
+      <div>
+        <h4 class="text-sm font-medium text-gray-300 mb-2">API Proxy</h4>
+        <label class="block text-xs text-gray-500 mb-1">Custom proxy URL (optional)</label>
+        <input
+          v-model="settings.proxyUrl"
+          type="text"
+          placeholder="https://your-proxy.com/fetchJson?url={url}"
+          class="w-full bg-gray-900 border border-gray-700 rounded px-3 py-2 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500"
+        >
+        <p class="text-xs text-gray-500 mt-1">Use {url} as placeholder for the target URL. Required for fetching prices.</p>
       </div>
-    </div>
+
+      <!-- Backup Section -->
+      <div class="border-t border-gray-700 pt-4">
+        <h4 class="text-sm font-medium text-gray-300 mb-2">Backup & Restore</h4>
+        <div class="flex gap-2 mb-2">
+          <button
+            @click="exportBackup"
+            class="flex-1 text-sm bg-green-700 hover:bg-green-600 text-white px-3 py-2 rounded transition-colors"
+          >
+            <i class="fas fa-download mr-1"></i> Export Backup
+          </button>
+          <button
+            @click="triggerImportBackup"
+            class="flex-1 text-sm bg-blue-700 hover:bg-blue-600 text-white px-3 py-2 rounded transition-colors"
+          >
+            <i class="fas fa-upload mr-1"></i> Import Backup
+          </button>
+        </div>
+        <input
+          ref="backupFileInput"
+          type="file"
+          accept=".json"
+          @change="importBackup"
+          class="hidden"
+        >
+        <p class="text-xs text-gray-500 mt-1">Export all trades and settings, or restore from a backup file</p>
+      </div>
+
+      <!-- Data Management Section -->
+      <div class="border-t border-gray-700 pt-4">
+        <h4 class="text-sm font-medium text-gray-300 mb-2">Data Management</h4>
+        <div class="flex gap-2">
+          <button
+            @click="clearPriceCache"
+            class="flex-1 text-sm bg-gray-700 hover:bg-gray-600 text-white px-3 py-2 rounded transition-colors"
+          >
+            Clear Price Cache
+          </button>
+          <button
+            @click="clearAllData"
+            class="flex-1 text-sm bg-red-900/50 hover:bg-red-900/70 text-red-300 px-3 py-2 rounded transition-colors"
+          >
+            Clear All Trading Data
+          </button>
+        </div>
+        <p class="text-xs text-gray-500 mt-1">Clear cached prices or permanently delete all data</p>
+      </div>
+
+      <template #footer>
+        <button
+          @click="showSettingsModal = false"
+          class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded text-sm transition-colors"
+        >
+          Close
+        </button>
+        <button
+          @click="saveSettings"
+          class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm transition-colors"
+        >
+          Save
+        </button>
+      </template>
+    </BaseModal>
   </div>
 </template>
 
@@ -722,6 +569,7 @@ import SummaryCards from './components/SummaryCards.vue'
 import { detectStrategy, getStrategyDisplayName } from './utils/strategyDetector.js'
 import TradeFormModal from './components/TradeFormModal.vue'
 import MiniCalendarDots from './components/MiniCalendarDots.vue'
+import BaseModal from './components/BaseModal.vue'
 import flatpickr from 'flatpickr'
 import 'flatpickr/dist/flatpickr.css'
 import 'flatpickr/dist/themes/dark.css'
@@ -2003,6 +1851,14 @@ const filters = ref({
 
 const selectedPositionGroup = ref(null)
 const selectedTradeDate = ref(null) // For day navigation in trades view
+
+// Computed for modal open state
+const tradeDetailModalOpen = computed({
+  get: () => selectedPositionGroup.value !== null,
+  set: (value) => {
+    if (!value) selectedPositionGroup.value = null
+  }
+})
 
 const openPositions = computed(() => {
   return tickets.value.filter(t => t.status === 'OPEN').sort((a, b) => new Date(a.strategies[0]?.legs[0]?.expiry) - new Date(b.strategies[0]?.legs[0]?.expiry))
