@@ -1,8 +1,8 @@
 // Price fetching utility using Yahoo Finance via CORS proxy
 // Cache prices in localStorage to avoid repeated requests
+// Historical prices are immutable, so cache never expires
 
 const PRICE_CACHE_KEY = 'trading_journal_price_cache'
-const CACHE_DURATION = 24 * 60 * 60 * 1000 // 24 hours
 
 // Symbol mapping for special cases
 const SYMBOL_MAP = {
@@ -41,22 +41,15 @@ function savePriceCache(cache) {
 function getCachedPrice(symbol, date) {
   const cache = getPriceCache()
   const key = `${symbol}_${date}`
-  if (cache[key]) {
-    const { timestamp, price } = cache[key]
-    if (Date.now() - timestamp < CACHE_DURATION) {
-      return price
-    }
+  if (cache[key] !== undefined) {
+    return cache[key]
   }
   return null
 }
 
 function setCachedPrice(symbol, date, price) {
   const cache = getPriceCache()
-  const key = `${symbol}_${date}`
-  cache[key] = {
-    timestamp: Date.now(),
-    price
-  }
+  cache[`${symbol}_${date}`] = price
   savePriceCache(cache)
 }
 

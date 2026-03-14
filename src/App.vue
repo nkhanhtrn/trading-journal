@@ -486,23 +486,10 @@
         </div>
 
         <div class="p-4 space-y-4">
-          <!-- API Key Section -->
-          <div>
-            <label class="block text-sm font-medium text-gray-300 mb-2">Finnhub API Key</label>
-            <input
-              v-model="settings.apiKey"
-              type="text"
-              placeholder="Enter your Finnhub API key"
-              class="w-full bg-gray-900 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-blue-500"
-            >
-            <p class="text-xs text-gray-500 mt-1">
-              Used for fetching historical prices. Get a free key at <a href="https://finnhub.io/register" target="_blank" class="text-blue-400 hover:underline">finnhub.io</a>
-            </p>
-            <p class="text-xs text-yellow-600 mt-1">
-              <i class="fas fa-exclamation-triangle mr-1"></i>
-              Free tier doesn't include historical candle data. Expired positions will calculate PnL based on premium only.
-            </p>
-          </div>
+          <p class="text-sm text-gray-400">
+            <i class="fas fa-info-circle mr-2"></i>
+            Historical prices are fetched from Yahoo Finance (no API key required).
+          </p>
 
           <!-- Clear Cache Section -->
           <div class="border-t border-gray-700 pt-4">
@@ -552,7 +539,6 @@ import { ref, computed, onMounted, nextTick, watch } from 'vue'
 import SummaryCards from './components/SummaryCards.vue'
 import TradeFormModal from './components/TradeFormModal.vue'
 import MiniCalendarDots from './components/MiniCalendarDots.vue'
-import { fetchPrices, fetchHistoricalPrice } from './utils/priceFetcher.js'
 import flatpickr from 'flatpickr'
 import 'flatpickr/dist/flatpickr.css'
 import 'flatpickr/dist/themes/dark.css'
@@ -566,9 +552,7 @@ const showSettingsModal = ref(false)
 
 // Settings
 const SETTINGS_KEY = 'trading_journal_settings'
-const settings = ref({
-  apiKey: ''
-})
+const settings = ref({})
 
 // Load settings from localStorage
 const loadSettings = () => {
@@ -1198,20 +1182,20 @@ function parseSingleOptions(longArray, shortArray, startTicketId) {
 // EXPIRED POSITION HANDLING
 // =====================================================
 
-// Finnhub API for historical prices
+// Yahoo Finance API for historical prices (no API key required)
 const PRICE_CACHE_KEY = 'trading_journal_price_cache'
 
-// Symbol mapping for Finnhub (uses $ for indices)
+// Symbol mapping for Yahoo Finance (uses ^ for indices)
 const SYMBOL_MAP = {
-  'VIXW': '$VIX',
-  'SPXW': '$SPX',
-  'VIX': '$VIX',
-  'SPX': '$SPX',
-  'NDX': '$NDX',
-  'RUT': '$RUT'
+  'VIXW': '^VIX',
+  'SPXW': '^SPX',
+  'VIX': '^VIX',
+  'SPX': '^SPX',
+  'NDX': '^NDX',
+  'RUT': '^RUT'
 }
 
-function getFinnhubSymbol(symbol) {
+function getYahooSymbol(symbol) {
   return SYMBOL_MAP[symbol] || symbol
 }
 
@@ -1219,10 +1203,14 @@ function getFinnhubSymbol(symbol) {
 function getCachedPrice(symbol, date) {
   try {
     const cache = JSON.parse(localStorage.getItem(PRICE_CACHE_KEY) || '{}')
-    return cache[`${symbol}_${date}`] || null
+    const key = `${symbol}_${date}`
+    if (cache[key] !== undefined) {
+      return cache[key]
+    }
   } catch {
     return null
   }
+  return null
 }
 
 // Save price to localStorage cache
@@ -1236,67 +1224,73 @@ function setCachedPrice(symbol, date, price) {
   }
 }
 
-// Fetch historical price from Finnhub API
+// Fetch historical price from Yahoo Finance API (no API key required)
 async function getHistoricalPrice(symbol, dateStr) {
+  const yahooSymbol = getYahooSymbol(symbol)
+
   // Check cache first
-  const cached = getCachedPrice(symbol, dateStr)
+  const cached = getCachedPrice(yahooSymbol, dateStr)
   if (cached !== null) {
     return cached
   }
 
-  // Check if API key is configured
-  if (!settings.value.apiKey) {
-    console.warn('No Finnhub API key configured')
-    setCachedPrice(symbol, dateStr, null)
-    return null
-  }
-
-  const finnhubSymbol = getFinnhubSymbol(symbol)
-
-  // Convert date string to timestamps
-  const targetDate = new Date(dateStr)
-  const from = Math.floor(new Date(targetDate.getTime() - 7 * 24 * 60 * 60 * 1000).getTime() / 1000)
-  const to = Math.floor(new Date(targetDate.getTime() + 7 * 24 * 60 * 60 * 1000).getTime() / 1000)
-
-  const url = `https://finnhub.io/api/v1/stock/candle?symbol=${finnhubSymbol}&resolution=D&from=${from}&to=${to}&token=${settings.value.apiKey}`
-
   try {
-    const response = await fetch(url)
-    const data = await response.json()
+    // Convert date string to Unix timestamps
+    const targetDate = new Date(dateStr)
+    const startDate = new Date(targetDate)
+    startDate.setDate(startDate.getDate() - 7)
+    const endDate = new Date(targetDate)
+    endDate.setDate(endDate.getDate() + 7)
 
-    // Check for API error (index data not available on free tier)
-    if (data.error) {
-      console.warn(`Finnhub API error for ${symbol}: ${data.error}`)
-      setCachedPrice(symbol, dateStr, null)
-      return null
+    const period1 = Math.floor(startDate.getTime() / 1000)
+    const period2 = Math.floor(endDate.getTime() / 1000)
+
+    const url = `https://query1.finance.yahoo.com/v8/finance/chart/${yahooSymbol}?period1=${period1}&period2=${period2}&interval=1d`
+
+    const response = await fetch(url, {
+      headers: {
+        'Accept': 'application/json',
+      }
+    })
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`)
     }
 
-    if (data.s === 'ok' && data.c && data.c.length > 0 && data.t && data.t.length > 0) {
-      // Find closest date
+    const data = await response.json()
+
+    if (data.chart?.result?.[0]?.indicators?.quote?.[0]?.close &&
+        data.chart?.result?.[0]?.timestamp) {
+      const closes = data.chart.result[0].indicators.quote[0].close
+      const timestamps = data.chart.result[0].timestamp
+
+      // Find closest date to target
       const targetTimestamp = Math.floor(targetDate.getTime() / 1000)
       let closestDiff = Infinity
       let closestPrice = null
 
-      for (let i = 0; i < data.t.length; i++) {
-        const diff = Math.abs(data.t[i] - targetTimestamp)
-        if (diff < closestDiff && data.c[i] !== null) {
-          closestDiff = diff
-          closestPrice = data.c[i]
+      for (let i = 0; i < timestamps.length; i++) {
+        if (closes[i] !== null) {
+          const diff = Math.abs(timestamps[i] - targetTimestamp)
+          if (diff < closestDiff) {
+            closestDiff = diff
+            closestPrice = closes[i]
+          }
         }
       }
 
       if (closestPrice !== null) {
         const priceInCents = Math.round(closestPrice * 100)
-        setCachedPrice(symbol, dateStr, priceInCents)
+        setCachedPrice(yahooSymbol, dateStr, priceInCents)
         return priceInCents
       }
     }
 
-    setCachedPrice(symbol, dateStr, null)
+    setCachedPrice(yahooSymbol, dateStr, null)
     return null
   } catch (error) {
-    console.error(`Error fetching price for ${symbol} on ${dateStr}:`, error.message)
-    setCachedPrice(symbol, dateStr, null)
+    console.error(`Error fetching price for ${yahooSymbol} on ${dateStr}:`, error.message)
+    setCachedPrice(yahooSymbol, dateStr, null)
     return null
   }
 }
