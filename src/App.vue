@@ -301,21 +301,25 @@
           </div>
         </div>
 
-        <!-- Monthly P&L List -->
+        <!-- Monthly P&L Calendar -->
         <div class="bg-gray-800 rounded-lg p-4 mb-6">
-          <h3 class="text-sm font-semibold text-gray-300 mb-3">Monthly P&L</h3>
-          <div class="space-y-2">
-            <div v-for="month in yearlySummary.monthlyData" :key="month.month" class="flex items-center justify-between px-4 py-3 bg-gray-700/50 rounded hover:bg-gray-700">
-              <div class="flex items-center gap-3">
-                <span class="text-sm font-medium text-white w-20">{{ month.name }}</span>
-                <span class="text-xs text-gray-500">{{ month.count }} trade{{ month.count !== 1 ? 's' : '' }}</span>
+          <h3 class="text-sm font-semibold text-gray-300 mb-3">Monthly P&L ({{ selectedDashboardYear }})</h3>
+          <div class="grid grid-cols-3 md:grid-cols-4 gap-2">
+            <div
+              v-for="month in allMonthsData"
+              :key="month.month"
+              :class="[
+                'p-3 rounded cursor-pointer transition-colors min-h-20 flex flex-col justify-center',
+                month.count === 0 ? 'bg-gray-700/30 text-gray-600' : 'bg-gray-700/50 hover:bg-gray-700',
+                month.pnl > 0 ? 'hover:bg-green-900/30' : month.pnl < 0 ? 'hover:bg-red-900/30' : ''
+              ]"
+            >
+              <div class="text-sm font-semibold mb-1">{{ month.name }}</div>
+              <div v-if="month.count > 0" class="font-mono font-bold text-base" :class="month.pnl >= 0 ? 'text-green-400' : 'text-red-400'">
+                {{ month.pnl >= 0 ? '+' : '' }}${{ month.pnl.toFixed(0) }}
               </div>
-              <div class="flex items-center gap-4">
-                <span class="text-xs text-gray-500">{{ month.wins }}W / {{ month.count - month.wins }}L</span>
-                <span class="font-mono font-bold text-base" :class="month.pnl >= 0 ? 'text-green-400' : 'text-red-400'">
-                  {{ month.pnl >= 0 ? '+' : '' }}${{ month.pnl.toFixed(0) }}
-                </span>
-              </div>
+              <div v-else class="text-xs text-gray-600">No trades</div>
+              <div v-if="month.count > 0" class="text-xs text-gray-500 mt-1">{{ month.count }} trade{{ month.count !== 1 ? 's' : '' }}</div>
             </div>
           </div>
         </div>
@@ -2277,6 +2281,23 @@ const yearlySummary = computed(() => {
     }
   }).filter(m => m.count > 0)
 
+  // All 12 months data for calendar view (including months with no trades)
+  const allMonthsData = Array.from({ length: 12 }, (_, i) => {
+    const monthTickets = yearTickets.filter(t => {
+      return new Date(t.exit_date).getMonth() === i
+    })
+
+    const wins = monthTickets.filter(t => t.status === 'WIN').length
+
+    return {
+      month: i + 1,
+      name: monthNames[i],
+      pnl: monthTickets.reduce((sum, t) => sum + (t.pnl || 0), 0),
+      count: monthTickets.length,
+      wins
+    }
+  })
+
   // Build trades list with position groups
   const trades = yearTickets.map(t => {
     const legs = t.strategies?.[0]?.legs || []
@@ -2387,6 +2408,7 @@ const yearlySummary = computed(() => {
     winRate: yearTickets.length > 0 ? Math.round((winners.length / yearTickets.length) * 100) : 0,
     profitFactor,
     monthlyData,
+    allMonthsData,
     tradesBySymbol,
     strategyPerformance
   }
