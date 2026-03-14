@@ -2231,9 +2231,13 @@ const getPositionGroupForTicket = (ticket) => {
   const legs = ticket.strategies?.[0]?.legs || []
   if (legs.length === 0) return null
 
-  const strikes = legs.map(l => l.strike).sort((a, b) => a - b).join('/')
-  const expiry = legs[0]?.expiry || ''
-  const detectedStrategy = detectStrategy(legs)
+  // Use only opening legs for strategy detection (closed positions have entry+exit legs)
+  const entryLegs = openingLegs(ticket)
+  if (entryLegs.length === 0) return null
+
+  const strikes = entryLegs.map(l => l.strike).sort((a, b) => a - b).join('/')
+  const expiry = entryLegs[0]?.expiry || ''
+  const detectedStrategy = detectStrategy(entryLegs)
   const strategyName = getStrategyDisplayName(detectedStrategy)
 
   return {
@@ -2276,14 +2280,16 @@ const yearlySummary = computed(() => {
   // Build trades list with position groups
   const trades = yearTickets.map(t => {
     const legs = t.strategies?.[0]?.legs || []
-    const detectedStrategy = detectStrategy(legs)
+    // Use only opening legs for strategy detection (closed positions have entry+exit legs)
+    const entryLegs = openingLegs(t)
+    const detectedStrategy = detectStrategy(entryLegs)
     return {
       id: t.id,
       symbol: t.symbol,
       exitDate: t.exit_date,
       strategy: getStrategyDisplayName(detectedStrategy),
-      strikes: legs.map(l => l.strike).sort((a, b) => a - b).join('/') || '',
-      expiry: legs[0]?.expiry || '',
+      strikes: entryLegs.map(l => l.strike).sort((a, b) => a - b).join('/') || '',
+      expiry: entryLegs[0]?.expiry || '',
       pnl: t.pnl || 0,
       positionGroup: getPositionGroupForTicket(t)
     }
