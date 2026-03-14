@@ -355,38 +355,76 @@
               <span class="text-gray-500 text-xs">{{ pos.date }}{{ pos.exit_date ? ' → ' + pos.exit_date : '' }}</span>
             </div>
 
-            <div class="grid grid-cols-2 gap-4 text-xs mb-3">
-              <!-- Opening Legs -->
-              <div>
-                <div class="text-green-400 font-semibold mb-1">Opening</div>
-                <div v-for="leg in openingLegs(pos)" :key="'open-' + leg.strike + leg.action" class="flex items-center gap-2 mb-1">
-                  <span class="px-1.5 py-0.5 rounded text-[10px]" :class="leg.action === 'buy' ? 'bg-green-900/30 text-green-300' : 'bg-red-900/30 text-red-300'">
-                    {{ leg.action === 'buy' ? 'LONG' : 'SHORT' }}
-                  </span>
-                  <span class="text-gray-300">{{ leg.type.toUpperCase() }} ${{ leg.strike }}</span>
-                  <span class="text-gray-500">{{ leg.quantity }}c</span>
-                  <span class="text-gray-500">@ ${{ leg.premium.toFixed(2) }}</span>
+            <div class="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-4">
+              <!-- Left Column: Details -->
+              <div class="space-y-3 pr-4">
+                <!-- Opening Legs -->
+                <div>
+                  <div class="text-green-400 font-semibold text-xs mb-2">Opening</div>
+                  <div v-for="leg in openingLegs(pos)" :key="'open-' + leg.strike + leg.action" class="flex items-center gap-2 mb-1.5 text-xs">
+                    <span class="px-1.5 py-0.5 rounded text-[10px]" :class="leg.action === 'buy' ? 'bg-green-900/30 text-green-300' : 'bg-red-900/30 text-red-300'">
+                      {{ leg.action === 'buy' ? 'LONG' : 'SHORT' }}
+                    </span>
+                    <span class="text-gray-300">{{ leg.type.toUpperCase() }} ${{ leg.strike }}</span>
+                    <span class="text-gray-500">{{ leg.quantity }}c</span>
+                    <span class="text-gray-500">@ ${{ leg.premium.toFixed(2) }}</span>
+                  </div>
+                </div>
+
+                <!-- Closing Legs -->
+                <div v-if="pos.exit_date">
+                  <div class="text-red-400 font-semibold text-xs mb-2">Closing</div>
+                  <div v-for="leg in closingLegs(pos)" :key="'close-' + leg.strike + leg.action" class="flex items-center gap-2 mb-1.5 text-xs">
+                    <span class="px-1.5 py-0.5 rounded text-[10px]" :class="leg.action === 'buy' ? 'bg-green-900/30 text-green-300' : 'bg-red-900/30 text-red-300'">
+                      {{ leg.action === 'buy' ? 'LONG' : 'SHORT' }}
+                    </span>
+                    <span class="text-gray-300">{{ leg.type.toUpperCase() }} ${{ leg.strike }}</span>
+                    <span class="text-gray-500">{{ leg.quantity }}c</span>
+                    <span class="text-gray-500">@ ${{ leg.premium.toFixed(2) }}</span>
+                  </div>
                 </div>
               </div>
 
-              <!-- Closing Legs -->
-              <div v-if="pos.exit_date">
-                <div class="text-red-400 font-semibold mb-1">Closing</div>
-                <div v-for="leg in closingLegs(pos)" :key="'close-' + leg.strike + leg.action" class="flex items-center gap-2 mb-1">
-                  <span class="px-1.5 py-0.5 rounded text-[10px]" :class="leg.action === 'buy' ? 'bg-green-900/30 text-green-300' : 'bg-red-900/30 text-red-300'">
-                    {{ leg.action === 'buy' ? 'LONG' : 'SHORT' }}
-                  </span>
-                  <span class="text-gray-300">{{ leg.type.toUpperCase() }} ${{ leg.strike }}</span>
-                  <span class="text-gray-500">{{ leg.quantity }}c</span>
-                  <span class="text-gray-500">@ ${{ leg.premium.toFixed(2) }}</span>
-                </div>
+              <!-- Right Column: P&L Graph -->
+              <div class="border-t border-gray-700 md:border-t-0 md:pt-0 pt-3 md:w-80 shrink-0">
+                <div class="text-xs text-gray-400 mb-3">Theoretical P&L</div>
+                <svg viewBox="0 0 320 120" class="w-full h-28 bg-gray-900/50 rounded-lg">
+                  <!-- P&L Fill areas -->
+                  <polygon v-for="(area, i) in getPnLGraphSegments(pos).lossAreas" :key="'loss-area-' + i" :points="area" fill="#ef4444" fill-opacity="0.15" />
+                  <polygon v-for="(area, i) in getPnLGraphSegments(pos).profitAreas" :key="'profit-area-' + i" :points="area" fill="#22c55e" fill-opacity="0.15" />
+
+                  <!-- Zero line (breakeven) -->
+                  <line x1="20" y1="60" x2="300" y2="60" stroke="#6b7280" stroke-width="1" />
+
+                  <!-- P&L Lines -->
+                  <polyline v-for="(line, i) in getPnLGraphSegments(pos).lossLines" :key="'loss-line-' + i" :points="line" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                  <polyline v-for="(line, i) in getPnLGraphSegments(pos).profitLines" :key="'profit-line-' + i" :points="line" fill="none" stroke="#22c55e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+
+                  <!-- Max Profit/Loss Labels -->
+                  <g v-if="getPnLGraphData(pos).maxProfit > 0">
+                    <text :x="isProfitOnLeft(pos) ? 25 : 295" y="10" :text-anchor="isProfitOnLeft(pos) ? 'start' : 'end'" class="text-[11px]" fill="#4ade80" font-family="monospace" font-weight="600">
+                      +${{ formatDollarAmount(getPnLGraphData(pos).maxProfit) }}
+                    </text>
+                  </g>
+                  <g v-if="getPnLGraphData(pos).maxLoss < 0">
+                    <text :x="isProfitOnLeft(pos) ? 295 : 25" y="116" :text-anchor="isProfitOnLeft(pos) ? 'end' : 'start'" class="text-[11px]" fill="#f87171" font-family="monospace" font-weight="600">
+                      -${{ formatDollarAmount(Math.abs(getPnLGraphData(pos).maxLoss)) }}
+                    </text>
+                  </g>
+
+                  <!-- Strikes markers -->
+                  <g v-for="strike in getPnLGraphData(pos).strikes" :key="strike">
+                    <line :x1="getStrikeX(strike, getPnLGraphData(pos))" y1="20" :x2="getStrikeX(strike, getPnLGraphData(pos))" y2="100" stroke="#4b5563" stroke-width="1" stroke-dasharray="4" />
+                    <text :x="getStrikeX(strike, getPnLGraphData(pos))" y="115" text-anchor="middle" class="text-[9px]" fill="#9ca3af" font-family="monospace">{{ strike }}</text>
+                  </g>
+                </svg>
               </div>
             </div>
 
             <!-- P&L Breakdown for closed trades -->
-            <div v-if="pos.exit_date" class="border-t border-gray-700 pt-3 mt-3">
-              <div class="text-xs text-gray-500 mb-2">P&L Breakdown</div>
-              <div class="flex items-center gap-3 text-sm">
+            <div v-if="pos.exit_date" class="border-t border-gray-700 pt-3">
+              <div class="text-xs text-gray-500 mb-2 text-center">P&L Breakdown</div>
+              <div class="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-sm">
                 <div class="flex items-center gap-1.5">
                   <span class="text-gray-600 text-xs">Sold</span>
                   <span class="text-white font-mono font-medium">${{ Math.abs(getTicketEntryPrice(pos)).toFixed(2) }}</span>
@@ -407,43 +445,10 @@
                     {{ pos.pnl >= 0 ? '+' : '' }}${{ pos.pnl }}
                   </span>
                 </div>
-                <span class="text-xs text-gray-600 bg-gray-800 px-2 py-0.5 rounded ml-auto">
+                <span class="text-xs text-gray-600 bg-gray-800 px-2 py-0.5 rounded">
                   {{ getTicketContracts(pos) }} × 100
                 </span>
               </div>
-            </div>
-
-            <!-- P&L Graph -->
-            <div class="border-t border-gray-700 pt-3 mt-3">
-              <div class="text-xs text-gray-400 mb-3">Theoretical P&L at Expiration</div>
-              <svg viewBox="0 0 320 120" class="w-full h-28 bg-gray-900/50 rounded-lg">
-                <!-- P&L Fill area -->
-                <polygon :points="getPnLGraphArea(pos)" fill="#9ca3af" fill-opacity="0.1" />
-
-                <!-- Zero line (breakeven) -->
-                <line x1="20" y1="60" x2="300" y2="60" stroke="#6b7280" stroke-width="1" />
-
-                <!-- P&L Line -->
-                <polyline :points="getPnLGraphPoints(pos)" fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-
-                <!-- Max Profit/Loss Labels -->
-                <g v-if="getPnLGraphData(pos).maxProfit > 0">
-                  <text :x="isProfitOnLeft(pos) ? 25 : 295" y="10" :text-anchor="isProfitOnLeft(pos) ? 'start' : 'end'" class="text-[11px]" fill="#4ade80" font-family="monospace" font-weight="600">
-                    +${{ formatDollarAmount(getPnLGraphData(pos).maxProfit) }}
-                  </text>
-                </g>
-                <g v-if="getPnLGraphData(pos).maxLoss < 0">
-                  <text :x="isProfitOnLeft(pos) ? 295 : 25" y="116" :text-anchor="isProfitOnLeft(pos) ? 'end' : 'start'" class="text-[11px]" fill="#f87171" font-family="monospace" font-weight="600">
-                    -${{ formatDollarAmount(Math.abs(getPnLGraphData(pos).maxLoss)) }}
-                  </text>
-                </g>
-
-                <!-- Strikes markers -->
-                <g v-for="strike in getPnLGraphData(pos).strikes" :key="strike">
-                  <line :x1="getStrikeX(strike, getPnLGraphData(pos))" y1="20" :x2="getStrikeX(strike, getPnLGraphData(pos))" y2="100" stroke="#4b5563" stroke-width="1" stroke-dasharray="4" />
-                  <text :x="getStrikeX(strike, getPnLGraphData(pos))" y="115" text-anchor="middle" class="text-[9px]" fill="#9ca3af" font-family="monospace">{{ strike }}</text>
-                </g>
-              </svg>
             </div>
           </div>
         </div>
@@ -2487,7 +2492,7 @@ const getStrikeX = (strike, data) => {
 // Generate SVG polyline points
 const getPnLGraphPoints = (ticket) => {
   const data = getPnLGraphData(ticket)
-  if (!data.strikes.length || data.strikes.length < 2) return '20,60 300,60'
+  if (!data.strikes.length) return '20,60 300,60'
 
   const range = data.maxPrice - data.minPrice || 1
   const pnlRange = Math.max(Math.abs(data.maxProfit), Math.abs(data.maxLoss), 100)
@@ -2507,6 +2512,63 @@ const getPnLGraphPoints = (ticket) => {
 const getPnLGraphArea = (ticket) => {
   const linePoints = getPnLGraphPoints(ticket)
   return `20,60 ${linePoints} 300,60`
+}
+
+// Generate colored segments for profit (green) and loss (red)
+const getPnLGraphSegments = (ticket) => {
+  const data = getPnLGraphData(ticket)
+  if (!data.strikes.length) return { profitLines: [], lossLines: [], profitAreas: [], lossAreas: [] }
+
+  const range = data.maxPrice - data.minPrice || 1
+  const pnlRange = Math.max(Math.abs(data.maxProfit), Math.abs(data.maxLoss), 100)
+
+  // Collect all points
+  const points = []
+  for (let px = 20; px <= 300; px += 3) {
+    const price = (px - 20) / 280 * range + data.minPrice
+    const pnl = calculatePnLAtPrice(ticket, price)
+    const py = 60 - (pnl / pnlRange) * 40
+    const clampedPy = Math.max(20, Math.min(100, py))
+    points.push({ x: px, y: clampedPy, isProfit: pnl > 0 })
+  }
+
+  // Group into segments (consecutive points of same type)
+  const profitSegments = []
+  const lossSegments = []
+  let currentSegment = null
+
+  for (const point of points) {
+    const segmentType = point.isProfit ? 'profit' : 'loss'
+    const targetArray = point.isProfit ? profitSegments : lossSegments
+
+    if (!currentSegment || currentSegment.type !== segmentType) {
+      if (currentSegment) {
+        currentSegment.array.push(currentSegment.points)
+      }
+      currentSegment = { type: segmentType, array: targetArray, points: [point] }
+    } else {
+      currentSegment.points.push(point)
+    }
+  }
+  if (currentSegment) {
+    currentSegment.array.push(currentSegment.points)
+  }
+
+  // Convert segments to SVG polylines
+  const profitLines = profitSegments.map(seg => seg.map(p => `${p.x},${p.y}`).join(' '))
+  const lossLines = lossSegments.map(seg => seg.map(p => `${p.x},${p.y}`).join(' '))
+
+  // Create fill areas for each segment
+  const profitAreas = profitSegments.map(seg => {
+    const line = seg.map(p => `${p.x},${p.y}`).join(' ')
+    return `${seg[0].x},60 ${line} ${seg[seg.length - 1].x},60`
+  })
+  const lossAreas = lossSegments.map(seg => {
+    const line = seg.map(p => `${p.x},${p.y}`).join(' ')
+    return `${seg[0].x},60 ${line} ${seg[seg.length - 1].x},60`
+  })
+
+  return { profitLines, lossLines, profitAreas, lossAreas }
 }
 
 // Format dollar amounts for display
