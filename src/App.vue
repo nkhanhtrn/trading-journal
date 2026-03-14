@@ -303,38 +303,46 @@
 
         <!-- Main Content: Calendar + Tabs -->
         <div class="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-4 min-h-0">
-          <!-- Monthly P&L Calendar -->
-          <div class="bg-gray-800 rounded-lg p-3 flex flex-col min-h-0">
-            <h3 class="text-sm font-semibold text-gray-300 mb-2">Monthly P&L</h3>
-            <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-1 flex-1 overflow-y-auto">
-              <div
-                v-for="month in yearlySummary.allMonthsData"
-                :key="month.month"
-                :class="[
-                  'p-2 rounded cursor-pointer transition-colors flex flex-col justify-center',
-                  month.count === 0 ? 'bg-gray-700/30 text-gray-600' : 'bg-gray-700/50 hover:bg-gray-700',
-                  month.pnl > 0 ? 'hover:bg-green-900/30' : month.pnl < 0 ? 'hover:bg-red-900/30' : ''
-                ]"
-              >
-                <div class="text-xs font-semibold mb-0.5">{{ month.name }}</div>
-                <div v-if="month.count > 0" class="font-mono font-bold text-sm" :class="month.pnl >= 0 ? 'text-green-400' : 'text-red-400'">
-                  {{ month.pnl >= 0 ? '+' : '' }}${{ month.pnl.toFixed(0) }}
+          <!-- Left Column: Monthly P&L (top) + Empty Component (bottom) -->
+          <div class="grid grid-rows-2 gap-4 min-h-0">
+            <!-- Monthly P&L Calendar -->
+            <div class="bg-gray-800 rounded-lg p-3 flex flex-col min-h-0">
+              <h3 class="text-sm font-semibold text-gray-300 mb-2">Monthly P&L</h3>
+              <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-1 flex-1 overflow-y-auto">
+                <div
+                  v-for="month in yearlySummary.allMonthsData"
+                  :key="month.month"
+                  :class="[
+                    'p-2 rounded cursor-pointer transition-colors flex flex-col justify-center',
+                    month.count === 0 ? 'bg-gray-700/30 text-gray-600' : 'bg-gray-700/50 hover:bg-gray-700',
+                    month.pnl > 0 ? 'hover:bg-green-900/30' : month.pnl < 0 ? 'hover:bg-red-900/30' : ''
+                  ]"
+                >
+                  <div class="text-xs font-semibold mb-0.5">{{ month.name }}</div>
+                  <div v-if="month.count > 0" class="font-mono font-bold text-sm" :class="month.pnl >= 0 ? 'text-green-400' : 'text-red-400'">
+                    {{ month.pnl >= 0 ? '+' : '' }}${{ month.pnl.toFixed(0) }}
+                  </div>
+                  <div v-else class="text-xs text-gray-600">--</div>
+                  <div v-if="month.count > 0" class="text-xs text-gray-500">{{ month.count }}</div>
                 </div>
-                <div v-else class="text-xs text-gray-600">--</div>
-                <div v-if="month.count > 0" class="text-xs text-gray-500">{{ month.count }}</div>
               </div>
+            </div>
+
+            <!-- Empty Component -->
+            <div class="bg-gray-800 rounded-lg p-3 flex flex-col min-h-0">
+              <!-- Empty component placeholder -->
             </div>
           </div>
 
           <!-- Right: Tabbed Content -->
           <div class="bg-gray-800 rounded-lg flex flex-col min-h-0">
             <!-- Tabs -->
-            <div class="flex border-b border-gray-700">
+            <div class="flex">
               <button
                 @click="dashboardRightTab = 'strategies'"
                 :class="[
-                  'flex-1 py-2 px-3 text-sm font-medium transition-colors border-b-2',
-                  dashboardRightTab === 'strategies' ? 'border-blue-500 text-white' : 'border-transparent text-gray-400 hover:text-gray-300'
+                  'flex-1 py-2 px-4 rounded-t text-sm font-medium transition-colors',
+                  dashboardRightTab === 'strategies' ? 'bg-gray-700 text-white' : 'text-gray-400 hover:text-gray-300'
                 ]"
               >
                 Strategies
@@ -342,8 +350,8 @@
               <button
                 @click="dashboardRightTab = 'trades'"
                 :class="[
-                  'flex-1 py-2 px-3 text-sm font-medium transition-colors border-b-2',
-                  dashboardRightTab === 'trades' ? 'border-blue-500 text-white' : 'border-transparent text-gray-400 hover:text-gray-300'
+                  'flex-1 py-2 px-4 rounded-t text-sm font-medium transition-colors',
+                  dashboardRightTab === 'trades' ? 'bg-gray-700 text-white' : 'text-gray-400 hover:text-gray-300'
                 ]"
               >
                 Trades
@@ -351,7 +359,7 @@
             </div>
 
             <!-- Tab Content -->
-            <div class="flex-1 overflow-hidden">
+            <div class="flex-1 overflow-hidden mt-3">
               <!-- Strategies -->
               <div v-show="dashboardRightTab === 'strategies'" class="h-full overflow-y-auto p-3">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -382,8 +390,8 @@
                     class="w-full bg-gray-900 border border-gray-700 rounded px-3 py-1.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500"
                   >
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
-                  <div v-for="symbolGroup in filteredDashboardSymbols" :key="symbolGroup.symbol" class="bg-gray-700/50 rounded overflow-hidden">
+                <div class="columns-1 md:columns-2 gap-2 space-y-2">
+                  <div v-for="symbolGroup in filteredDashboardSymbols" :key="symbolGroup.symbol" class="bg-gray-700/50 rounded overflow-hidden break-inside-avoid">
                     <!-- Header -->
                     <div class="px-3 py-2 flex items-center justify-between cursor-pointer hover:bg-gray-700" @click="toggleDashboardSymbol(symbolGroup.symbol)">
                       <div class="flex items-center gap-2">
