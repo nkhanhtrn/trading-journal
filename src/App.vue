@@ -1488,12 +1488,12 @@ const parseCSV = async (csvText) => {
   finalTickets.sort((a, b) => a.ticket - b.ticket)
 
   console.log(`\n✅ Complete! Total tickets: ${finalTickets.length}`)
-  console.log('  Wins:', allTickets.filter(t => t.status === 'WIN').length)
-  console.log('  Losses:', allTickets.filter(t => t.status === 'LOSS').length)
-  console.log('  Open:', allTickets.filter(t => t.status === 'OPEN').length)
-  console.log('  P&L: $' + allTickets.reduce((s, t) => s + (t.pnl || 0), 0).toFixed(0))
+  console.log('  Wins:', finalTickets.filter(t => t.status === 'WIN').length)
+  console.log('  Losses:', finalTickets.filter(t => t.status === 'LOSS').length)
+  console.log('  Open:', finalTickets.filter(t => t.status === 'OPEN').length)
+  console.log('  P&L: $' + finalTickets.reduce((s, t) => s + (t.pnl || 0), 0).toFixed(0))
 
-  return allTickets
+  return finalTickets
 }
 
 // Clear all data
