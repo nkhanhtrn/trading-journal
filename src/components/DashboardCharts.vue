@@ -9,6 +9,10 @@ const props = defineProps({
   yearlySummary: {
     type: Object,
     required: true
+  },
+  fullYearSummary: {
+    type: Object,
+    default: null
   }
 })
 
@@ -99,9 +103,11 @@ const pieOptions = {
   }
 }
 
-// Cumulative P&L Chart Data
+// Cumulative P&L Chart Data (always uses full year data)
 const cumulativeData = computed(() => {
-  const months = props.yearlySummary.allMonthsData
+  // Use fullYearSummary if available, otherwise fall back to yearlySummary
+  const summary = props.fullYearSummary || props.yearlySummary
+  const months = summary.allMonthsData
   let cumulative = 0
   const data = months.map(m => {
     cumulative += m.pnl
@@ -123,9 +129,11 @@ const cumulativeData = computed(() => {
   }
 })
 
-// Monthly P&L Bar Chart Data
+// Monthly P&L Bar Chart Data (always uses full year data)
 const monthlyData = computed(() => {
-  const months = props.yearlySummary.allMonthsData.filter(m => m.count > 0)
+  // Use fullYearSummary if available, otherwise fall back to yearlySummary
+  const summary = props.fullYearSummary || props.yearlySummary
+  const months = summary.allMonthsData.filter(m => m.count > 0)
 
   return {
     labels: months.map(m => m.name),

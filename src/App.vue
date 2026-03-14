@@ -45,39 +45,120 @@
 
         <!-- Main Content: Calendar + Trades List -->
         <div class="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-4 min-h-0">
-          <!-- Left Column: Calendar -->
-          <div class="bg-gray-800 rounded-lg p-3 flex flex-col min-h-0">
-            <div class="flex items-center justify-between mb-3">
-              <h3 class="text-sm font-semibold text-gray-300">Calendar</h3>
-            </div>
-            <div class="grid grid-cols-7 grid-rows-5 gap-1 flex-1">
-              <div v-for="day in ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']" :key="day" class="text-center text-xs text-gray-500 py-1">
-                {{ day }}
+          <!-- Left Column: Tabbed Content + Charts -->
+          <div class="grid grid-rows-2 gap-4 min-h-0">
+            <!-- Tabbed Content -->
+            <div class="bg-gray-800 rounded-lg flex flex-col min-h-0">
+              <!-- Tabs -->
+              <div class="flex">
+                <button
+                  @click="calendarLeftTab = 'calendar'"
+                  :class="[
+                    'flex-1 py-2 px-3 rounded-t text-sm font-medium transition-colors',
+                    calendarLeftTab === 'calendar' ? 'bg-gray-700 text-white' : 'text-gray-400 hover:text-gray-300'
+                  ]"
+                >
+                  Calendar
+                </button>
+                <button
+                  @click="calendarLeftTab = 'monthly'"
+                  :class="[
+                    'flex-1 py-2 px-3 rounded-t text-sm font-medium transition-colors',
+                    calendarLeftTab === 'monthly' ? 'bg-gray-700 text-white' : 'text-gray-400 hover:text-gray-300'
+                  ]"
+                >
+                  Monthly
+                </button>
               </div>
-              <div
-                v-for="day in calendarDays"
-                :key="day.date"
-                @click="selectDate(day.date)"
-                :class="[
-                  'p-1 text-center rounded cursor-pointer text-xs transition-colors flex flex-col justify-center',
-                  !day.date ? 'pointer-events-none' : '',
-                  day.pnl === 0 ? 'text-gray-600' : '',
-                  day.pnl > 0 ? 'bg-green-900 hover:bg-green-800 text-green-300' : '',
-                  day.pnl < 0 ? 'bg-red-900 hover:bg-red-800 text-red-300' : ''
-                ]"
-              >
-                <div v-if="day.date" class="text-sm">{{ day.dayOfMonth }}</div>
-                <div v-if="day.pnl !== 0" class="font-mono font-bold" :class="day.pnl >= 0 ? 'text-green-300' : 'text-red-300'">
-                  {{ day.pnl >= 0 ? '+' : '' }}${{ day.pnl.toFixed(0) }}
+
+              <!-- Tab Content -->
+              <div class="flex-1 overflow-hidden p-3">
+                <!-- Calendar Tab -->
+                <div v-show="calendarLeftTab === 'calendar'" class="h-full flex flex-col">
+                  <div class="grid grid-cols-7 grid-rows-5 gap-1 flex-1">
+                    <div v-for="day in ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']" :key="day" class="text-center text-xs text-gray-500 py-1">
+                      {{ day }}
+                    </div>
+                    <div
+                      v-for="day in calendarDays"
+                      :key="day.date"
+                      @click="selectDate(day.date)"
+                      :class="[
+                        'p-1 text-center rounded cursor-pointer text-xs transition-colors flex flex-col justify-center',
+                        !day.date ? 'pointer-events-none' : '',
+                        day.date === selectedTradeDate ? 'ring-2 ring-white' : '',
+                        day.pnl === 0 ? 'text-gray-600' : '',
+                        day.pnl > 0 ? 'bg-green-900 hover:bg-green-800 text-green-300' : '',
+                        day.pnl < 0 ? 'bg-red-900 hover:bg-red-800 text-red-300' : ''
+                      ]"
+                    >
+                      <div v-if="day.date" class="text-sm">{{ day.dayOfMonth }}</div>
+                      <div v-if="day.pnl !== 0" class="font-mono font-bold" :class="day.pnl >= 0 ? 'text-green-300' : 'text-red-300'">
+                        {{ day.pnl >= 0 ? '+' : '' }}${{ day.pnl.toFixed(0) }}
+                      </div>
+                      <div v-if="day.tradeCount > 0" class="text-xs opacity-70">{{ day.tradeCount }}</div>
+                    </div>
+                  </div>
                 </div>
-                <div v-if="day.tradeCount > 0" class="text-xs opacity-70">{{ day.tradeCount }}</div>
+
+                <!-- Monthly P&L Tab -->
+                <div v-show="calendarLeftTab === 'monthly'" class="h-full overflow-y-auto">
+                  <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-1">
+                    <div
+                      v-for="month in yearlySummary.allMonthsData"
+                      :key="month.month"
+                      @click="selectMonth(month.month)"
+                      :class="[
+                        'p-2 rounded cursor-pointer transition-colors flex flex-col justify-center',
+                        month.count === 0 ? 'bg-gray-700/30 text-gray-600' : 'bg-gray-700/50 hover:bg-gray-700',
+                        month.pnl > 0 ? 'hover:bg-green-900/30' : month.pnl < 0 ? 'hover:bg-red-900/30' : ''
+                      ]"
+                    >
+                      <div class="text-xs font-semibold mb-0.5">{{ month.name }}</div>
+                      <div v-if="month.count > 0" class="font-mono font-bold text-sm" :class="month.pnl >= 0 ? 'text-green-400' : 'text-red-400'">
+                        {{ month.pnl >= 0 ? '+' : '' }}${{ month.pnl.toFixed(0) }}
+                      </div>
+                      <div v-else class="text-xs text-gray-600">--</div>
+                      <div v-if="month.count > 0" class="text-xs text-gray-500">{{ month.count }}</div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
+
+            <!-- Charts -->
+            <DashboardCharts :yearly-summary="filteredYearlySummary" :full-year-summary="yearlySummary" />
           </div>
 
-          <!-- Right Column: Trades List -->
+          <!-- Right Column: Trades List + Strategies -->
           <div class="bg-gray-800 rounded-lg flex flex-col min-h-0">
-            <!-- Filters -->
+            <!-- Tabs -->
+            <div class="flex">
+              <button
+                @click="calendarRightTab = 'trades'"
+                :class="[
+                  'flex-1 py-2 px-4 rounded-t text-sm font-medium transition-colors',
+                  calendarRightTab === 'trades' ? 'bg-gray-700 text-white' : 'text-gray-400 hover:text-gray-300'
+                ]"
+              >
+                Trades
+              </button>
+              <button
+                @click="calendarRightTab = 'strategies'"
+                :class="[
+                  'flex-1 py-2 px-4 rounded-t text-sm font-medium transition-colors',
+                  calendarRightTab === 'strategies' ? 'bg-gray-700 text-white' : 'text-gray-400 hover:text-gray-300'
+                ]"
+              >
+                Strategies
+              </button>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="flex-1 overflow-hidden mt-3">
+              <!-- Trades Tab -->
+              <div v-show="calendarRightTab === 'trades'" class="h-full flex flex-col">
+                <!-- Filters -->
             <div class="p-3 border-b border-gray-700 flex gap-2 flex-wrap items-center">
               <input v-model="filters.symbol" type="text" placeholder="Search..." class="bg-gray-700 text-white px-3 py-1.5 rounded border border-gray-600 text-sm flex-1 min-w-32">
               <select v-model="filters.status" class="bg-gray-700 text-white px-3 py-1.5 rounded border border-gray-600 text-sm">
@@ -168,105 +249,12 @@
 
               <div v-if="filteredTickets.length === 0" class="text-center text-gray-500 py-8">No trades found</div>
             </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Dashboard Tab -->
-      <div v-if="activeTab === 'dashboard'" class="h-[calc(100vh-8rem)] grid grid-rows-[auto_1fr] gap-4">
-        <!-- Header: Year Selector + Summary Cards -->
-        <div class="grid grid-cols-[auto_1fr] gap-4">
-          <!-- Year Selector -->
-          <div class="bg-gray-800 rounded-lg px-4 py-2 flex items-center justify-between">
-            <h2 class="text-lg font-semibold text-white">Dashboard</h2>
-            <select v-model="selectedDashboardYear" class="bg-gray-700 text-white px-3 py-1 rounded border border-gray-600 text-sm">
-              <option v-for="year in availableYears" :key="year" :value="year">{{ year }}</option>
-            </select>
-          </div>
-          <!-- Summary Cards -->
-          <div class="grid grid-cols-4 gap-3">
-            <div class="bg-gray-800 rounded-lg px-3 py-2 text-center">
-              <div class="text-xl font-bold" :class="yearlySummary.totalPnL >= 0 ? 'text-green-400' : 'text-red-400'">
-                {{ yearlySummary.totalPnL >= 0 ? '+' : '' }}${{ yearlySummary.totalPnL.toFixed(0) }}
               </div>
-              <div class="text-xs text-gray-400">P&L</div>
-            </div>
-            <div class="bg-gray-800 rounded-lg px-3 py-2 text-center">
-              <div class="text-xl font-bold text-white">{{ yearlySummary.totalTrades }}</div>
-              <div class="text-xs text-gray-400">Trades</div>
-            </div>
-            <div class="bg-gray-800 rounded-lg px-3 py-2 text-center">
-              <div class="text-xl font-bold text-green-400">{{ yearlySummary.winRate }}%</div>
-              <div class="text-xs text-gray-400">Win Rate</div>
-            </div>
-            <div class="bg-gray-800 rounded-lg px-3 py-2 text-center">
-              <div class="text-xl font-bold text-blue-400">{{ yearlySummary.profitFactor.toFixed(1) }}x</div>
-              <div class="text-xs text-gray-400">PF</div>
-            </div>
-          </div>
-        </div>
 
-        <!-- Main Content: Calendar + Tabs -->
-        <div class="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-4 min-h-0">
-          <!-- Left Column: Monthly P&L (top) + Empty Component (bottom) -->
-          <div class="grid grid-rows-2 gap-4 min-h-0">
-            <!-- Monthly P&L Calendar -->
-            <div class="bg-gray-800 rounded-lg p-3 flex flex-col min-h-0">
-              <h3 class="text-sm font-semibold text-gray-300 mb-2">Monthly P&L</h3>
-              <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-1 flex-1 overflow-y-auto">
-                <div
-                  v-for="month in yearlySummary.allMonthsData"
-                  :key="month.month"
-                  :class="[
-                    'p-2 rounded cursor-pointer transition-colors flex flex-col justify-center',
-                    month.count === 0 ? 'bg-gray-700/30 text-gray-600' : 'bg-gray-700/50 hover:bg-gray-700',
-                    month.pnl > 0 ? 'hover:bg-green-900/30' : month.pnl < 0 ? 'hover:bg-red-900/30' : ''
-                  ]"
-                >
-                  <div class="text-xs font-semibold mb-0.5">{{ month.name }}</div>
-                  <div v-if="month.count > 0" class="font-mono font-bold text-sm" :class="month.pnl >= 0 ? 'text-green-400' : 'text-red-400'">
-                    {{ month.pnl >= 0 ? '+' : '' }}${{ month.pnl.toFixed(0) }}
-                  </div>
-                  <div v-else class="text-xs text-gray-600">--</div>
-                  <div v-if="month.count > 0" class="text-xs text-gray-500">{{ month.count }}</div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Dashboard Charts -->
-            <DashboardCharts :yearly-summary="yearlySummary" />
-          </div>
-
-          <!-- Right: Tabbed Content -->
-          <div class="bg-gray-800 rounded-lg flex flex-col min-h-0">
-            <!-- Tabs -->
-            <div class="flex">
-              <button
-                @click="dashboardRightTab = 'strategies'"
-                :class="[
-                  'flex-1 py-2 px-4 rounded-t text-sm font-medium transition-colors',
-                  dashboardRightTab === 'strategies' ? 'bg-gray-700 text-white' : 'text-gray-400 hover:text-gray-300'
-                ]"
-              >
-                Strategies
-              </button>
-              <button
-                @click="dashboardRightTab = 'trades'"
-                :class="[
-                  'flex-1 py-2 px-4 rounded-t text-sm font-medium transition-colors',
-                  dashboardRightTab === 'trades' ? 'bg-gray-700 text-white' : 'text-gray-400 hover:text-gray-300'
-                ]"
-              >
-                Trades
-              </button>
-            </div>
-
-            <!-- Tab Content -->
-            <div class="flex-1 overflow-hidden mt-3">
-              <!-- Strategies -->
-              <div v-show="dashboardRightTab === 'strategies'" class="h-full overflow-y-auto p-3">
+              <!-- Strategies Tab -->
+              <div v-show="calendarRightTab === 'strategies'" class="h-full overflow-y-auto p-3">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
-                  <div v-for="strat in yearlySummary.strategyPerformance" :key="strat.strategy" class="bg-gray-700/50 rounded p-3">
+                  <div v-for="strat in filteredStrategies" :key="strat.strategy" class="bg-gray-700/50 rounded p-3">
                     <div class="flex items-center justify-between mb-2">
                       <span class="text-sm font-bold text-white">{{ strat.strategy }}</span>
                       <span class="font-mono font-bold text-base" :class="strat.totalPnL >= 0 ? 'text-green-400' : 'text-red-400'">
@@ -277,47 +265,6 @@
                       <span>{{ strat.totalTrades }} trades</span>
                       <span :class="strat.winRate >= 50 ? 'text-green-400' : 'text-red-400'">{{ strat.winRate }}%</span>
                       <span class="text-gray-500">{{ strat.wins }}W/{{ strat.losses }}L</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- All Trades -->
-              <div v-show="dashboardRightTab === 'trades'" class="h-full overflow-y-auto p-3">
-                <!-- Search -->
-                <div class="mb-3">
-                  <input
-                    v-model="dashboardSearchQuery"
-                    type="text"
-                    placeholder="Search..."
-                    class="w-full bg-gray-900 border border-gray-700 rounded px-3 py-1.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500"
-                  >
-                </div>
-                <div class="columns-1 md:columns-2 gap-2 space-y-2">
-                  <div v-for="symbolGroup in filteredDashboardSymbols" :key="symbolGroup.symbol" class="bg-gray-700/50 rounded overflow-hidden break-inside-avoid">
-                    <!-- Header -->
-                    <div class="px-3 py-2 flex items-center justify-between cursor-pointer hover:bg-gray-700" @click="toggleDashboardSymbol(symbolGroup.symbol)">
-                      <div class="flex items-center gap-2">
-                        <i class="fas fa-chevron-right text-gray-500 text-xs transition-transform" :class="{ 'rotate-90': expandedDashboardSymbols.has(symbolGroup.symbol) }"></i>
-                        <span class="text-sm font-bold text-white">{{ symbolGroup.displaySymbol }}</span>
-                        <span class="text-xs text-gray-500">{{ symbolGroup.trades.length }}</span>
-                      </div>
-                      <span class="font-mono font-bold text-sm" :class="symbolGroup.totalPnL >= 0 ? 'text-green-400' : 'text-red-400'">
-                        {{ symbolGroup.totalPnL >= 0 ? '+' : '' }}${{ symbolGroup.totalPnL.toFixed(0) }}
-                      </span>
-                    </div>
-                    <!-- Trades -->
-                    <div v-show="expandedDashboardSymbols.has(symbolGroup.symbol)" class="border-t border-gray-600 bg-gray-800/50">
-                      <div v-for="trade in symbolGroup.trades" :key="trade.id" class="px-3 py-1.5 flex items-center justify-between hover:bg-gray-700 cursor-pointer border-b border-gray-600/50 last:border-0" @click="selectedPositionGroup = trade.positionGroup">
-                        <div class="flex items-center gap-2">
-                          <span class="text-xs text-gray-500 w-16">{{ trade.exitDate }}</span>
-                          <span class="text-xs text-gray-400">{{ trade.strategy }} {{ trade.strikes }}</span>
-                          <span class="text-xs bg-gray-600 text-gray-300 px-1.5 py-0.5 rounded">{{ trade.expiry }}</span>
-                        </div>
-                        <span class="font-mono font-bold text-xs" :class="trade.pnl >= 0 ? 'text-green-400' : 'text-red-400'">
-                          {{ trade.pnl >= 0 ? '+' : '' }}${{ trade.pnl.toFixed(0) }}
-                        </span>
-                      </div>
                     </div>
                   </div>
                 </div>
@@ -340,16 +287,6 @@
         title="Trades"
       >
         <i class="fas fa-list"></i>
-      </button>
-      <button
-        @click="navigateTo('dashboard')"
-        :class="[
-          'w-10 h-10 flex flex-col items-center justify-center rounded transition-colors',
-          activeTab === 'dashboard' ? 'bg-gray-700 text-green-500' : 'text-gray-400 hover:text-gray-300 hover:bg-gray-700'
-        ]"
-        title="Dashboard"
-      >
-        <i class="fas fa-chart-line"></i>
       </button>
       <button
         @click="openCsvPicker"
@@ -1798,10 +1735,11 @@ const clearAllData = () => {
   }
 }
 const currentMonth = ref(new Date(2026, 2, 1)) // March 2026
+const calendarLeftTab = ref('calendar') // 'calendar' or 'monthly'
+const calendarRightTab = ref('trades') // 'trades' or 'strategies'
 const openPositionsCollapsed = ref(true)
 const expandedPositionKeys = ref(new Set())
 const expandedSymbols = ref(new Set())
-const expandedDashboardSymbols = ref(new Set())
 const equityPrices = ref({})
 const loadingPrices = ref(false)
 
@@ -1815,8 +1753,9 @@ const dateRange = ref({
 // Trade view date picker state
 const datePickerInput = ref(null)
 
-// No default filter - show all trades initially
-const tradeDateRangeStart = ref(null)
+// Default to today's date
+const today = new Date().toISOString().split('T')[0]
+const tradeDateRangeStart = ref(today)
 const tradeDateRangeEnd = ref(null)
 
 // Store pending date to set after flatpickr initializes
@@ -1886,7 +1825,7 @@ const filters = ref({
 })
 
 const selectedPositionGroup = ref(null)
-const selectedTradeDate = ref(null) // For day navigation in trades view
+const selectedTradeDate = ref(new Date().toISOString().split('T')[0]) // For day navigation in trades view - default to today
 
 // Trades view mode: 'list' or 'square'
 const tradesViewMode = ref('square')
@@ -2013,14 +1952,109 @@ const filteredTickets = computed(() => {
       const spansRange = ticket.date <= end && (!ticket.exit_date || ticket.exit_date >= tradeDateRangeStart.value)
       matchTradeDateFilter = entryInRange || exitInRange || spansRange
     }
-    // Match legacy selectedTradeDate for day navigation (default to current date if none selected)
-    const compareDate = selectedTradeDate.value || new Date().toISOString().split('T')[0]
-    const matchSelectedDate = ticket.date === compareDate || ticket.exit_date === compareDate
+    // Match legacy selectedTradeDate for day navigation (only when a specific date is selected)
+    let matchSelectedDate = true
+    if (selectedTradeDate.value) {
+      matchSelectedDate = ticket.date === selectedTradeDate.value || ticket.exit_date === selectedTradeDate.value
+    }
     return matchSymbol && matchStatus && matchDate && matchSelectedDate && matchTradeDateFilter
   })
 
   console.log('Total tickets:', tickets.value.length, 'Filtered tickets:', filtered.length)
   return filtered
+})
+
+// Filtered strategies for calendar view based on selected date
+const filteredStrategies = computed(() => {
+  const closedFiltered = filteredTickets.value.filter(t => t.status !== 'OPEN')
+
+  // Group trades by strategy
+  const strategyMap = new Map()
+  closedFiltered.forEach(ticket => {
+    const entryLegs = openingLegs(ticket)
+    const detectedStrategy = detectStrategy(entryLegs)
+    const strategy = getStrategyDisplayName(detectedStrategy) || 'Unknown'
+
+    if (!strategyMap.has(strategy)) {
+      strategyMap.set(strategy, {
+        strategy,
+        tickets: [],
+        totalPnL: 0,
+        wins: 0,
+        losses: 0
+      })
+    }
+    const group = strategyMap.get(strategy)
+    group.tickets.push(ticket)
+    group.totalPnL += (ticket.pnl || 0)
+    if (ticket.status === 'WIN') group.wins++
+    else if (ticket.status === 'LOSS') group.losses++
+  })
+
+  // Calculate strategy performance metrics
+  return Array.from(strategyMap.values()).map(s => {
+    const totalTrades = s.wins + s.losses
+    const winRate = totalTrades > 0 ? Math.round((s.wins / totalTrades) * 100) : 0
+    const avgWin = s.wins > 0 ? s.tickets.filter(t => t.pnl > 0).reduce((sum, t) => sum + t.pnl, 0) / s.wins : 0
+    const avgLoss = s.losses > 0 ? Math.abs(s.tickets.filter(t => t.pnl < 0).reduce((sum, t) => sum + t.pnl, 0)) / s.losses : 0
+    const profitFactor = avgLoss > 0 ? (avgWin * s.wins) / (avgLoss * s.losses) : s.wins > 0 ? 999 : 0
+
+    return {
+      strategy: s.strategy,
+      totalPnL: s.totalPnL,
+      totalTrades,
+      wins: s.wins,
+      losses: s.losses,
+      winRate,
+      avgWin: avgWin || 0,
+      avgLoss: avgLoss || 0,
+      profitFactor
+    }
+  }).sort((a, b) => b.totalPnL - a.totalPnL)
+})
+
+// Filtered yearly summary for charts based on selected date
+const filteredYearlySummary = computed(() => {
+  const closedFiltered = filteredTickets.value.filter(t => t.status !== 'OPEN')
+
+  const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
+  // Group by month (using filtered tickets)
+  const allMonthsData = Array.from({ length: 12 }, (_, i) => {
+    const monthTickets = closedFiltered.filter(t => {
+      const date = t.exit_date || t.date
+      return new Date(date).getMonth() === i
+    })
+
+    const wins = monthTickets.filter(t => t.status === 'WIN').length
+
+    return {
+      month: i + 1,
+      name: monthNames[i],
+      pnl: monthTickets.reduce((sum, t) => sum + (t.pnl || 0), 0),
+      count: monthTickets.length,
+      wins
+    }
+  })
+
+  // Calculate totals
+  const totalPnL = closedFiltered.reduce((sum, t) => sum + (t.pnl || 0), 0)
+  const winners = closedFiltered.filter(t => t.status === 'WIN')
+  const losers = closedFiltered.filter(t => t.status === 'LOSS')
+  const winsAmount = winners.reduce((sum, t) => sum + (t.pnl || 0), 0)
+  const lossesAmount = losers.reduce((sum, t) => sum + (t.pnl || 0), 0)
+  const profitFactor = lossesAmount !== 0 ? Math.abs(winsAmount / lossesAmount) : winsAmount > 0 ? 999 : 0
+
+  return {
+    totalPnL,
+    totalTrades: closedFiltered.length,
+    winRate: closedFiltered.length > 0 ? Math.round((winners.length / closedFiltered.length) * 100) : 0,
+    profitFactor,
+    monthlyData: allMonthsData.filter(m => m.count > 0),
+    allMonthsData,
+    tradesBySymbol: [], // Not used in filtered view
+    strategyPerformance: filteredStrategies.value
+  }
 })
 
 const stats = computed(() => {
@@ -2170,29 +2204,8 @@ const tradeSummary = computed(() => {
   }
 })
 
-// Dashboard state
+// Year filter for yearly summary
 const selectedDashboardYear = ref(new Date().getFullYear())
-const dashboardSearchQuery = ref('')
-const dashboardRightTab = ref('strategies') // 'trades' or 'strategies'
-
-const filteredDashboardSymbols = computed(() => {
-  const query = dashboardSearchQuery.value.toLowerCase().trim()
-  if (!query) return yearlySummary.value.tradesBySymbol
-  return yearlySummary.value.tradesBySymbol.filter(symbolGroup =>
-    symbolGroup.displaySymbol.toLowerCase().includes(query) ||
-    symbolGroup.symbol.toLowerCase().includes(query)
-  )
-})
-
-const availableYears = computed(() => {
-  const years = new Set()
-  tickets.value.forEach(t => {
-    if (t.exit_date) {
-      years.add(new Date(t.exit_date).getFullYear())
-    }
-  })
-  return Array.from(years).sort((a, b) => b - a)
-})
 
 // Get position group for a ticket
 const getPositionGroupForTicket = (ticket) => {
@@ -2569,14 +2582,6 @@ const toggleSymbol = (symbol) => {
   }
 }
 
-const toggleDashboardSymbol = (symbol) => {
-  if (expandedDashboardSymbols.value.has(symbol)) {
-    expandedDashboardSymbols.value.delete(symbol)
-  } else {
-    expandedDashboardSymbols.value.add(symbol)
-  }
-}
-
 const allSymbolsExpanded = computed(() => {
   return expandedSymbols.value.size === groupedBySymbol.value.length && groupedBySymbol.value.length > 0
 })
@@ -2771,7 +2776,32 @@ const selectDate = (date) => {
   tradeDateRangeStart.value = date
   tradeDateRangeEnd.value = null
   pendingDatePickerValue.value = date
-  activeTab.value = 'trades'
+  // Only switch to trades tab if not already in calendar/trades view
+  if (activeTab.value !== 'calendar' && activeTab.value !== 'trades') {
+    activeTab.value = 'trades'
+  }
+}
+
+const selectMonth = (month) => {
+  if (!month) return
+  const year = selectedDashboardYear.value
+  const startOfMonth = new Date(year, month - 1, 1).toISOString().split('T')[0]
+  const endOfMonth = new Date(year, month, 0).toISOString().split('T')[0]
+
+  dateRange.value = {
+    mode: 'range',
+    single: null,
+    start: startOfMonth,
+    end: endOfMonth
+  }
+  selectedTradeDate.value = null
+  tradeDateRangeStart.value = startOfMonth
+  tradeDateRangeEnd.value = endOfMonth
+  pendingDatePickerValue.value = startOfMonth
+  // Only switch to trades tab if not already in calendar/trades view
+  if (activeTab.value !== 'calendar' && activeTab.value !== 'trades') {
+    activeTab.value = 'trades'
+  }
 }
 
 const selectAllTime = () => {
