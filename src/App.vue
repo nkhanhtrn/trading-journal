@@ -1,7 +1,8 @@
 <template>
   <div class="min-h-screen bg-gray-900 flex flex-col">
     <!-- Main Content -->
-    <main class="flex-1 max-w-6xl mx-auto px-4 py-6 pb-16 overflow-auto">
+    <div class="pl-14">
+      <main class="flex-1 max-w-6xl mx-auto px-4 py-6 pb-16 overflow-auto">
       <!-- Calendar Tab -->
       <div v-if="activeTab === 'calendar'" class="w-[630px] max-w-full mx-auto">
         <!-- Monthly P&L Dashboard -->
@@ -424,64 +425,62 @@
         </div>
       </div>
     </main>
+    </div>
 
-    <!-- Bottom Tab Navigation -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-gray-800 border-t border-gray-700">
-      <div class="max-w-6xl mx-auto px-4">
-        <div class="flex">
-          <button
-            @click="navigateTo('calendar')"
-            :class="[
-              'flex-1 py-2 text-center transition-colors',
-              activeTab === 'calendar' ? 'text-green-500 border-t-2 border-green-500' : 'text-gray-400 hover:text-gray-300'
-            ]"
-          >
-            <i class="fas fa-calendar-alt text-lg"></i>
-            <div class="text-xs">Calendar</div>
-          </button>
-          <button
-            @click="navigateTo('trades')"
-            :class="[
-              'flex-1 py-2 text-center transition-colors',
-              activeTab === 'trades' ? 'text-green-500 border-t-2 border-green-500' : 'text-gray-400 hover:text-gray-300'
-            ]"
-          >
-            <i class="fas fa-list text-lg"></i>
-            <div class="text-xs">Trades</div>
-          </button>
-          <button
-            @click="navigateTo('dashboard')"
-            :class="[
-              'flex-1 py-2 text-center transition-colors',
-              activeTab === 'dashboard' ? 'text-green-500 border-t-2 border-green-500' : 'text-gray-400 hover:text-gray-300'
-            ]"
-          >
-            <i class="fas fa-chart-line text-lg"></i>
-            <div class="text-xs">Dashboard</div>
-          </button>
-          <button
-            @click="openCsvPicker"
-            :disabled="isUploading"
-            :class="[
-              'flex-1 py-2 text-center transition-colors relative',
-              isUploading ? 'text-gray-600 cursor-wait' : 'text-gray-400 hover:text-gray-300'
-            ]"
-          >
-            <i class="fas fa-upload text-lg"></i>
-            <div class="text-xs">Upload ({{ tickets.length }})</div>
-            <div v-if="uploadMessage" class="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-700 text-white text-xs px-2 py-1 rounded whitespace-nowrap z-10">
-              {{ uploadMessage }}
-            </div>
-          </button>
-          <button
-            @click="showSettingsModal = true"
-            class="flex-1 py-2 text-center text-gray-400 hover:text-gray-300 transition-colors"
-          >
-            <i class="fas fa-cog text-lg"></i>
-            <div class="text-xs">Settings</div>
-          </button>
+    <!-- Left Sidebar Navigation -->
+    <nav class="fixed left-0 top-0 bottom-0 w-14 bg-gray-800 border-r border-gray-700 flex flex-col items-center py-4 gap-2 z-50">
+      <button
+        @click="navigateTo('calendar')"
+        :class="[
+          'w-10 h-10 flex flex-col items-center justify-center rounded transition-colors',
+          activeTab === 'calendar' ? 'bg-gray-700 text-green-500' : 'text-gray-400 hover:text-gray-300 hover:bg-gray-700'
+        ]"
+        title="Calendar"
+      >
+        <i class="fas fa-calendar-alt"></i>
+      </button>
+      <button
+        @click="navigateTo('trades')"
+        :class="[
+          'w-10 h-10 flex flex-col items-center justify-center rounded transition-colors',
+          activeTab === 'trades' ? 'bg-gray-700 text-green-500' : 'text-gray-400 hover:text-gray-300 hover:bg-gray-700'
+        ]"
+        title="Trades"
+      >
+        <i class="fas fa-list"></i>
+      </button>
+      <button
+        @click="navigateTo('dashboard')"
+        :class="[
+          'w-10 h-10 flex flex-col items-center justify-center rounded transition-colors',
+          activeTab === 'dashboard' ? 'bg-gray-700 text-green-500' : 'text-gray-400 hover:text-gray-300 hover:bg-gray-700'
+        ]"
+        title="Dashboard"
+      >
+        <i class="fas fa-chart-line"></i>
+      </button>
+      <button
+        @click="openCsvPicker"
+        :disabled="isUploading"
+        :class="[
+          'w-10 h-10 flex flex-col items-center justify-center rounded transition-colors relative',
+          isUploading ? 'text-gray-600 cursor-wait' : 'text-gray-400 hover:text-gray-300 hover:bg-gray-700'
+        ]"
+        title="Upload"
+      >
+        <i class="fas fa-upload"></i>
+        <div v-if="uploadMessage" class="absolute left-full ml-2 top-1/2 -translate-y-1/2 bg-gray-700 text-white text-xs px-2 py-1 rounded whitespace-nowrap z-10">
+          {{ uploadMessage }}
         </div>
-      </div>
+      </button>
+      <div class="flex-1"></div>
+      <button
+        @click="showSettingsModal = true"
+        class="w-10 h-10 flex flex-col items-center justify-center rounded text-gray-400 hover:text-gray-300 hover:bg-gray-700 transition-colors"
+        title="Settings"
+      >
+        <i class="fas fa-cog"></i>
+      </button>
     </nav>
 
     <!-- Hidden file input for CSV upload -->
