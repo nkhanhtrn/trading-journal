@@ -5,24 +5,26 @@
       <!-- Calendar Tab -->
       <div v-if="activeTab === 'calendar'">
         <!-- Monthly P&L Dashboard -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-          <div class="bg-gray-800 rounded-lg p-3">
-            <div class="text-lg font-bold" :class="monthlySummary.totalPnL >= 0 ? 'text-green-400' : 'text-red-400'">
-              {{ monthlySummary.totalPnL >= 0 ? '+' : '' }}${{ monthlySummary.totalPnL.toFixed(0) }}
+        <div class="bg-gray-800 rounded-lg p-4 mb-6">
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="text-center">
+              <div class="text-2xl font-bold" :class="monthlySummary.totalPnL >= 0 ? 'text-green-400' : 'text-red-400'">
+                {{ monthlySummary.totalPnL >= 0 ? '+' : '' }}${{ monthlySummary.totalPnL.toFixed(0) }}
+              </div>
+              <div class="text-xs text-gray-500">Month P&L</div>
             </div>
-            <div class="text-xs text-gray-400">Month P&L</div>
-          </div>
-          <div class="bg-gray-800 rounded-lg p-3">
-            <div class="text-lg font-bold text-white">{{ monthlySummary.count }}</div>
-            <div class="text-xs text-gray-400">Trades Closed</div>
-          </div>
-          <div class="bg-gray-800 rounded-lg p-3">
-            <div class="text-lg font-bold text-green-400">{{ monthlySummary.winRate }}%</div>
-            <div class="text-xs text-gray-400">Win Rate</div>
-          </div>
-          <div class="bg-gray-800 rounded-lg p-3">
-            <div class="text-lg font-bold text-blue-400">{{ monthlySummary.profitFactor.toFixed(1) }}x</div>
-            <div class="text-xs text-gray-400">Profit Factor</div>
+            <div class="text-center">
+              <div class="text-2xl font-bold text-white">{{ monthlySummary.count }}</div>
+              <div class="text-xs text-gray-500">Trades Closed</div>
+            </div>
+            <div class="text-center">
+              <div class="text-2xl font-bold text-green-400">{{ monthlySummary.winRate }}%</div>
+              <div class="text-xs text-gray-500">Win Rate</div>
+            </div>
+            <div class="text-center">
+              <div class="text-2xl font-bold text-blue-400">{{ monthlySummary.profitFactor.toFixed(1) }}x</div>
+              <div class="text-xs text-gray-500">Profit Factor</div>
+            </div>
           </div>
         </div>
 
@@ -109,21 +111,6 @@
               </div>
             </div>
           </div>
-
-          <!-- Selection Info -->
-          <div v-if="dateRange.mode" class="mt-4 flex items-center justify-between px-4 py-2 bg-gray-700/50 rounded-lg">
-            <p class="text-sm text-gray-300">
-              <i class="fas fa-filter mr-2 text-blue-400"></i>
-              <span v-if="dateRange.mode === 'single'">{{ dateRange.single }}</span>
-              <span v-if="dateRange.mode === 'week'">This Week</span>
-              <span v-if="dateRange.mode === 'month'">{{ formatMonth(currentMonth) }}</span>
-              <span v-if="dateRange.mode === 'range'">{{ dateRange.start }} → {{ dateRange.end }}</span>
-              <span v-if="dateRange.mode === 'all'">All Time</span>
-            </p>
-            <button @click="clearDateRange" class="text-xs bg-gray-600 hover:bg-gray-500 text-white px-3 py-1 rounded transition-colors">
-              <i class="fas fa-times mr-1"></i> Clear
-            </button>
-          </div>
         </div>
       </div>
 
@@ -160,25 +147,25 @@
         </div>
 
         <!-- Day Navigation with P&L Dashboard -->
-        <div class="bg-gray-800 rounded-lg p-3 mb-6">
+        <div class="bg-gray-800 rounded-lg p-4 mb-6">
           <!-- P&L Dashboard -->
-          <div class="grid grid-cols-4 gap-2 mb-3">
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
             <div class="text-center">
-              <div class="text-base font-bold" :class="tradeSummary?.totalPnL >= 0 ? 'text-green-400' : 'text-red-400'">
+              <div class="text-2xl font-bold" :class="tradeSummary?.totalPnL >= 0 ? 'text-green-400' : 'text-red-400'">
                 {{ tradeSummary?.totalPnL >= 0 ? '+' : '' }}${{ (tradeSummary?.totalPnL || 0).toFixed(0) }}
               </div>
               <div class="text-xs text-gray-500">P&L</div>
             </div>
             <div class="text-center">
-              <div class="text-base font-bold text-white">{{ tradeSummary?.count || 0 }}</div>
+              <div class="text-2xl font-bold text-white">{{ tradeSummary?.count || 0 }}</div>
               <div class="text-xs text-gray-500">Trades</div>
             </div>
             <div class="text-center">
-              <div class="text-base font-bold text-green-400">{{ tradeSummary?.winRate || 0 }}%</div>
+              <div class="text-2xl font-bold text-green-400">{{ tradeSummary?.winRate || 0 }}%</div>
               <div class="text-xs text-gray-500">Win Rate</div>
             </div>
             <div class="text-center">
-              <div class="text-base font-bold text-blue-400">{{ (tradeSummary?.profitFactor || 0).toFixed(1) }}x</div>
+              <div class="text-2xl font-bold text-blue-400">{{ (tradeSummary?.profitFactor || 0).toFixed(1) }}x</div>
               <div class="text-xs text-gray-500">Profit Factor</div>
             </div>
           </div>
@@ -283,6 +270,93 @@
         <!-- No tickets message -->
         <div v-if="filteredTickets.length === 0" class="bg-gray-800 rounded-lg p-8 text-center text-gray-500">No tickets found</div>
       </div>
+
+      <!-- Dashboard Tab -->
+      <div v-if="activeTab === 'dashboard'">
+        <div class="bg-gray-800 rounded-lg p-4 mb-6">
+          <!-- Year Selector -->
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg font-semibold text-white">Yearly P&L Dashboard</h2>
+            <select v-model="selectedDashboardYear" class="bg-gray-700 text-white px-4 py-2 rounded border border-gray-600">
+              <option v-for="year in availableYears" :key="year" :value="year">{{ year }}</option>
+            </select>
+          </div>
+
+          <!-- Summary Cards -->
+          <div class="grid grid-cols-4 gap-4">
+            <div class="text-center">
+              <div class="text-2xl font-bold" :class="yearlySummary.totalPnL >= 0 ? 'text-green-400' : 'text-red-400'">
+                {{ yearlySummary.totalPnL >= 0 ? '+' : '' }}${{ yearlySummary.totalPnL.toFixed(0) }}
+              </div>
+              <div class="text-xs text-gray-500">Total P&L</div>
+            </div>
+            <div class="text-center">
+              <div class="text-2xl font-bold text-white">{{ yearlySummary.totalTrades }}</div>
+              <div class="text-xs text-gray-500">Total Trades</div>
+            </div>
+            <div class="text-center">
+              <div class="text-2xl font-bold text-green-400">{{ yearlySummary.winRate }}%</div>
+              <div class="text-xs text-gray-500">Win Rate</div>
+            </div>
+            <div class="text-center">
+              <div class="text-2xl font-bold text-blue-400">{{ yearlySummary.profitFactor.toFixed(1) }}x</div>
+              <div class="text-xs text-gray-500">Profit Factor</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Monthly P&L List -->
+        <div class="bg-gray-800 rounded-lg p-4 mb-6">
+          <h3 class="text-sm font-semibold text-gray-300 mb-3">Monthly P&L</h3>
+          <div class="space-y-2">
+            <div v-for="month in yearlySummary.monthlyData" :key="month.month" class="flex items-center justify-between px-4 py-3 bg-gray-700/50 rounded hover:bg-gray-700">
+              <div class="flex items-center gap-3">
+                <span class="text-sm font-medium text-white w-20">{{ month.name }}</span>
+                <span class="text-xs text-gray-500">{{ month.count }} trade{{ month.count !== 1 ? 's' : '' }}</span>
+              </div>
+              <div class="flex items-center gap-4">
+                <span class="text-xs text-gray-500">{{ month.wins }}W / {{ month.count - month.wins }}L</span>
+                <span class="font-mono font-bold text-base" :class="month.pnl >= 0 ? 'text-green-400' : 'text-red-400'">
+                  {{ month.pnl >= 0 ? '+' : '' }}${{ month.pnl.toFixed(0) }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- All Options Trades for Year -->
+        <div class="bg-gray-800 rounded-lg p-4">
+          <h3 class="text-sm font-semibold text-gray-300 mb-3">All Options Trades ({{ selectedDashboardYear }})</h3>
+          <div class="space-y-2 max-h-96 overflow-y-auto">
+            <div v-for="symbolGroup in yearlySummary.tradesBySymbol" :key="symbolGroup.symbol" class="bg-gray-700/50 rounded overflow-hidden">
+              <!-- Symbol Header -->
+              <div class="px-4 py-3 flex items-center justify-between cursor-pointer hover:bg-gray-700" @click="toggleDashboardSymbol(symbolGroup.symbol)">
+                <div class="flex items-center gap-3">
+                  <i class="fas fa-chevron-right text-gray-500 text-xs transition-transform" :class="{ 'rotate-90': expandedDashboardSymbols.has(symbolGroup.symbol) }"></i>
+                  <span class="text-lg font-bold text-white">{{ symbolGroup.displaySymbol }}</span>
+                  <span class="text-xs text-gray-500">{{ symbolGroup.trades.length }} trade{{ symbolGroup.trades.length > 1 ? 's' : '' }}</span>
+                </div>
+                <span class="font-mono font-bold text-base" :class="symbolGroup.totalPnL >= 0 ? 'text-green-400' : 'text-red-400'">
+                  {{ symbolGroup.totalPnL >= 0 ? '+' : '' }}${{ symbolGroup.totalPnL.toFixed(0) }}
+                </span>
+              </div>
+              <!-- Trades under symbol -->
+              <div v-show="expandedDashboardSymbols.has(symbolGroup.symbol)" class="border-t border-gray-600">
+                <div v-for="trade in symbolGroup.trades" :key="trade.id" class="px-4 py-2 flex items-center justify-between hover:bg-gray-700/50 cursor-pointer border-b border-gray-600/50 last:border-0" @click="selectedPositionGroup = trade.positionGroup">
+                  <div class="flex items-center gap-3">
+                    <span class="text-xs text-gray-500 w-20">{{ trade.exitDate }}</span>
+                    <span class="text-sm text-gray-400">{{ trade.strategy }} {{ trade.strikes }}</span>
+                    <span class="text-xs bg-gray-600 text-gray-300 px-2 py-0.5 rounded">{{ trade.expiry }}</span>
+                  </div>
+                  <span class="font-mono font-bold text-sm" :class="trade.pnl >= 0 ? 'text-green-400' : 'text-red-400'">
+                    {{ trade.pnl >= 0 ? '+' : '' }}${{ trade.pnl.toFixed(0) }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </main>
 
     <!-- Bottom Tab Navigation -->
@@ -308,6 +382,16 @@
           >
             <i class="fas fa-list text-lg"></i>
             <div class="text-xs">Trades</div>
+          </button>
+          <button
+            @click="activeTab = 'dashboard'"
+            :class="[
+              'flex-1 py-2 text-center transition-colors',
+              activeTab === 'dashboard' ? 'text-green-500 border-t-2 border-green-500' : 'text-gray-400 hover:text-gray-300'
+            ]"
+          >
+            <i class="fas fa-chart-line text-lg"></i>
+            <div class="text-xs">Dashboard</div>
           </button>
           <button
             @click="openCsvPicker"
@@ -550,6 +634,7 @@
 <script setup>
 import { ref, computed, onMounted, nextTick, watch } from 'vue'
 import SummaryCards from './components/SummaryCards.vue'
+import { detectStrategy, getStrategyDisplayName } from './utils/strategyDetector.js'
 import TradeFormModal from './components/TradeFormModal.vue'
 import MiniCalendarDots from './components/MiniCalendarDots.vue'
 import flatpickr from 'flatpickr'
@@ -653,11 +738,8 @@ const saveRawTransactions = () => {
 
 // Handle CSV file upload
 const handleCsvUpload = async (event) => {
-  console.log('handleCsvUpload called!', event.target.files)
   const file = event.target.files?.[0]
-  console.log('File:', file)
   if (!file) {
-    console.log('No file selected')
     return
   }
 
@@ -665,20 +747,12 @@ const handleCsvUpload = async (event) => {
   uploadMessage.value = 'Processing...'
 
   try {
-    console.log('Reading file...')
     const text = await file.text()
-    console.log('CSV text length:', text.length)
-    console.log('First 200 chars:', text.substring(0, 200))
 
     // Find the maximum ticket ID to avoid conflicts
     const maxTicketId = tickets.value.length > 0 ? Math.max(...tickets.value.map(t => t.ticket)) : 999
-    console.log('Starting ticket ID from:', maxTicketId + 1)
 
     const parsedTickets = await parseCSV(text, maxTicketId + 1)
-    console.log('Parsed tickets:', parsedTickets.length)
-    if (parsedTickets.length > 0) {
-      console.log('First ticket:', parsedTickets[0])
-    }
 
     if (parsedTickets.length === 0) {
       uploadMessage.value = 'No valid tickets found in CSV'
@@ -719,7 +793,6 @@ const handleCsvUpload = async (event) => {
 
         if (legsMatch) {
           // Found a match! Update the auto-generated ticket with real exit data
-          console.log(`Updating auto-generated ticket ${autoTicket.ticket} with real exit data`)
           autoTicket.status = newTicket.status
           autoTicket.exit_date = newTicket.exit_date
           autoTicket.pnl = newTicket.pnl
@@ -736,8 +809,6 @@ const handleCsvUpload = async (event) => {
 
     // Check for OPEN tickets that can be closed with new exit data
     const openTickets = tickets.value.filter(t => t.status === 'OPEN')
-
-    console.log(`Checking ${openTickets.length} OPEN tickets against ${parsedTickets.length} new tickets`)
 
     for (const newTicket of parsedTickets) {
       // Only check closed tickets (with exit_date)
@@ -778,7 +849,6 @@ const handleCsvUpload = async (event) => {
 
         if (legsMatch) {
           // Found a match! Update the OPEN ticket with exit data
-          console.log(`✓ Closing OPEN ticket ${openTicket.ticket} (${openTicket.symbol}) with exit data from new CSV`)
           openTicket.status = newTicket.status
           openTicket.exit_date = newTicket.exit_date
           openTicket.pnl = newTicket.pnl
@@ -818,7 +888,6 @@ const handleCsvUpload = async (event) => {
       const key = getTicketKey(t)
       if (existingTicketKeys.has(key)) {
         duplicateCount++
-        console.log(`Skipping duplicate ticket: ${t.symbol} ${t.date}`)
         continue
       }
 
@@ -831,9 +900,6 @@ const handleCsvUpload = async (event) => {
 
     // Save to storage
     saveTicketsToStorage()
-
-    console.log('Total tickets after upload:', tickets.value.length)
-    console.log('Tickets value:', tickets.value)
 
     // Show message
     let message = `Loaded ${newTickets.length} new ticket${newTickets.length !== 1 ? 's' : ''}`
@@ -866,13 +932,9 @@ const handleCsvUpload = async (event) => {
 
 // Open file picker
 const openCsvPicker = () => {
-  console.log('openCsvPicker called, csvInputRef.value:', csvInputRef.value)
   const input = csvInputRef.value
   if (input) {
-    console.log('Calling input.click()')
     input.click()
-  } else {
-    console.log('No input element found!')
   }
 }
 
@@ -1156,14 +1218,6 @@ function matchSingleOptions(tradesList, startTicketId) {
     const sym = t.ticketName
     if (!symbolGroups[sym]) symbolGroups[sym] = []
     symbolGroups[sym].push(t)
-  }
-
-  // Debug: log groups with more than 1 trade
-  for (const [symbol, group] of Object.entries(symbolGroups)) {
-    if (group.length > 1) {
-      console.log(`Single option group "${symbol}": ${group.length} trades`)
-      group.forEach(t => console.log(`  ${t.side} ${t.filledTime} qty=${t.legs[0].quantity} premium=${t.legs[0].premium}`))
-    }
   }
 
   for (const [symbol, group] of Object.entries(symbolGroups)) {
@@ -1625,74 +1679,47 @@ const parseCSV = async (csvText, startTicketId = 1000) => {
     }
   }
 
-  console.log(`Loaded ${rows.length} rows from CSV`)
-
   // STEP 1: Categorize into strategy arrays
   const categorized = categorizeAllRows(rows)
-
-  console.log('Categorization:')
-  for (const [bucket, data] of Object.entries(categorized)) {
-    if (data.length > 0) {
-      const count = bucket.includes('_') ? data.filter(d => d.name).length : data.length
-      console.log(`  ${bucket}: ${count}`)
-    }
-  }
 
   // STEP 2: Process each strategy array independently
   const allTickets = []
   let currentTicketId = startTicketId
 
   // Multi-leg strategies
-  console.log('\nProcessing:')
   const vt = parseVerticalSpreads(categorized.vertical_spread, currentTicketId)
-  console.log(`  Vertical Spreads: ${vt.length} tickets`)
   allTickets.push(...vt)
   currentTicketId += vt.length
 
   const ic = parseIronCondors(categorized.iron_condor, currentTicketId)
-  console.log(`  Iron Condors: ${ic.length} tickets`)
   allTickets.push(...ic)
   currentTicketId += ic.length
 
   const sd = parseStraddles(categorized.straddle, currentTicketId)
-  console.log(`  Straddles: ${sd.length} tickets`)
   allTickets.push(...sd)
   currentTicketId += sd.length
 
   const sg = parseStrangles(categorized.strangle, currentTicketId)
-  console.log(`  Strangles: ${sg.length} tickets`)
   allTickets.push(...sg)
   currentTicketId += sg.length
 
   // Single options - combine long/short for proper matching
   const calls = parseSingleOptions(categorized.long_call, categorized.short_call, currentTicketId)
-  console.log(`  Calls (long+short): ${calls.length} tickets`)
   allTickets.push(...calls)
   currentTicketId += calls.length
 
   const puts = parseSingleOptions(categorized.long_put, categorized.short_put, currentTicketId)
-  console.log(`  Puts (long+short): ${puts.length} tickets`)
   allTickets.push(...puts)
   currentTicketId += puts.length
 
   // STEP 3: Process expired positions
   const { expired, open: stillOpen } = await processExpiredTickets(allTickets, currentTicketId)
 
-  if (expired.length > 0) {
-    console.log(`\nExpired Positions: ${expired.length} tickets`)
-  }
-
   // Combine closed, expired, and still-open tickets
   const finalTickets = [...allTickets.filter(t => t.status !== 'OPEN'), ...expired, ...stillOpen]
 
   // Sort by ticket number
   finalTickets.sort((a, b) => a.ticket - b.ticket)
-
-  console.log(`\n✅ Complete! Total tickets: ${finalTickets.length}`)
-  console.log('  Wins:', finalTickets.filter(t => t.status === 'WIN').length)
-  console.log('  Losses:', finalTickets.filter(t => t.status === 'LOSS').length)
-  console.log('  Open:', finalTickets.filter(t => t.status === 'OPEN').length)
-  console.log('  P&L: $' + finalTickets.reduce((s, t) => s + (t.pnl || 0), 0).toFixed(0))
 
   return finalTickets
 }
@@ -1711,6 +1738,7 @@ const currentMonth = ref(new Date(2026, 2, 1)) // March 2026
 const openPositionsCollapsed = ref(true)
 const expandedPositionKeys = ref(new Set())
 const expandedSymbols = ref(new Set())
+const expandedDashboardSymbols = ref(new Set())
 const equityPrices = ref({})
 const loadingPrices = ref(false)
 
@@ -2011,6 +2039,137 @@ const tradeSummary = computed(() => {
   }
 })
 
+// Dashboard state
+const selectedDashboardYear = ref(new Date().getFullYear())
+
+const availableYears = computed(() => {
+  const years = new Set()
+  tickets.value.forEach(t => {
+    if (t.exit_date) {
+      years.add(new Date(t.exit_date).getFullYear())
+    }
+  })
+  return Array.from(years).sort((a, b) => b - a)
+})
+
+// Get position group for a ticket
+const getPositionGroupForTicket = (ticket) => {
+  const legs = ticket.strategies?.[0]?.legs || []
+  if (legs.length === 0) return null
+
+  const strikes = legs.map(l => l.strike).sort((a, b) => a - b).join('/')
+  const expiry = legs[0]?.expiry || ''
+  const detectedStrategy = detectStrategy(legs)
+  const strategyName = getStrategyDisplayName(detectedStrategy)
+
+  return {
+    symbol: ticket.symbol,
+    strategyName,
+    strikes,
+    expiry,
+    totalQuantity: legs.reduce((sum, l) => sum + l.quantity, 0),
+    positions: [ticket]
+  }
+}
+
+// Yearly summary for dashboard
+const yearlySummary = computed(() => {
+  const year = selectedDashboardYear.value
+  const yearTickets = tickets.value.filter(t => {
+    if (!t.exit_date || t.status === 'OPEN') return false
+    return new Date(t.exit_date).getFullYear() === year
+  })
+
+  const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
+  // Group by month
+  const monthlyData = Array.from({ length: 12 }, (_, i) => {
+    const monthTickets = yearTickets.filter(t => {
+      return new Date(t.exit_date).getMonth() === i
+    })
+
+    const wins = monthTickets.filter(t => t.status === 'WIN').length
+
+    return {
+      month: i + 1,
+      name: monthNames[i],
+      pnl: monthTickets.reduce((sum, t) => sum + (t.pnl || 0), 0),
+      count: monthTickets.length,
+      wins
+    }
+  }).filter(m => m.count > 0)
+
+  // Build trades list with position groups
+  const trades = yearTickets.map(t => {
+    const legs = t.strategies?.[0]?.legs || []
+    const detectedStrategy = detectStrategy(legs)
+    return {
+      id: t.id,
+      symbol: t.symbol,
+      exitDate: t.exit_date,
+      strategy: getStrategyDisplayName(detectedStrategy),
+      strikes: legs.map(l => l.strike).sort((a, b) => a - b).join('/') || '',
+      expiry: legs[0]?.expiry || '',
+      pnl: t.pnl || 0,
+      positionGroup: getPositionGroupForTicket(t)
+    }
+  })
+
+  // Group trades by symbol (with weekly grouping)
+  const tradesBySymbol = []
+  const symbolMap = new Map()
+
+  // Normalize symbol to group weekly variants with their base
+  const normalizeSymbol = (symbol) => {
+    if (symbol === 'VIXW' || symbol === 'VIX') return 'VIX'
+    if (symbol === 'SPXW' || symbol === 'SPX') return 'SPX'
+    return symbol
+  }
+
+  // Display symbol name (prefer base symbol, but show combined if both exist)
+  const getDisplaySymbol = (symbol) => {
+    const base = normalizeSymbol(symbol)
+    if (base === 'VIX') return 'VIX'
+    if (base === 'SPX') return 'SPX'
+    return symbol
+  }
+
+  trades.forEach(trade => {
+    const normalizedSymbol = normalizeSymbol(trade.symbol)
+
+    if (!symbolMap.has(normalizedSymbol)) {
+      symbolMap.set(normalizedSymbol, {
+        symbol: normalizedSymbol,
+        displaySymbol: getDisplaySymbol(trade.symbol),
+        trades: [],
+        totalPnL: 0
+      })
+    }
+    const group = symbolMap.get(normalizedSymbol)
+    group.trades.push(trade)
+    group.totalPnL += trade.pnl
+  })
+
+  // Convert to array and sort by P&L descending
+  tradesBySymbol.push(...Array.from(symbolMap.values()).sort((a, b) => b.totalPnL - a.totalPnL))
+
+  const totalPnL = yearTickets.reduce((sum, t) => sum + (t.pnl || 0), 0)
+  const winners = yearTickets.filter(t => t.status === 'WIN')
+  const losers = yearTickets.filter(t => t.status === 'LOSS')
+  const winsAmount = winners.reduce((sum, t) => sum + (t.pnl || 0), 0)
+  const lossesAmount = losers.reduce((sum, t) => sum + (t.pnl || 0), 0)
+  const profitFactor = lossesAmount !== 0 ? Math.abs(winsAmount / lossesAmount) : winsAmount > 0 ? 999 : 0
+
+  return {
+    totalPnL,
+    totalTrades: yearTickets.length,
+    winRate: yearTickets.length > 0 ? Math.round((winners.length / yearTickets.length) * 100) : 0,
+    profitFactor,
+    monthlyData,
+    tradesBySymbol
+  }
+})
+
 const getStatusClass = (status) => {
   const classes = {
     'WIN': 'bg-green-900 text-green-300',
@@ -2199,6 +2358,14 @@ const toggleSymbol = (symbol) => {
     expandedSymbols.value.delete(symbol)
   } else {
     expandedSymbols.value.add(symbol)
+  }
+}
+
+const toggleDashboardSymbol = (symbol) => {
+  if (expandedDashboardSymbols.value.has(symbol)) {
+    expandedDashboardSymbols.value.delete(symbol)
+  } else {
+    expandedDashboardSymbols.value.add(symbol)
   }
 }
 
@@ -2592,15 +2759,24 @@ const groupedTrades = computed(() => {
 const groupedBySymbol = computed(() => {
   const symbolMap = new Map()
 
+  // Normalize symbol to group weekly variants with their base
+  const normalizeSymbol = (symbol) => {
+    if (symbol === 'VIXW' || symbol === 'VIX') return 'VIX'
+    if (symbol === 'SPXW' || symbol === 'SPX') return 'SPX'
+    return symbol
+  }
+
   groupedTrades.value.forEach(group => {
-    if (!symbolMap.has(group.symbol)) {
-      symbolMap.set(group.symbol, {
-        symbol: group.symbol,
+    const normalizedSymbol = normalizeSymbol(group.symbol)
+
+    if (!symbolMap.has(normalizedSymbol)) {
+      symbolMap.set(normalizedSymbol, {
+        symbol: normalizedSymbol,
         groups: [],
         totalPnL: 0
       })
     }
-    const symbolGroup = symbolMap.get(group.symbol)
+    const symbolGroup = symbolMap.get(normalizedSymbol)
     symbolGroup.groups.push(group)
     symbolGroup.totalPnL += group.totalPnL
   })
