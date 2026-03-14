@@ -320,6 +320,39 @@
           </div>
         </div>
 
+        <!-- Performance by Strategy -->
+        <div class="bg-gray-800 rounded-lg p-4 mb-6">
+          <h3 class="text-sm font-semibold text-gray-300 mb-3">Performance by Strategy</h3>
+          <div class="space-y-2 max-h-80 overflow-y-auto">
+            <div v-for="strat in yearlySummary.strategyPerformance" :key="strat.strategy" class="bg-gray-700/50 rounded overflow-hidden">
+              <div class="px-4 py-3 flex items-center justify-between">
+                <div class="flex items-center gap-3 flex-1">
+                  <span class="text-base font-bold text-white flex-1">{{ strat.strategy }}</span>
+                  <span class="text-xs text-gray-500">{{ strat.totalTrades }} trade{{ strat.totalTrades !== 1 ? 's' : '' }}</span>
+                </div>
+                <div class="flex items-center gap-4">
+                  <div class="text-right">
+                    <div class="text-xs text-gray-500">Win Rate</div>
+                    <div class="text-sm font-semibold" :class="strat.winRate >= 50 ? 'text-green-400' : 'text-red-400'">{{ strat.winRate }}%</div>
+                  </div>
+                  <div class="text-right">
+                    <div class="text-xs text-gray-500">P&L</div>
+                    <div class="font-mono font-bold text-base" :class="strat.totalPnL >= 0 ? 'text-green-400' : 'text-red-400'">
+                      {{ strat.totalPnL >= 0 ? '+' : '' }}${{ strat.totalPnL.toFixed(0) }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="px-4 pb-2 flex items-center gap-4 text-xs text-gray-400">
+                <span>{{ strat.wins }}W / {{ strat.losses }}L</span>
+                <span>Avg Win: ${{ strat.avgWin.toFixed(0) }}</span>
+                <span>Avg Loss: ${{ strat.avgLoss.toFixed(0) }}</span>
+                <span>PF: {{ strat.profitFactor.toFixed(1) }}x</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- All Options Trades for Year -->
         <div class="bg-gray-800 rounded-lg p-4">
           <h3 class="text-sm font-semibold text-gray-300 mb-3">All Options Trades ({{ selectedDashboardYear }})</h3>
@@ -2294,6 +2327,47 @@ const yearlySummary = computed(() => {
   // Convert to array and sort by P&L descending
   tradesBySymbol.push(...Array.from(symbolMap.values()).sort((a, b) => b.totalPnL - a.totalPnL))
 
+  // Group trades by strategy
+  const strategyMap = new Map()
+  trades.forEach(trade => {
+    const strategy = trade.strategy || 'Unknown'
+    if (!strategyMap.has(strategy)) {
+      strategyMap.set(strategy, {
+        strategy,
+        trades: [],
+        totalPnL: 0,
+        wins: 0,
+        losses: 0
+      })
+    }
+    const group = strategyMap.get(strategy)
+    group.trades.push(trade)
+    group.totalPnL += trade.pnl
+    if (trade.pnl > 0) group.wins++
+    else if (trade.pnl < 0) group.losses++
+  })
+
+  // Calculate strategy performance metrics
+  const strategyPerformance = Array.from(strategyMap.values()).map(s => {
+    const totalTrades = s.wins + s.losses
+    const winRate = totalTrades > 0 ? Math.round((s.wins / totalTrades) * 100) : 0
+    const avgWin = s.wins > 0 ? s.trades.filter(t => t.pnl > 0).reduce((sum, t) => sum + t.pnl, 0) / s.wins : 0
+    const avgLoss = s.losses > 0 ? Math.abs(s.trades.filter(t => t.pnl < 0).reduce((sum, t) => sum + t.pnl, 0)) / s.losses : 0
+    const profitFactor = avgLoss > 0 ? (avgWin * s.wins) / (avgLoss * s.losses) : s.wins > 0 ? 999 : 0
+
+    return {
+      strategy: s.strategy,
+      totalPnL: s.totalPnL,
+      totalTrades,
+      wins: s.wins,
+      losses: s.losses,
+      winRate,
+      avgWin: avgWin || 0,
+      avgLoss: avgLoss || 0,
+      profitFactor
+    }
+  }).sort((a, b) => b.totalPnL - a.totalPnL)
+
   const totalPnL = yearTickets.reduce((sum, t) => sum + (t.pnl || 0), 0)
   const winners = yearTickets.filter(t => t.status === 'WIN')
   const losers = yearTickets.filter(t => t.status === 'LOSS')
@@ -2307,7 +2381,8 @@ const yearlySummary = computed(() => {
     winRate: yearTickets.length > 0 ? Math.round((winners.length / yearTickets.length) * 100) : 0,
     profitFactor,
     monthlyData,
-    tradesBySymbol
+    tradesBySymbol,
+    strategyPerformance
   }
 })
 
