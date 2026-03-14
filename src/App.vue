@@ -327,36 +327,34 @@
                 </div>
               </div>
             </div>
-
-            <!-- Performance by Strategy -->
-            <div class="bg-gray-800 rounded-lg p-4">
-              <h3 class="text-base font-semibold text-gray-200 mb-4">Performance by Strategy</h3>
-              <div class="space-y-2 max-h-96 overflow-y-auto">
-                <div v-for="strat in yearlySummary.strategyPerformance" :key="strat.strategy" class="bg-gray-700/50 rounded overflow-hidden">
-                  <div class="px-4 py-3">
-                    <div class="flex items-center justify-between mb-2">
-                      <span class="text-base font-bold text-white">{{ strat.strategy }}</span>
-                      <span class="font-mono font-bold" :class="strat.totalPnL >= 0 ? 'text-green-400' : 'text-red-400'">
-                        {{ strat.totalPnL >= 0 ? '+' : '' }}${{ strat.totalPnL.toFixed(0) }}
-                      </span>
-                    </div>
-                    <div class="flex items-center gap-4 text-xs text-gray-400">
-                      <span>{{ strat.totalTrades }} trades</span>
-                      <span class="text-gray-500">|</span>
-                      <span :class="strat.winRate >= 50 ? 'text-green-400' : 'text-red-400'">{{ strat.winRate }}% win</span>
-                      <span class="text-gray-500">|</span>
-                      <span>{{ strat.wins }}W/{{ strat.losses }}L</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
 
           <!-- Right Column -->
           <div>
+            <!-- Tab Navigation -->
+            <div class="bg-gray-800 rounded-lg p-1 mb-6 flex gap-1">
+              <button
+                @click="dashboardRightTab = 'trades'"
+                :class="[
+                  'flex-1 py-2 px-4 rounded text-sm font-medium transition-colors',
+                  dashboardRightTab === 'trades' ? 'bg-gray-700 text-white' : 'text-gray-400 hover:text-gray-300'
+                ]"
+              >
+                All Trades
+              </button>
+              <button
+                @click="dashboardRightTab = 'strategies'"
+                :class="[
+                  'flex-1 py-2 px-4 rounded text-sm font-medium transition-colors',
+                  dashboardRightTab === 'strategies' ? 'bg-gray-700 text-white' : 'text-gray-400 hover:text-gray-300'
+                ]"
+              >
+                Strategies
+              </button>
+            </div>
+
             <!-- All Options Trades for Year -->
-            <div class="bg-gray-800 rounded-lg p-4">
+            <div v-show="dashboardRightTab === 'trades'" class="bg-gray-800 rounded-lg p-4">
               <h3 class="text-base font-semibold text-gray-200 mb-4">All Options Trades ({{ selectedDashboardYear }})</h3>
               <!-- Search Input -->
               <div class="mb-3">
@@ -391,6 +389,30 @@
                       <span class="font-mono font-bold text-sm" :class="trade.pnl >= 0 ? 'text-green-400' : 'text-red-400'">
                         {{ trade.pnl >= 0 ? '+' : '' }}${{ trade.pnl.toFixed(0) }}
                       </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Performance by Strategy -->
+            <div v-show="dashboardRightTab === 'strategies'" class="bg-gray-800 rounded-lg p-4">
+              <h3 class="text-base font-semibold text-gray-200 mb-4">Performance by Strategy</h3>
+              <div class="space-y-2 max-h-[600px] overflow-y-auto">
+                <div v-for="strat in yearlySummary.strategyPerformance" :key="strat.strategy" class="bg-gray-700/50 rounded overflow-hidden">
+                  <div class="px-4 py-3">
+                    <div class="flex items-center justify-between mb-2">
+                      <span class="text-base font-bold text-white">{{ strat.strategy }}</span>
+                      <span class="font-mono font-bold" :class="strat.totalPnL >= 0 ? 'text-green-400' : 'text-red-400'">
+                        {{ strat.totalPnL >= 0 ? '+' : '' }}${{ strat.totalPnL.toFixed(0) }}
+                      </span>
+                    </div>
+                    <div class="flex items-center gap-4 text-xs text-gray-400">
+                      <span>{{ strat.totalTrades }} trades</span>
+                      <span class="text-gray-500">|</span>
+                      <span :class="strat.winRate >= 50 ? 'text-green-400' : 'text-red-400'">{{ strat.winRate }}% win</span>
+                      <span class="text-gray-500">|</span>
+                      <span>{{ strat.wins }}W/{{ strat.losses }}L</span>
                     </div>
                   </div>
                 </div>
@@ -2211,6 +2233,7 @@ const tradeSummary = computed(() => {
 // Dashboard state
 const selectedDashboardYear = ref(new Date().getFullYear())
 const dashboardSearchQuery = ref('')
+const dashboardRightTab = ref('trades') // 'trades' or 'strategies'
 
 const filteredDashboardSymbols = computed(() => {
   const query = dashboardSearchQuery.value.toLowerCase().trim()
