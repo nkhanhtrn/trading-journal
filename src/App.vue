@@ -306,7 +306,7 @@
           <h3 class="text-sm font-semibold text-gray-300 mb-3">Monthly P&L ({{ selectedDashboardYear }})</h3>
           <div class="grid grid-cols-3 md:grid-cols-4 gap-2">
             <div
-              v-for="month in allMonthsData"
+              v-for="month in yearlySummary.allMonthsData"
               :key="month.month"
               :class="[
                 'p-3 rounded cursor-pointer transition-colors min-h-20 flex flex-col justify-center',
