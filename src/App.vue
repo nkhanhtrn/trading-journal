@@ -268,151 +268,145 @@
       </div>
 
       <!-- Dashboard Tab -->
-      <div v-if="activeTab === 'dashboard'" class="max-w-6xl mx-auto">
-        <!-- Year Selector Header -->
-        <div class="bg-gray-800 rounded-lg p-4 mb-6">
-          <div class="flex items-center justify-between">
-            <h2 class="text-xl font-semibold text-white">Yearly P&L Dashboard</h2>
-            <select v-model="selectedDashboardYear" class="bg-gray-700 text-white px-4 py-2 rounded border border-gray-600">
+      <div v-if="activeTab === 'dashboard'" class="h-[calc(100vh-8rem)] grid grid-rows-[auto_1fr] gap-4">
+        <!-- Header: Year Selector + Summary Cards -->
+        <div class="grid grid-cols-[auto_1fr] gap-4">
+          <!-- Year Selector -->
+          <div class="bg-gray-800 rounded-lg px-4 py-2 flex items-center justify-between">
+            <h2 class="text-lg font-semibold text-white">Dashboard</h2>
+            <select v-model="selectedDashboardYear" class="bg-gray-700 text-white px-3 py-1 rounded border border-gray-600 text-sm">
               <option v-for="year in availableYears" :key="year" :value="year">{{ year }}</option>
             </select>
           </div>
-        </div>
-
-        <!-- Summary Cards -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          <div class="bg-gray-800 rounded-lg p-4 text-center">
-            <div class="text-3xl font-bold" :class="yearlySummary.totalPnL >= 0 ? 'text-green-400' : 'text-red-400'">
-              {{ yearlySummary.totalPnL >= 0 ? '+' : '' }}${{ yearlySummary.totalPnL.toFixed(0) }}
+          <!-- Summary Cards -->
+          <div class="grid grid-cols-4 gap-3">
+            <div class="bg-gray-800 rounded-lg px-3 py-2 text-center">
+              <div class="text-xl font-bold" :class="yearlySummary.totalPnL >= 0 ? 'text-green-400' : 'text-red-400'">
+                {{ yearlySummary.totalPnL >= 0 ? '+' : '' }}${{ yearlySummary.totalPnL.toFixed(0) }}
+              </div>
+              <div class="text-xs text-gray-400">P&L</div>
             </div>
-            <div class="text-sm text-gray-400 mt-1">Total P&L</div>
-          </div>
-          <div class="bg-gray-800 rounded-lg p-4 text-center">
-            <div class="text-3xl font-bold text-white">{{ yearlySummary.totalTrades }}</div>
-            <div class="text-sm text-gray-400 mt-1">Total Trades</div>
-          </div>
-          <div class="bg-gray-800 rounded-lg p-4 text-center">
-            <div class="text-3xl font-bold text-green-400">{{ yearlySummary.winRate }}%</div>
-            <div class="text-sm text-gray-400 mt-1">Win Rate</div>
-          </div>
-          <div class="bg-gray-800 rounded-lg p-4 text-center">
-            <div class="text-3xl font-bold text-blue-400">{{ yearlySummary.profitFactor.toFixed(1) }}x</div>
-            <div class="text-sm text-gray-400 mt-1">Profit Factor</div>
+            <div class="bg-gray-800 rounded-lg px-3 py-2 text-center">
+              <div class="text-xl font-bold text-white">{{ yearlySummary.totalTrades }}</div>
+              <div class="text-xs text-gray-400">Trades</div>
+            </div>
+            <div class="bg-gray-800 rounded-lg px-3 py-2 text-center">
+              <div class="text-xl font-bold text-green-400">{{ yearlySummary.winRate }}%</div>
+              <div class="text-xs text-gray-400">Win Rate</div>
+            </div>
+            <div class="bg-gray-800 rounded-lg px-3 py-2 text-center">
+              <div class="text-xl font-bold text-blue-400">{{ yearlySummary.profitFactor.toFixed(1) }}x</div>
+              <div class="text-xs text-gray-400">PF</div>
+            </div>
           </div>
         </div>
 
-        <!-- Two Column Layout for Desktop -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <!-- Left Column -->
-          <div class="space-y-6">
-            <!-- Monthly P&L Calendar -->
-            <div class="bg-gray-800 rounded-lg p-4">
-              <h3 class="text-base font-semibold text-gray-200 mb-4">Monthly P&L</h3>
-              <div class="grid grid-cols-3 gap-2">
-                <div
-                  v-for="month in yearlySummary.allMonthsData"
-                  :key="month.month"
-                  :class="[
-                    'p-3 rounded cursor-pointer transition-colors min-h-20 flex flex-col justify-center',
-                    month.count === 0 ? 'bg-gray-700/30 text-gray-600' : 'bg-gray-700/50 hover:bg-gray-700',
-                    month.pnl > 0 ? 'hover:bg-green-900/30' : month.pnl < 0 ? 'hover:bg-red-900/30' : ''
-                  ]"
-                >
-                  <div class="text-sm font-semibold mb-1">{{ month.name }}</div>
-                  <div v-if="month.count > 0" class="font-mono font-bold text-base" :class="month.pnl >= 0 ? 'text-green-400' : 'text-red-400'">
-                    {{ month.pnl >= 0 ? '+' : '' }}${{ month.pnl.toFixed(0) }}
-                  </div>
-                  <div v-else class="text-xs text-gray-600">No trades</div>
-                  <div v-if="month.count > 0" class="text-xs text-gray-500 mt-1">{{ month.count }} trade{{ month.count !== 1 ? 's' : '' }}</div>
+        <!-- Main Content: Calendar + Tabs -->
+        <div class="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-4 min-h-0">
+          <!-- Monthly P&L Calendar -->
+          <div class="bg-gray-800 rounded-lg p-3 flex flex-col min-h-0">
+            <h3 class="text-sm font-semibold text-gray-300 mb-2">Monthly P&L</h3>
+            <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-1 flex-1 overflow-y-auto">
+              <div
+                v-for="month in yearlySummary.allMonthsData"
+                :key="month.month"
+                :class="[
+                  'p-2 rounded cursor-pointer transition-colors flex flex-col justify-center',
+                  month.count === 0 ? 'bg-gray-700/30 text-gray-600' : 'bg-gray-700/50 hover:bg-gray-700',
+                  month.pnl > 0 ? 'hover:bg-green-900/30' : month.pnl < 0 ? 'hover:bg-red-900/30' : ''
+                ]"
+              >
+                <div class="text-xs font-semibold mb-0.5">{{ month.name }}</div>
+                <div v-if="month.count > 0" class="font-mono font-bold text-sm" :class="month.pnl >= 0 ? 'text-green-400' : 'text-red-400'">
+                  {{ month.pnl >= 0 ? '+' : '' }}${{ month.pnl.toFixed(0) }}
                 </div>
+                <div v-else class="text-xs text-gray-600">--</div>
+                <div v-if="month.count > 0" class="text-xs text-gray-500">{{ month.count }}</div>
               </div>
             </div>
           </div>
 
-          <!-- Right Column -->
-          <div>
-            <!-- Tab Navigation -->
-            <div class="bg-gray-800 rounded-lg p-1 mb-6 flex gap-1">
-              <button
-                @click="dashboardRightTab = 'trades'"
-                :class="[
-                  'flex-1 py-2 px-4 rounded text-sm font-medium transition-colors',
-                  dashboardRightTab === 'trades' ? 'bg-gray-700 text-white' : 'text-gray-400 hover:text-gray-300'
-                ]"
-              >
-                All Trades
-              </button>
+          <!-- Right: Tabbed Content -->
+          <div class="bg-gray-800 rounded-lg flex flex-col min-h-0">
+            <!-- Tabs -->
+            <div class="flex border-b border-gray-700">
               <button
                 @click="dashboardRightTab = 'strategies'"
                 :class="[
-                  'flex-1 py-2 px-4 rounded text-sm font-medium transition-colors',
-                  dashboardRightTab === 'strategies' ? 'bg-gray-700 text-white' : 'text-gray-400 hover:text-gray-300'
+                  'flex-1 py-2 px-3 text-sm font-medium transition-colors border-b-2',
+                  dashboardRightTab === 'strategies' ? 'border-blue-500 text-white' : 'border-transparent text-gray-400 hover:text-gray-300'
                 ]"
               >
                 Strategies
               </button>
+              <button
+                @click="dashboardRightTab = 'trades'"
+                :class="[
+                  'flex-1 py-2 px-3 text-sm font-medium transition-colors border-b-2',
+                  dashboardRightTab === 'trades' ? 'border-blue-500 text-white' : 'border-transparent text-gray-400 hover:text-gray-300'
+                ]"
+              >
+                Trades
+              </button>
             </div>
 
-            <!-- All Options Trades for Year -->
-            <div v-show="dashboardRightTab === 'trades'" class="bg-gray-800 rounded-lg p-4">
-              <h3 class="text-base font-semibold text-gray-200 mb-4">All Options Trades ({{ selectedDashboardYear }})</h3>
-              <!-- Search Input -->
-              <div class="mb-3">
-                <input
-                  v-model="dashboardSearchQuery"
-                  type="text"
-                  placeholder="Search symbols..."
-                  class="w-full bg-gray-900 border border-gray-700 rounded px-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500"
-                >
-              </div>
-              <div class="space-y-2 max-h-[600px] overflow-y-auto">
-                <div v-for="symbolGroup in filteredDashboardSymbols" :key="symbolGroup.symbol" class="bg-gray-700/50 rounded overflow-hidden">
-                  <!-- Symbol Header -->
-                  <div class="px-4 py-3 flex items-center justify-between cursor-pointer hover:bg-gray-700" @click="toggleDashboardSymbol(symbolGroup.symbol)">
-                    <div class="flex items-center gap-3">
-                      <i class="fas fa-chevron-right text-gray-500 text-xs transition-transform" :class="{ 'rotate-90': expandedDashboardSymbols.has(symbolGroup.symbol) }"></i>
-                      <span class="text-lg font-bold text-white">{{ symbolGroup.displaySymbol }}</span>
-                      <span class="text-xs text-gray-500">{{ symbolGroup.trades.length }} trade{{ symbolGroup.trades.length > 1 ? 's' : '' }}</span>
-                    </div>
-                    <span class="font-mono font-bold text-base" :class="symbolGroup.totalPnL >= 0 ? 'text-green-400' : 'text-red-400'">
-                      {{ symbolGroup.totalPnL >= 0 ? '+' : '' }}${{ symbolGroup.totalPnL.toFixed(0) }}
-                    </span>
-                  </div>
-                  <!-- Trades under symbol -->
-                  <div v-show="expandedDashboardSymbols.has(symbolGroup.symbol)" class="border-t border-gray-600">
-                    <div v-for="trade in symbolGroup.trades" :key="trade.id" class="px-4 py-2 flex items-center justify-between hover:bg-gray-700/50 cursor-pointer border-b border-gray-600/50 last:border-0" @click="selectedPositionGroup = trade.positionGroup">
-                      <div class="flex items-center gap-3">
-                        <span class="text-xs text-gray-500 w-20">{{ trade.exitDate }}</span>
-                        <span class="text-sm text-gray-400">{{ trade.strategy }} {{ trade.strikes }}</span>
-                        <span class="text-xs bg-gray-600 text-gray-300 px-2 py-0.5 rounded">{{ trade.expiry }}</span>
-                      </div>
-                      <span class="font-mono font-bold text-sm" :class="trade.pnl >= 0 ? 'text-green-400' : 'text-red-400'">
-                        {{ trade.pnl >= 0 ? '+' : '' }}${{ trade.pnl.toFixed(0) }}
+            <!-- Tab Content -->
+            <div class="flex-1 overflow-hidden">
+              <!-- Strategies -->
+              <div v-show="dashboardRightTab === 'strategies'" class="h-full overflow-y-auto p-3">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                  <div v-for="strat in yearlySummary.strategyPerformance" :key="strat.strategy" class="bg-gray-700/50 rounded p-3">
+                    <div class="flex items-center justify-between mb-2">
+                      <span class="text-sm font-bold text-white">{{ strat.strategy }}</span>
+                      <span class="font-mono font-bold text-base" :class="strat.totalPnL >= 0 ? 'text-green-400' : 'text-red-400'">
+                        {{ strat.totalPnL >= 0 ? '+' : '' }}${{ strat.totalPnL.toFixed(0) }}
                       </span>
+                    </div>
+                    <div class="flex items-center justify-between text-xs text-gray-400">
+                      <span>{{ strat.totalTrades }} trades</span>
+                      <span :class="strat.winRate >= 50 ? 'text-green-400' : 'text-red-400'">{{ strat.winRate }}%</span>
+                      <span class="text-gray-500">{{ strat.wins }}W/{{ strat.losses }}L</span>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            <!-- Performance by Strategy -->
-            <div v-show="dashboardRightTab === 'strategies'" class="bg-gray-800 rounded-lg p-4">
-              <h3 class="text-base font-semibold text-gray-200 mb-4">Performance by Strategy</h3>
-              <div class="space-y-2 max-h-[600px] overflow-y-auto">
-                <div v-for="strat in yearlySummary.strategyPerformance" :key="strat.strategy" class="bg-gray-700/50 rounded overflow-hidden">
-                  <div class="px-4 py-3">
-                    <div class="flex items-center justify-between mb-2">
-                      <span class="text-base font-bold text-white">{{ strat.strategy }}</span>
-                      <span class="font-mono font-bold" :class="strat.totalPnL >= 0 ? 'text-green-400' : 'text-red-400'">
-                        {{ strat.totalPnL >= 0 ? '+' : '' }}${{ strat.totalPnL.toFixed(0) }}
+              <!-- All Trades -->
+              <div v-show="dashboardRightTab === 'trades'" class="h-full overflow-y-auto p-3">
+                <!-- Search -->
+                <div class="mb-3">
+                  <input
+                    v-model="dashboardSearchQuery"
+                    type="text"
+                    placeholder="Search..."
+                    class="w-full bg-gray-900 border border-gray-700 rounded px-3 py-1.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500"
+                  >
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                  <div v-for="symbolGroup in filteredDashboardSymbols" :key="symbolGroup.symbol" class="bg-gray-700/50 rounded overflow-hidden">
+                    <!-- Header -->
+                    <div class="px-3 py-2 flex items-center justify-between cursor-pointer hover:bg-gray-700" @click="toggleDashboardSymbol(symbolGroup.symbol)">
+                      <div class="flex items-center gap-2">
+                        <i class="fas fa-chevron-right text-gray-500 text-xs transition-transform" :class="{ 'rotate-90': expandedDashboardSymbols.has(symbolGroup.symbol) }"></i>
+                        <span class="text-sm font-bold text-white">{{ symbolGroup.displaySymbol }}</span>
+                        <span class="text-xs text-gray-500">{{ symbolGroup.trades.length }}</span>
+                      </div>
+                      <span class="font-mono font-bold text-sm" :class="symbolGroup.totalPnL >= 0 ? 'text-green-400' : 'text-red-400'">
+                        {{ symbolGroup.totalPnL >= 0 ? '+' : '' }}${{ symbolGroup.totalPnL.toFixed(0) }}
                       </span>
                     </div>
-                    <div class="flex items-center gap-4 text-xs text-gray-400">
-                      <span>{{ strat.totalTrades }} trades</span>
-                      <span class="text-gray-500">|</span>
-                      <span :class="strat.winRate >= 50 ? 'text-green-400' : 'text-red-400'">{{ strat.winRate }}% win</span>
-                      <span class="text-gray-500">|</span>
-                      <span>{{ strat.wins }}W/{{ strat.losses }}L</span>
+                    <!-- Trades -->
+                    <div v-show="expandedDashboardSymbols.has(symbolGroup.symbol)" class="border-t border-gray-600 bg-gray-800/50">
+                      <div v-for="trade in symbolGroup.trades" :key="trade.id" class="px-3 py-1.5 flex items-center justify-between hover:bg-gray-700 cursor-pointer border-b border-gray-600/50 last:border-0" @click="selectedPositionGroup = trade.positionGroup">
+                        <div class="flex items-center gap-2">
+                          <span class="text-xs text-gray-500 w-16">{{ trade.exitDate }}</span>
+                          <span class="text-xs text-gray-400">{{ trade.strategy }} {{ trade.strikes }}</span>
+                          <span class="text-xs bg-gray-600 text-gray-300 px-1.5 py-0.5 rounded">{{ trade.expiry }}</span>
+                        </div>
+                        <span class="font-mono font-bold text-xs" :class="trade.pnl >= 0 ? 'text-green-400' : 'text-red-400'">
+                          {{ trade.pnl >= 0 ? '+' : '' }}${{ trade.pnl.toFixed(0) }}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -420,7 +414,6 @@
             </div>
           </div>
         </div>
-        <!-- End Two Column Layout -->
       </div>
     </main>
 
