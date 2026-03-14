@@ -575,13 +575,8 @@
         </div>
 
         <div class="p-4 space-y-4">
-          <p class="text-sm text-gray-400">
-            <i class="fas fa-info-circle mr-2"></i>
-            Historical prices are fetched from Yahoo Finance (no API key required).
-          </p>
-
           <!-- Proxy URL Section -->
-          <div class="border-t border-gray-700 pt-4">
+          <div>
             <h4 class="text-sm font-medium text-gray-300 mb-2">API Proxy</h4>
             <label class="block text-xs text-gray-500 mb-1">Custom proxy URL (optional)</label>
             <input
@@ -593,27 +588,51 @@
             <p class="text-xs text-gray-500 mt-1">Use {url} as placeholder for the target URL. Required for fetching prices.</p>
           </div>
 
-          <!-- Clear Cache Section -->
+          <!-- Backup Section -->
           <div class="border-t border-gray-700 pt-4">
-            <h4 class="text-sm font-medium text-gray-300 mb-2">Data Management</h4>
-            <button
-              @click="clearPriceCache"
-              class="text-sm bg-gray-700 hover:bg-gray-600 text-white px-3 py-2 rounded transition-colors"
+            <h4 class="text-sm font-medium text-gray-300 mb-2">Backup & Restore</h4>
+            <div class="flex gap-2 mb-2">
+              <button
+                @click="exportBackup"
+                class="flex-1 text-sm bg-green-700 hover:bg-green-600 text-white px-3 py-2 rounded transition-colors"
+              >
+                <i class="fas fa-download mr-1"></i> Export Backup
+              </button>
+              <button
+                @click="triggerImportBackup"
+                class="flex-1 text-sm bg-blue-700 hover:bg-blue-600 text-white px-3 py-2 rounded transition-colors"
+              >
+                <i class="fas fa-upload mr-1"></i> Import Backup
+              </button>
+            </div>
+            <input
+              ref="backupFileInput"
+              type="file"
+              accept=".json"
+              @change="importBackup"
+              class="hidden"
             >
-              Clear Price Cache
-            </button>
-            <p class="text-xs text-gray-500 mt-1">Clear cached historical prices (will re-fetch from API)</p>
+            <p class="text-xs text-gray-500 mt-1">Export all trades and settings, or restore from a backup file</p>
           </div>
 
-          <!-- Clear All Data Section -->
+          <!-- Data Management Section -->
           <div class="border-t border-gray-700 pt-4">
-            <button
-              @click="clearAllData"
-              class="text-sm bg-red-900/50 hover:bg-red-900/70 text-red-300 px-3 py-2 rounded transition-colors"
-            >
-              Clear All Trading Data
-            </button>
-            <p class="text-xs text-gray-500 mt-1">Permanently delete all tickets and positions</p>
+            <h4 class="text-sm font-medium text-gray-300 mb-2">Data Management</h4>
+            <div class="flex gap-2">
+              <button
+                @click="clearPriceCache"
+                class="flex-1 text-sm bg-gray-700 hover:bg-gray-600 text-white px-3 py-2 rounded transition-colors"
+              >
+                Clear Price Cache
+              </button>
+              <button
+                @click="clearAllData"
+                class="flex-1 text-sm bg-red-900/50 hover:bg-red-900/70 text-red-300 px-3 py-2 rounded transition-colors"
+              >
+                Clear All Trading Data
+              </button>
+            </div>
+            <p class="text-xs text-gray-500 mt-1">Clear cached prices or permanently delete all data</p>
           </div>
         </div>
 
@@ -715,6 +734,82 @@ const clearPriceCache = () => {
     setTimeout(() => uploadMessage.value = '', 2000)
   }
 }
+
+// Backup file input ref
+const backupFileInput = ref(null)
+
+// Export all data to JSON backup file
+const exportBackup = () => {
+  try {
+    const backup = {
+      version: '1.0.0',
+      exportDate: new Date().toISOString(),
+      tickets: tickets.value,
+      rawTransactions: rawTransactions.value,
+      settings: settings.value
+    }
+    const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `trading-journal-backup-${new Date().toISOString().split('T')[0]}.json`
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+    uploadMessage.value = 'Backup exported successfully'
+    setTimeout(() => uploadMessage.value = '', 2000)
+  } catch (err) {
+    uploadMessage.value = 'Failed to export backup'
+    setTimeout(() => uploadMessage.value = '', 2000)
+  }
+}
+
+// Trigger the file input for import
+const triggerImportBackup = () => {
+  backupFileInput.value?.click()
+}
+
+// Import data from JSON backup file
+const importBackup = (event) => {
+  const file = event.target.files?.[0]
+  if (!file) return
+
+  const reader = new FileReader()
+  reader.onload = (e) => {
+    try {
+      const backup = JSON.parse(e.target?.result)
+      if (!backup.tickets || !Array.isArray(backup.tickets)) {
+        throw new Error('Invalid backup file')
+      }
+
+      // Confirm with user
+      if (confirm(`Import backup from ${new Date(backup.exportDate).toLocaleDateString()}?\n\nThis will replace all current data. Continue?`)) {
+        tickets.value = backup.tickets || []
+        rawTransactions.value = backup.rawTransactions || []
+        if (backup.settings) {
+          settings.value = { ...settings.value, ...backup.settings }
+        }
+
+        // Save to localStorage
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(tickets.value))
+        localStorage.setItem(RAW_TRANSACTIONS_KEY, JSON.stringify(rawTransactions.value))
+        localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings.value))
+
+        uploadMessage.value = 'Backup imported successfully'
+        setTimeout(() => uploadMessage.value = '', 2000)
+        showSettingsModal.value = false
+      }
+    } catch {
+      uploadMessage.value = 'Failed to import backup: invalid file'
+      setTimeout(() => uploadMessage.value = '', 2000)
+    }
+  }
+  reader.readAsText(file)
+  // Reset file input
+  event.target.value = ''
+}
+
 const csvInputRef = ref(null)
 const isUploading = ref(false)
 const uploadMessage = ref('')
