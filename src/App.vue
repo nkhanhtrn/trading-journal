@@ -46,7 +46,7 @@
         <!-- Main Content: Calendar + Dashboard -->
         <div class="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-4 min-h-0 min-w-0">
           <!-- Left Column: Tabbed Content + Charts -->
-          <div class="grid grid-rows-2 gap-4 min-h-0 min-w-0">
+          <div class="grid grid-rows-[1.5fr_1fr] gap-4 min-h-0 min-w-0">
             <!-- Tabbed Content -->
             <div class="bg-gray-800 rounded-lg flex flex-col min-h-0">
               <!-- Tabs -->
@@ -72,19 +72,23 @@
               </div>
 
               <!-- Tab Content -->
-              <div class="flex-1 overflow-hidden p-3 min-w-0">
+              <div class="flex-1 overflow-auto p-3 min-w-0">
                 <!-- Calendar Tab -->
-                <div v-show="calendarLeftTab === 'calendar'" class="h-full flex flex-col">
-                  <div class="grid grid-cols-7 grid-rows-5 gap-1 flex-1">
-                    <div v-for="day in ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']" :key="day" class="text-center text-xs text-gray-500 py-1">
+                <div v-show="calendarLeftTab === 'calendar'" class="h-full flex flex-col gap-1">
+                  <!-- Day labels -->
+                  <div class="grid grid-cols-7 gap-1 shrink-0">
+                    <div v-for="day in ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']" :key="day" class="text-center text-xs text-gray-500 h-4 flex items-center justify-center">
                       {{ day }}
                     </div>
+                  </div>
+                  <!-- Calendar grid -->
+                  <div class="grid grid-cols-7 gap-1 flex-1" :style="{ gridAutoRows: `calc((100% - ${(calendarRowCount - 1) * 4}px) / ${calendarRowCount})` }">
                     <div
                       v-for="day in calendarDays"
                       :key="day.date"
                       @click="selectDate(day.date)"
                       :class="[
-                        'p-1 text-center rounded cursor-pointer text-xs transition-colors flex flex-col justify-center',
+                        'p-1 rounded cursor-pointer text-xs transition-colors relative overflow-hidden',
                         !day.date ? 'pointer-events-none' : '',
                         day.date === selectedTradeDate ? 'ring-2 ring-white' : '',
                         day.pnl === 0 ? 'text-gray-600' : '',
@@ -92,11 +96,11 @@
                         day.pnl < 0 ? 'bg-red-900 hover:bg-red-800 text-red-300' : ''
                       ]"
                     >
-                      <div v-if="day.date" class="text-sm">{{ day.dayOfMonth }}</div>
-                      <div v-if="day.pnl !== 0" class="font-mono font-bold" :class="day.pnl >= 0 ? 'text-green-300' : 'text-red-300'">
+                      <div v-if="day.date && day.pnl !== 0" class="absolute bottom-0.5 right-1 text-[10px] opacity-60">{{ day.dayOfMonth }}</div>
+                      <div v-if="day.pnl !== 0" class="absolute inset-0 flex items-center justify-center font-mono font-bold text-xs" :class="day.pnl >= 0 ? 'text-green-300' : 'text-red-300'">
                         {{ day.pnl >= 0 ? '+' : '' }}${{ day.pnl.toFixed(0) }}
                       </div>
-                      <div v-if="day.tradeCount > 0" class="text-xs opacity-70">{{ day.tradeCount }}</div>
+                      <div v-if="day.pnl === 0 && day.date" class="absolute inset-0 flex items-center justify-center text-sm opacity-40">{{ day.dayOfMonth }}</div>
                     </div>
                   </div>
                 </div>
@@ -227,8 +231,8 @@
                     <!-- Symbol -->
                     <div class="text-sm font-bold text-white mb-1">{{ trade.symbol }}</div>
 
-                    <!-- Strategy + Strike -->
-                    <div class="text-xs text-gray-300 mb-2">{{ trade.strategyName }} {{ trade.strikes }}</div>
+                    <!-- Strategy + Strike (symbol removed from strategyName) -->
+                    <div class="text-xs text-gray-300 mb-2">{{ trade.strategyName.replace(new RegExp(`^${trade.symbol}\\s+`, 'i'), '') }} {{ trade.strikes }}</div>
 
                     <!-- Mini Calendar -->
                     <div class="mb-2">
@@ -328,7 +332,7 @@
     <!-- Trade Detail Modal -->
     <BaseModal
       v-model:show="tradeDetailModalOpen"
-      :title="selectedPositionGroup ? `${selectedPositionGroup.symbol} ${selectedPositionGroup.strategyName || 'Strategy'} ${selectedPositionGroup.strikes}` : ''"
+      :title="selectedPositionGroup ? `${selectedPositionGroup.strategyName || 'Strategy'} ${selectedPositionGroup.strikes}` : ''"
       max-width="2xl"
       content-class="p-4 space-y-4 max-h-[70vh] overflow-auto"
     >
@@ -425,19 +429,37 @@
             <div v-if="pos.exit_date" class="border-t border-gray-700 pt-3">
               <div class="text-xs text-gray-500 mb-2 text-center">P&L Breakdown</div>
               <div class="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-sm">
-                <div class="flex items-center gap-1.5">
-                  <span class="text-gray-600 text-xs">Sold</span>
-                  <span class="text-white font-mono font-medium">${{ Math.abs(getTicketEntryPrice(pos)).toFixed(2) }}</span>
-                </div>
-                <span class="text-gray-700">×</span>
-                <div v-if="ticketHasClosingLegs(pos)" class="flex items-center gap-1.5">
-                  <span class="text-gray-600 text-xs">Bought</span>
-                  <span class="text-white font-mono font-medium">${{ Math.abs(getTicketExitPrice(pos)).toFixed(2) }}</span>
-                </div>
-                <div v-else class="flex items-center gap-1.5">
-                  <span class="text-gray-600 text-xs">Expired</span>
-                  <span class="text-yellow-400 font-mono font-medium">${{ getTicketImpliedExitPrice(pos).toFixed(2) }}</span>
-                </div>
+                <!-- Determine if opening is long (buy) or short (sell) -->
+                <template v-if="isOpeningLong(pos)">
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-gray-600 text-xs">Bought</span>
+                    <span class="text-white font-mono font-medium">${{ Math.abs(getTicketEntryPrice(pos)).toFixed(2) }}</span>
+                  </div>
+                  <span class="text-gray-700">×</span>
+                  <div v-if="ticketHasClosingLegs(pos)" class="flex items-center gap-1.5">
+                    <span class="text-gray-600 text-xs">Sold</span>
+                    <span class="text-white font-mono font-medium">${{ Math.abs(getTicketExitPrice(pos)).toFixed(2) }}</span>
+                  </div>
+                  <div v-else class="flex items-center gap-1.5">
+                    <span class="text-gray-600 text-xs">Expired</span>
+                    <span class="text-yellow-400 font-mono font-medium">${{ getTicketImpliedExitPrice(pos).toFixed(2) }}</span>
+                  </div>
+                </template>
+                <template v-else>
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-gray-600 text-xs">Sold</span>
+                    <span class="text-white font-mono font-medium">${{ Math.abs(getTicketEntryPrice(pos)).toFixed(2) }}</span>
+                  </div>
+                  <span class="text-gray-700">×</span>
+                  <div v-if="ticketHasClosingLegs(pos)" class="flex items-center gap-1.5">
+                    <span class="text-gray-600 text-xs">Bought</span>
+                    <span class="text-white font-mono font-medium">${{ Math.abs(getTicketExitPrice(pos)).toFixed(2) }}</span>
+                  </div>
+                  <div v-else class="flex items-center gap-1.5">
+                    <span class="text-gray-600 text-xs">Expired</span>
+                    <span class="text-yellow-400 font-mono font-medium">${{ getTicketImpliedExitPrice(pos).toFixed(2) }}</span>
+                  </div>
+                </template>
                 <span class="text-gray-700">=</span>
                 <div class="flex items-center gap-1.5">
                   <span class="text-gray-600 text-xs">P&L</span>
@@ -2104,8 +2126,16 @@ const calendarDays = computed(() => {
     }
   })
 
+  // Track trade count by date
+  const tradeCountByDate = {}
+  tickets.value.forEach(ticket => {
+    if (ticket.exit_date) {
+      tradeCountByDate[ticket.exit_date] = (tradeCountByDate[ticket.exit_date] || 0) + 1
+    }
+  })
+
   for (let i = 0; i < firstDay; i++) {
-    days.push({ date: null, dayOfMonth: '', pnl: 0 })
+    days.push({ date: null, dayOfMonth: '', pnl: 0, tradeCount: 0 })
   }
 
   for (let day = 1; day <= totalDays; day++) {
@@ -2113,11 +2143,23 @@ const calendarDays = computed(() => {
     days.push({
       date,
       dayOfMonth: day,
-      pnl: pnlByDate[date] || 0
+      pnl: pnlByDate[date] || 0,
+      tradeCount: tradeCountByDate[date] || 0
     })
   }
 
+  // Add trailing empty cells to complete the last row
+  const totalCells = firstDay + totalDays
+  const remainingCells = (7 - (totalCells % 7)) % 7
+  for (let i = 0; i < remainingCells; i++) {
+    days.push({ date: null, dayOfMonth: '', pnl: 0, tradeCount: 0 })
+  }
+
   return days
+})
+
+const calendarRowCount = computed(() => {
+  return Math.max(5, Math.ceil(calendarDays.value.length / 7))
 })
 
 // Summary stats for currently filtered trades
@@ -2407,15 +2449,11 @@ const getStatusClass = (status) => {
 
 // Calculate P&L at expiration for a given underlying price
 const calculatePnLAtPrice = (ticket, price) => {
-  const legs = ticket.strategies?.[0]?.legs || []
+  const legs = openingLegs(ticket)
   if (legs.length === 0) return 0
 
-  // For closed positions, only use the opening legs (first 2 for vertical spreads)
-  // The data includes both opening and closing legs for closed trades
-  const legsForCalculation = legs.length > 2 ? legs.slice(0, 2) : legs
-
   let totalPnL = 0
-  legsForCalculation.forEach(leg => {
+  legs.forEach(leg => {
     const intrinsicValue = leg.type === 'call'
       ? Math.max(0, price - leg.strike)
       : Math.max(0, leg.strike - price)
@@ -2442,14 +2480,11 @@ const isProfitOnLeft = (ticket) => {
 
 // Get P&L graph data
 const getPnLGraphData = (ticket) => {
-  const legs = ticket.strategies?.[0]?.legs || []
+  const legs = openingLegs(ticket)
   if (legs.length === 0) return { strikes: [], maxProfit: 0, maxLoss: 0, breakeven: null, minPrice: 0, maxPrice: 0 }
 
-  // For closed positions, only use the opening legs (first 2 for vertical spreads)
-  const legsForCalculation = legs.length > 2 ? legs.slice(0, 2) : legs
-
   // Get all strikes including duplicates for display
-  const allStrikes = legsForCalculation.map(l => l.strike)
+  const allStrikes = legs.map(l => l.strike)
   const uniqueStrikes = [...new Set(allStrikes)].sort((a, b) => a - b)
   const minStrike = uniqueStrikes[0]
   const maxStrike = uniqueStrikes[uniqueStrikes.length - 1]
@@ -2754,8 +2789,9 @@ const hasClosingLegs = (group) => {
 const ticketHasClosingLegs = (ticket) => {
   if (!ticket.exit_date) return false
   const legs = ticket.strategies[0]?.legs || []
-  // If there are more than 2 legs, we have closing legs stored
-  return legs.length > 2
+  const openLegs = openingLegs(ticket)
+  // If there are more legs than the opening legs, we have closing legs stored
+  return legs.length > openLegs.length
 }
 
 const getImpliedExitPrice = (group) => {
@@ -3044,13 +3080,29 @@ const groupedBySymbol = computed(() => {
 // For strategies with entry and exit, legs are stored: entry legs first, then exit legs
 const openingLegs = (ticket) => {
   const legs = ticket.strategies[0]?.legs || []
+  if (legs.length === 0) return legs
+
   // If there's an exit time, legs should contain both entry and exit
-  // For 2 legs: first is entry, second is exit
-  // For 4+ legs: first half is entry, second half is exit
-  if (ticket.exit_date && legs.length >= 2) {
-    const midPoint = Math.floor(legs.length / 2)
-    return legs.slice(0, midPoint)
+  if (ticket.exit_date) {
+    // Multi-leg strategies like strangles have 4 legs (2 entry + 2 exit)
+    // Single-leg strategies have 2 legs (1 entry + 1 exit)
+    // We need to identify which case we're in
+    const uniqueStrikes = new Set(legs.map(l => l.strike))
+    const uniqueTypes = new Set(legs.map(l => l.type))
+
+    // If we have 2 different strikes or both put/call, it's a multi-leg strategy
+    if (uniqueStrikes.size > 1 || uniqueTypes.size > 1) {
+      // Multi-leg: 4 legs total, first 2 are entry
+      if (legs.length === 4) return legs.slice(0, 2)
+      // Fallback: assume first half
+      const midPoint = Math.floor(legs.length / 2)
+      return legs.slice(0, midPoint)
+    } else {
+      // Single-leg: first is entry, second is exit
+      return legs.slice(0, 1)
+    }
   }
+
   // Otherwise, return all legs (single order, not yet closed)
   return legs
 }
@@ -3064,6 +3116,14 @@ const closingLegs = (ticket) => {
   }
   // Otherwise, return empty (no closing position)
   return []
+}
+
+// Check if opening position is long (buy to open)
+const isOpeningLong = (ticket) => {
+  const legs = openingLegs(ticket)
+  if (legs.length === 0) return false
+  // Check the first leg - if it's a buy, it's a long position
+  return legs[0].action === 'buy'
 }
 
 // Calculate net cost for opening position (credit = positive, debit = negative)
