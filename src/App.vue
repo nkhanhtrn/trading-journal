@@ -634,7 +634,11 @@ const handleCsvUpload = async (event) => {
     console.log('CSV text length:', text.length)
     console.log('First 200 chars:', text.substring(0, 200))
 
-    const parsedTickets = await parseCSV(text)
+    // Find the maximum ticket ID to avoid conflicts
+    const maxTicketId = tickets.value.length > 0 ? Math.max(...tickets.value.map(t => t.ticket)) : 999
+    console.log('Starting ticket ID from:', maxTicketId + 1)
+
+    const parsedTickets = await parseCSV(text, maxTicketId + 1)
     console.log('Parsed tickets:', parsedTickets.length)
     if (parsedTickets.length > 0) {
       console.log('First ticket:', parsedTickets[0])
@@ -1411,7 +1415,7 @@ function parseCsvRow(row) {
   return result
 }
 
-const parseCSV = async (csvText) => {
+const parseCSV = async (csvText, startTicketId = 1000) => {
   const lines = csvText.split('\n').filter(line => line.trim())
 
   // Parse all rows using the same logic as parse-webull.js
@@ -1439,7 +1443,7 @@ const parseCSV = async (csvText) => {
 
   // STEP 2: Process each strategy array independently
   const allTickets = []
-  let currentTicketId = 1000
+  let currentTicketId = startTicketId
 
   // Multi-leg strategies
   console.log('\nProcessing:')
