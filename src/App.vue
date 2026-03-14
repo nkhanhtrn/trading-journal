@@ -1254,7 +1254,9 @@ async function getHistoricalPrice(symbol, dateStr) {
     const period1 = Math.floor(startDate.getTime() / 1000)
     const period2 = Math.floor(endDate.getTime() / 1000)
 
-    const url = `https://query1.finance.yahoo.com/v8/finance/chart/${yahooSymbol}?period1=${period1}&period2=${period2}&interval=1d`
+    // Use CORS proxy for Yahoo Finance API
+    const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${yahooSymbol}?period1=${period1}&period2=${period2}&interval=1d`
+    const url = `https://corsproxy.io/?${encodeURIComponent(yahooUrl)}`
 
     const response = await fetch(url, {
       headers: {

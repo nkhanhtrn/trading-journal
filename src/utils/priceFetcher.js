@@ -73,8 +73,9 @@ export async function fetchHistoricalPrice(symbol, date) {
     const startStr = startDate.toISOString().split('T')[0]
     const endStr = endDate.toISOString().split('T')[0]
 
-    // Using yfinance-like query via a public API
-    const url = `https://query1.finance.yahoo.com/v8/finance/chart/${yahooSymbol}?period1=${Math.floor(startDate.getTime()/1000)}&period2=${Math.floor(endDate.getTime()/1000)}&interval=1d`
+    // Use CORS proxy for Yahoo Finance API
+    const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${yahooSymbol}?period1=${Math.floor(startDate.getTime()/1000)}&period2=${Math.floor(endDate.getTime()/1000)}&interval=1d`
+    const url = `https://corsproxy.io/?${encodeURIComponent(yahooUrl)}`
 
     const response = await fetch(url, {
       headers: {
