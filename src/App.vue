@@ -323,8 +323,17 @@
         <!-- All Options Trades for Year -->
         <div class="bg-gray-800 rounded-lg p-4">
           <h3 class="text-sm font-semibold text-gray-300 mb-3">All Options Trades ({{ selectedDashboardYear }})</h3>
+          <!-- Search Input -->
+          <div class="mb-3">
+            <input
+              v-model="dashboardSearchQuery"
+              type="text"
+              placeholder="Search symbols..."
+              class="w-full bg-gray-900 border border-gray-700 rounded px-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500"
+            >
+          </div>
           <div class="space-y-2 max-h-96 overflow-y-auto">
-            <div v-for="symbolGroup in yearlySummary.tradesBySymbol" :key="symbolGroup.symbol" class="bg-gray-700/50 rounded overflow-hidden">
+            <div v-for="symbolGroup in filteredDashboardSymbols" :key="symbolGroup.symbol" class="bg-gray-700/50 rounded overflow-hidden">
               <!-- Symbol Header -->
               <div class="px-4 py-3 flex items-center justify-between cursor-pointer hover:bg-gray-700" @click="toggleDashboardSymbol(symbolGroup.symbol)">
                 <div class="flex items-center gap-3">
@@ -2068,6 +2077,16 @@ const tradeSummary = computed(() => {
 
 // Dashboard state
 const selectedDashboardYear = ref(new Date().getFullYear())
+const dashboardSearchQuery = ref('')
+
+const filteredDashboardSymbols = computed(() => {
+  const query = dashboardSearchQuery.value.toLowerCase().trim()
+  if (!query) return yearlySummary.value.tradesBySymbol
+  return yearlySummary.value.tradesBySymbol.filter(symbolGroup =>
+    symbolGroup.displaySymbol.toLowerCase().includes(query) ||
+    symbolGroup.symbol.toLowerCase().includes(query)
+  )
+})
 
 const availableYears = computed(() => {
   const years = new Set()
