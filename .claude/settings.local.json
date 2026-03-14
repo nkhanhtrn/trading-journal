@@ -31,7 +31,10 @@
       "Bash(git filter-repo:*)",
       "Bash(git filter-branch --force --index-filter \"git rm --cached --ignore-unmatch all.csv week.csv\" HEAD)",
       "Bash(git stash:*)",
-      "Bash(git rebase:*)"
+      "Bash(git rebase:*)",
+      "Bash(gcloud functions list:*)",
+      "Bash(gcloud config:*)",
+      "Bash(find:*)"
     ]
   }
 }

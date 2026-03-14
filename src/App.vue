@@ -491,6 +491,19 @@
             Historical prices are fetched from Yahoo Finance (no API key required).
           </p>
 
+          <!-- Proxy URL Section -->
+          <div class="border-t border-gray-700 pt-4">
+            <h4 class="text-sm font-medium text-gray-300 mb-2">API Proxy</h4>
+            <label class="block text-xs text-gray-500 mb-1">Custom proxy URL (optional)</label>
+            <input
+              v-model="settings.proxyUrl"
+              type="text"
+              placeholder="https://your-proxy.com/fetchJson?url={url}"
+              class="w-full bg-gray-900 border border-gray-700 rounded px-3 py-2 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500"
+            >
+            <p class="text-xs text-gray-500 mt-1">Use {url} as placeholder for the target URL. Required for fetching prices.</p>
+          </div>
+
           <!-- Clear Cache Section -->
           <div class="border-t border-gray-700 pt-4">
             <h4 class="text-sm font-medium text-gray-300 mb-2">Data Management</h4>
@@ -1434,7 +1447,15 @@ async function getHistoricalPrice(symbol, dateStr) {
 
     // Use CORS proxy for Yahoo Finance API
     const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${yahooSymbol}?period1=${period1}&period2=${period2}&interval=1d`
-    const url = `https://corsproxy.io/?${encodeURIComponent(yahooUrl)}`
+
+    // Use custom proxy URL from settings
+    const customProxy = settings.value.proxyUrl?.trim()
+    if (!customProxy) {
+      throw new Error('No proxy URL configured. Please set a proxy URL in Settings.')
+    }
+
+    // Replace {url} placeholder with actual encoded URL
+    const url = customProxy.replace('{url}', encodeURIComponent(yahooUrl))
 
     const response = await fetch(url, {
       headers: {
