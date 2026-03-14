@@ -85,14 +85,18 @@
                 <option value="WIN">Win</option>
                 <option value="LOSS">Loss</option>
               </select>
-              <button @click="toggleAllSymbols" class="bg-gray-700 hover:bg-gray-600 text-white px-3 py-1.5 rounded text-sm">
+              <button v-if="tradesViewMode === 'list'" @click="toggleAllSymbols" class="bg-gray-700 hover:bg-gray-600 text-white px-3 py-1.5 rounded text-sm">
                 {{ allSymbolsExpanded ? 'Collapse' : 'Expand' }}
+              </button>
+              <button @click="tradesViewMode = tradesViewMode === 'list' ? 'square' : 'list'" class="bg-gray-700 hover:bg-gray-600 text-white px-3 py-1.5 rounded text-sm" :title="tradesViewMode === 'list' ? 'Square view' : 'List view'">
+                <i :class="tradesViewMode === 'list' ? 'fas fa-th' : 'fas fa-list'"></i>
               </button>
             </div>
 
             <!-- Trades List -->
             <div class="flex-1 overflow-y-auto p-2">
-              <div class="space-y-2">
+              <!-- List View -->
+              <div v-if="tradesViewMode === 'list'" class="space-y-2">
                 <div v-for="symbolGroup in groupedBySymbol" :key="symbolGroup.symbol" class="bg-gray-700/50 rounded overflow-hidden">
                   <div class="px-3 py-2 flex items-center justify-between cursor-pointer hover:bg-gray-700" @click="toggleSymbol(symbolGroup.symbol)">
                     <div class="flex items-center gap-2">
@@ -129,6 +133,39 @@
                   </div>
                 </div>
               </div>
+
+              <!-- Square View -->
+              <div v-else class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+                <div
+                  v-for="trade in flattenedTrades"
+                  :key="trade.symbol + trade.strategyName + trade.strikes + trade.expiry"
+                  :class="['rounded-lg p-3 cursor-pointer transition-all hover:scale-105 hover:shadow-lg flex flex-col', getEquityColor(trade.symbol)]"
+                  @click="selectedPositionGroup = trade"
+                >
+                  <div class="flex flex-col h-full">
+                    <!-- Symbol -->
+                    <div class="text-sm font-bold text-white mb-1">{{ trade.symbol }}</div>
+
+                    <!-- Strategy + Strike -->
+                    <div class="text-xs text-gray-300 mb-2">{{ trade.strategyName }} {{ trade.strikes }}</div>
+
+                    <!-- Mini Calendar -->
+                    <div class="mb-2">
+                      <MiniCalendarDots :entry-dates="getEntryDates(trade)" :exit-dates="getExitDates(trade)" :expiry-dates="getExpiryDates(trade)" :compact="true" />
+                    </div>
+
+                    <!-- Profit & Expiration -->
+                    <div class="mt-auto flex items-center justify-between">
+                      <span v-if="trade.openCount > 0" class="text-xs bg-yellow-900/50 text-yellow-300 px-1.5 py-0.5 rounded">OPEN</span>
+                      <span v-else class="font-mono text-sm font-bold" :class="trade.totalPnL >= 0 ? 'text-green-400' : 'text-red-400'">
+                        ${{ trade.totalPnL.toFixed(0) }}
+                      </span>
+                      <span class="text-xs text-gray-400">{{ formatExpiryShort(trade.expiry) }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               <div v-if="filteredTickets.length === 0" class="text-center text-gray-500 py-8">No trades found</div>
             </div>
           </div>
@@ -1852,6 +1889,53 @@ const filters = ref({
 const selectedPositionGroup = ref(null)
 const selectedTradeDate = ref(null) // For day navigation in trades view
 
+// Trades view mode: 'list' or 'square'
+const tradesViewMode = ref('square')
+
+// Color palette for equity symbols
+const equityColors = [
+  'bg-red-900/40', 'bg-blue-900/40', 'bg-green-900/40', 'bg-yellow-900/40',
+  'bg-purple-900/40', 'bg-pink-900/40', 'bg-indigo-900/40', 'bg-orange-900/40',
+  'bg-teal-900/40', 'bg-cyan-900/40', 'bg-emerald-900/40', 'bg-rose-900/40',
+  'bg-violet-900/40', 'bg-amber-900/40', 'bg-lime-900/40', 'bg-sky-900/40'
+]
+
+const equityColorMap = ref(new Map())
+
+const getEquityColor = (symbol) => {
+  if (!equityColorMap.value.has(symbol)) {
+    const usedColors = Array.from(equityColorMap.value.values())
+    const availableColors = equityColors.filter(c => !usedColors.includes(c))
+    const color = availableColors.length > 0 ? availableColors[0] : equityColors[equityColorMap.value.size % equityColors.length]
+    equityColorMap.value.set(symbol, color)
+  }
+  return equityColorMap.value.get(symbol)
+}
+
+// Format expiry date as short format (e.g., "Mar 15")
+const formatExpiryShort = (expiryStr) => {
+  if (!expiryStr) return ''
+  const [year, month, day] = expiryStr.split('-').map(Number)
+  const date = new Date(year, month - 1, day)
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+}
+
+// Flattened trades for square view (all position groups flat, still merged)
+const flattenedTrades = computed(() => {
+  const trades = []
+  groupedBySymbol.value.forEach(symbolGroup => {
+    symbolGroup.groups.forEach(group => {
+      trades.push({ ...group, symbol: symbolGroup.symbol })
+    })
+  })
+  return trades.sort((a, b) => {
+    // Sort by exit date (most recent first)
+    const dateA = a.positions?.[0]?.exit_date || a.positions?.[0]?.date || ''
+    const dateB = b.positions?.[0]?.exit_date || b.positions?.[0]?.date || ''
+    return new Date(dateB) - new Date(dateA)
+  })
+})
+
 // Computed for modal open state
 const tradeDetailModalOpen = computed({
   get: () => selectedPositionGroup.value !== null,
@@ -1930,8 +2014,9 @@ const filteredTickets = computed(() => {
       const spansRange = ticket.date <= end && (!ticket.exit_date || ticket.exit_date >= tradeDateRangeStart.value)
       matchTradeDateFilter = entryInRange || exitInRange || spansRange
     }
-    // Match legacy selectedTradeDate for day navigation
-    const matchSelectedDate = !selectedTradeDate.value || ticket.date === selectedTradeDate.value || ticket.exit_date === selectedTradeDate.value
+    // Match legacy selectedTradeDate for day navigation (default to current date if none selected)
+    const compareDate = selectedTradeDate.value || new Date().toISOString().split('T')[0]
+    const matchSelectedDate = ticket.date === compareDate || ticket.exit_date === compareDate
     return matchSymbol && matchStatus && matchDate && matchSelectedDate && matchTradeDateFilter
   })
 

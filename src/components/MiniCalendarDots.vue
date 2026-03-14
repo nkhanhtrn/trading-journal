@@ -1,10 +1,10 @@
 <template>
-  <div v-if="displayMonths.length > 0" class="inline-flex items-center gap-3 px-2 py-1 bg-gray-800/50 rounded">
+  <div v-if="displayMonths.length > 0" :class="['inline-flex items-center', compact ? 'gap-1.5' : 'gap-3', compact ? 'px-1.5 py-0.5' : 'px-2 py-1', 'bg-gray-800/50 rounded']">
     <div v-for="month in displayMonths" :key="month.key" class="flex flex-col items-center">
-      <span class="text-[10px] text-gray-400 mb-0.5 font-medium">{{ month.name }}</span>
-      <div class="grid grid-cols-7 gap-0.5">
-        <div v-for="(day, i) in month.days" :key="i" class="w-2 h-2 flex items-center justify-center">
-          <div v-if="day" :class="['w-1.5 h-1.5 rounded-sm transition-colors', getDayClass(month, day, i)]"></div>
+      <span v-if="!compact" class="text-[10px] text-gray-400 mb-0.5 font-medium">{{ month.name }}</span>
+      <div :class="['grid grid-cols-7', compact ? 'gap-px' : 'gap-0.5']">
+        <div v-for="(day, i) in month.days" :key="i" :class="['flex items-center justify-center', compact ? 'w-1.5 h-1.5' : 'w-2 h-2']">
+          <div v-if="day" :class="['rounded-sm transition-colors', compact ? 'w-1 h-1' : 'w-1.5 h-1.5', getDayClass(month, day, i)]"></div>
         </div>
       </div>
     </div>
@@ -17,7 +17,11 @@ import { computed } from 'vue'
 const props = defineProps({
   entryDates: Array,
   exitDates: Array,
-  expiryDates: Array
+  expiryDates: Array,
+  compact: {
+    type: Boolean,
+    default: false
+  }
 })
 
 // Parse date string safely, avoiding timezone issues
