@@ -1781,6 +1781,9 @@ const initDatePicker = () => {
   if (!datePickerInput.value) return
   if (fp) return // Already initialized
 
+  // Clear input value to prevent Flatpickr from parsing invalid display text like "All dates"
+  datePickerInput.value.value = ''
+
   fp = flatpickr(datePickerInput.value, {
     mode: 'range',
     dateFormat: 'Y-m-d',
