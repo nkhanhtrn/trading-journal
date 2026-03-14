@@ -360,7 +360,7 @@
       <div class="max-w-6xl mx-auto px-4">
         <div class="flex">
           <button
-            @click="activeTab = 'calendar'"
+            @click="navigateTo('calendar')"
             :class="[
               'flex-1 py-2 text-center transition-colors',
               activeTab === 'calendar' ? 'text-green-500 border-t-2 border-green-500' : 'text-gray-400 hover:text-gray-300'
@@ -370,7 +370,7 @@
             <div class="text-xs">Calendar</div>
           </button>
           <button
-            @click="activeTab = 'trades'"
+            @click="navigateTo('trades')"
             :class="[
               'flex-1 py-2 text-center transition-colors',
               activeTab === 'trades' ? 'text-green-500 border-t-2 border-green-500' : 'text-gray-400 hover:text-gray-300'
@@ -380,7 +380,7 @@
             <div class="text-xs">Trades</div>
           </button>
           <button
-            @click="activeTab = 'dashboard'"
+            @click="navigateTo('dashboard')"
             :class="[
               'flex-1 py-2 text-center transition-colors',
               activeTab === 'dashboard' ? 'text-green-500 border-t-2 border-green-500' : 'text-gray-400 hover:text-gray-300'
@@ -629,6 +629,7 @@
 
 <script setup>
 import { ref, computed, onMounted, nextTick, watch } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import SummaryCards from './components/SummaryCards.vue'
 import { detectStrategy, getStrategyDisplayName } from './utils/strategyDetector.js'
 import TradeFormModal from './components/TradeFormModal.vue'
@@ -636,6 +637,9 @@ import MiniCalendarDots from './components/MiniCalendarDots.vue'
 import flatpickr from 'flatpickr'
 import 'flatpickr/dist/flatpickr.css'
 import 'flatpickr/dist/themes/dark.css'
+
+const router = useRouter()
+const route = useRoute()
 
 // Local storage keys
 const STORAGE_KEY = 'trading_journal_tickets'
@@ -645,6 +649,22 @@ const tickets = ref([])
 const rawTransactions = ref([])  // Store all raw CSV transactions for re-matching
 const showAddModal = ref(false)
 const showSettingsModal = ref(false)
+
+// Active tab state - synced with route
+const activeTab = ref(route.name || 'calendar')
+
+// Navigate to a tab and update URL
+const navigateTo = (tab) => {
+  activeTab.value = tab
+  router.push({ name: tab })
+}
+
+// Watch route changes and update active tab
+watch(() => route.name, (newName) => {
+  if (newName && ['calendar', 'trades', 'dashboard'].includes(newName)) {
+    activeTab.value = newName
+  }
+})
 
 // Settings
 const SETTINGS_KEY = 'trading_journal_settings'
@@ -1729,7 +1749,6 @@ const clearAllData = () => {
     setTimeout(() => uploadMessage.value = '', 2000)
   }
 }
-const activeTab = ref('calendar')
 const currentMonth = ref(new Date(2026, 2, 1)) // March 2026
 const openPositionsCollapsed = ref(true)
 const expandedPositionKeys = ref(new Set())
@@ -1782,11 +1801,15 @@ const initDatePicker = () => {
     }
   })
 
-  // Apply any pending date value
-  if (pendingDatePickerValue.value) {
-    fp.setDate(pendingDatePickerValue.value)
-    pendingDatePickerValue.value = null
+  // Apply any pending date value (only if valid date string)
+  if (pendingDatePickerValue.value && /^\d{4}-\d{2}-\d{2}$/.test(pendingDatePickerValue.value)) {
+    try {
+      fp.setDate(pendingDatePickerValue.value)
+    } catch (e) {
+      console.warn('Failed to set date on picker:', e)
+    }
   }
+  pendingDatePickerValue.value = null
 }
 
 // Format flatpickr date to YYYY-MM-DD
@@ -1856,8 +1879,13 @@ onMounted(() => {
   loadRawTransactions()
 })
 
-// Watch for trades tab to initialize date picker
-watch(activeTab, (newTab) => {
+// Watch for trades tab to initialize/cleanup date picker
+watch(activeTab, (newTab, oldTab) => {
+  if (oldTab === 'trades' && fp) {
+    // Cleanup Flatpickr when leaving trades tab
+    fp.destroy()
+    fp = null
+  }
   if (newTab === 'trades') {
     nextTick(() => {
       initDatePicker()
