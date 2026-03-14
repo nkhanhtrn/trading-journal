@@ -2233,7 +2233,7 @@ const tradeSummary = computed(() => {
 // Dashboard state
 const selectedDashboardYear = ref(new Date().getFullYear())
 const dashboardSearchQuery = ref('')
-const dashboardRightTab = ref('trades') // 'trades' or 'strategies'
+const dashboardRightTab = ref('strategies') // 'trades' or 'strategies'
 
 const filteredDashboardSymbols = computed(() => {
   const query = dashboardSearchQuery.value.toLowerCase().trim()
