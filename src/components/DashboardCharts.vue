@@ -33,6 +33,9 @@ const chartColors = {
 const chartOptions = {
   responsive: true,
   maintainAspectRatio: false,
+  layout: {
+    padding: 0
+  },
   plugins: {
     legend: {
       display: false
@@ -187,7 +190,7 @@ const tabs = [
 </script>
 
 <template>
-  <div class="flex flex-col h-full min-h-0">
+  <div class="flex flex-col h-full min-h-0 min-w-0">
     <!-- Tabs Header -->
     <div class="flex gap-1 mb-2">
       <button
@@ -208,37 +211,37 @@ const tabs = [
     </div>
 
     <!-- Chart Content Area -->
-    <div class="flex-1 min-h-0 bg-gray-700/50 rounded p-3">
+    <div class="flex-1 min-h-0 min-w-0 bg-gray-700/50 rounded p-3">
       <!-- Cumulative P&L Chart -->
-      <div v-show="activeTab === 'cumulative'" class="h-full flex flex-col">
+      <div v-show="activeTab === 'cumulative'" class="h-full flex flex-col min-w-0">
         <h4 class="text-xs font-medium text-gray-400 mb-3">Cumulative P&L</h4>
-        <div class="flex-1 min-h-0">
+        <div class="flex-1 min-h-0 min-w-0 overflow-hidden">
           <Line :data="cumulativeData" :options="chartOptions" />
         </div>
       </div>
 
       <!-- Monthly P&L Bar Chart -->
-      <div v-show="activeTab === 'monthly'" class="h-full flex flex-col">
+      <div v-show="activeTab === 'monthly'" class="h-full flex flex-col min-w-0">
         <h4 class="text-xs font-medium text-gray-400 mb-3">Monthly P&L</h4>
-        <div class="flex-1 min-h-0">
+        <div class="flex-1 min-h-0 min-w-0 overflow-hidden">
           <Bar :data="monthlyData" :options="chartOptions" />
         </div>
       </div>
 
       <!-- Win/Loss Distribution -->
-      <div v-show="activeTab === 'winloss'" class="h-full flex flex-col">
+      <div v-show="activeTab === 'winloss'" class="h-full flex flex-col min-w-0">
         <h4 class="text-xs font-medium text-gray-400 mb-3">Win/Loss Distribution</h4>
         <div class="flex-1 min-h-0 flex items-center justify-center">
-          <div class="w-full max-w-[200px]">
+          <div class="w-full max-w-[320px]">
             <Doughnut :data="winLossData" :options="pieOptions" />
           </div>
         </div>
       </div>
 
       <!-- Strategy Performance -->
-      <div v-show="activeTab === 'strategies'" class="h-full flex flex-col">
+      <div v-show="activeTab === 'strategies'" class="h-full flex flex-col min-w-0">
         <h4 class="text-xs font-medium text-gray-400 mb-3">Strategy Performance</h4>
-        <div class="flex-1 min-h-0">
+        <div class="flex-1 min-h-0 min-w-0 overflow-hidden">
           <Bar :data="strategyData" :options="chartOptions" />
         </div>
       </div>

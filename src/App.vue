@@ -1,15 +1,15 @@
 <template>
-  <div class="min-h-screen bg-gray-900 flex flex-col">
+  <div class="h-screen bg-gray-900 flex flex-col overflow-hidden">
     <!-- Main Content -->
-    <div class="pl-14">
-      <main class="flex-1 max-w-6xl mx-auto px-4 py-6 pb-16 overflow-auto">
-      <!-- Calendar & Trades Merged View -->
-      <div v-if="activeTab === 'calendar' || activeTab === 'trades'" class="h-[calc(100vh-8rem)] grid grid-rows-[auto_1fr] gap-4">
+    <div class="pl-14 flex-1 flex flex-col min-h-0">
+      <main class="flex-1 max-w-6xl w-full mx-auto px-4 py-6 overflow-hidden">
+      <!-- Calendar & Dashboard Merged View -->
+      <div v-if="activeTab === 'calendar' || activeTab === 'dashboard'" class="h-full grid grid-rows-[auto_1fr] gap-4 overflow-hidden">
         <!-- Header: Month Selector + Summary Cards -->
         <div class="grid grid-cols-[auto_1fr] gap-4">
           <!-- Month Selector -->
           <div class="bg-gray-800 rounded-lg px-4 py-2 flex items-center justify-between">
-            <h2 class="text-lg font-semibold text-white">Trades</h2>
+            <h2 class="text-lg font-semibold text-white">Dashboard</h2>
             <div class="flex items-center gap-2">
               <button @click="prevMonth" class="text-gray-400 hover:text-white px-2 py-1 rounded hover:bg-gray-700">
                 <i class="fas fa-chevron-left"></i>
@@ -43,10 +43,10 @@
           </div>
         </div>
 
-        <!-- Main Content: Calendar + Trades List -->
-        <div class="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-4 min-h-0">
+        <!-- Main Content: Calendar + Dashboard -->
+        <div class="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-4 min-h-0 min-w-0">
           <!-- Left Column: Tabbed Content + Charts -->
-          <div class="grid grid-rows-2 gap-4 min-h-0">
+          <div class="grid grid-rows-2 gap-4 min-h-0 min-w-0">
             <!-- Tabbed Content -->
             <div class="bg-gray-800 rounded-lg flex flex-col min-h-0">
               <!-- Tabs -->
@@ -72,7 +72,7 @@
               </div>
 
               <!-- Tab Content -->
-              <div class="flex-1 overflow-hidden p-3">
+              <div class="flex-1 overflow-hidden p-3 min-w-0">
                 <!-- Calendar Tab -->
                 <div v-show="calendarLeftTab === 'calendar'" class="h-full flex flex-col">
                   <div class="grid grid-cols-7 grid-rows-5 gap-1 flex-1">
@@ -131,7 +131,7 @@
           </div>
 
           <!-- Right Column: Trades List + Strategies -->
-          <div class="bg-gray-800 rounded-lg flex flex-col min-h-0">
+          <div class="bg-gray-800 rounded-lg flex flex-col min-h-0 min-w-0 overflow-hidden">
             <!-- Tabs -->
             <div class="flex">
               <button
@@ -279,12 +279,12 @@
     <!-- Left Sidebar Navigation -->
     <nav class="fixed left-0 top-0 bottom-0 w-14 bg-gray-800 border-r border-gray-700 flex flex-col items-center py-4 gap-2 z-50">
       <button
-        @click="navigateTo('trades')"
+        @click="navigateTo('dashboard')"
         :class="[
           'w-10 h-10 flex flex-col items-center justify-center rounded transition-colors',
-          activeTab === 'calendar' || activeTab === 'trades' ? 'bg-gray-700 text-green-500' : 'text-gray-400 hover:text-gray-300 hover:bg-gray-700'
+          activeTab === 'calendar' || activeTab === 'dashboard' ? 'bg-gray-700 text-green-500' : 'text-gray-400 hover:text-gray-300 hover:bg-gray-700'
         ]"
-        title="Trades"
+        title="Dashboard"
       >
         <i class="fas fa-list"></i>
       </button>
@@ -570,7 +570,7 @@ const navigateTo = (tab) => {
 
 // Watch route changes and update active tab
 watch(() => route.name, (newName) => {
-  if (newName && ['calendar', 'trades', 'dashboard'].includes(newName)) {
+  if (newName && ['calendar', 'dashboard'].includes(newName)) {
     activeTab.value = newName
   }
 })
@@ -2776,9 +2776,9 @@ const selectDate = (date) => {
   tradeDateRangeStart.value = date
   tradeDateRangeEnd.value = null
   pendingDatePickerValue.value = date
-  // Only switch to trades tab if not already in calendar/trades view
-  if (activeTab.value !== 'calendar' && activeTab.value !== 'trades') {
-    activeTab.value = 'trades'
+  // Only switch to dashboard tab if not already in calendar/dashboard view
+  if (activeTab.value !== 'calendar' && activeTab.value !== 'dashboard') {
+    activeTab.value = 'dashboard'
   }
 }
 
@@ -2798,9 +2798,9 @@ const selectMonth = (month) => {
   tradeDateRangeStart.value = startOfMonth
   tradeDateRangeEnd.value = endOfMonth
   pendingDatePickerValue.value = startOfMonth
-  // Only switch to trades tab if not already in calendar/trades view
-  if (activeTab.value !== 'calendar' && activeTab.value !== 'trades') {
-    activeTab.value = 'trades'
+  // Only switch to dashboard tab if not already in calendar/dashboard view
+  if (activeTab.value !== 'calendar' && activeTab.value !== 'dashboard') {
+    activeTab.value = 'dashboard'
   }
 }
 
@@ -2814,7 +2814,7 @@ const selectAllTime = () => {
   tradeDateRangeStart.value = null
   tradeDateRangeEnd.value = null
   if (fp) fp.clear()
-  activeTab.value = 'trades'
+  activeTab.value = 'dashboard'
 }
 
 const clearDateRange = () => {

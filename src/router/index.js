@@ -8,11 +8,6 @@ const routes = [
     component: { template: '<div></div>' }
   },
   {
-    path: '/trades',
-    name: 'trades',
-    component: { template: '<div></div>' }
-  },
-  {
     path: '/dashboard',
     name: 'dashboard',
     component: { template: '<div></div>' }

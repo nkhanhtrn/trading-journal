@@ -34,7 +34,9 @@
       "Bash(git rebase:*)",
       "Bash(gcloud functions list:*)",
       "Bash(gcloud config:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(tree:*)",
+      "Bash(git checkout:*)"
     ]
   }
 }
