@@ -743,9 +743,8 @@ const handleCsvUpload = async (event) => {
       // Try to find matching OPEN ticket
       for (const openTicket of openTickets) {
         if (openTicket.symbol !== newTicket.symbol) continue
-        if (openTicket.date !== newTicket.date) continue
 
-        // Check if legs match (same strikes, types, expiry)
+        // Check if legs match (same strikes, types, expiry) - don't compare entry dates!
         const openLegs = openTicket.strategies[0].legs
         const newLegs = newTicket.strategies[0].legs
 
