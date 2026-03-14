@@ -724,6 +724,8 @@ const handleCsvUpload = async (event) => {
     // Check for OPEN tickets that can be closed with new exit data
     const openTickets = tickets.value.filter(t => t.status === 'OPEN')
 
+    console.log(`Checking ${openTickets.length} OPEN tickets against ${parsedTickets.length} new tickets`)
+
     for (const newTicket of parsedTickets) {
       // Only check closed tickets (with exit_date)
       if (!newTicket.exit_date) continue
@@ -764,7 +766,7 @@ const handleCsvUpload = async (event) => {
 
         if (legsMatch) {
           // Found a match! Update the OPEN ticket with exit data
-          console.log(`Closing OPEN ticket ${openTicket.ticket} with exit data from new CSV`)
+          console.log(`✓ Closing OPEN ticket ${openTicket.ticket} (${openTicket.symbol}) with exit data from new CSV`)
           openTicket.status = newTicket.status
           openTicket.exit_date = newTicket.exit_date
           openTicket.pnl = newTicket.pnl
@@ -780,10 +782,37 @@ const handleCsvUpload = async (event) => {
       }
     }
 
-    // Get existing ticket IDs to prevent duplicates
+    // Helper function to create a unique key for a ticket
+    const getTicketKey = (ticket) => {
+      const legs = ticket.strategies[0].legs
+      const legsKey = legs.map(l =>
+        `${l.action}|${l.type}|${l.strike}|${l.expiry}|${l.quantity}`
+      ).sort().join('||')
+      return `${ticket.symbol}|${ticket.date}|${ticket.exit_date || ''}|${legsKey}`
+    }
+
+    // Get existing ticket keys to prevent duplicates
+    const existingTicketKeys = new Set(tickets.value.map(t => getTicketKey(t)))
     const existingTicketIds = new Set(tickets.value.map(t => t.ticket))
-    const newTickets = parsedTickets.filter(t => !existingTicketIds.has(t.ticket) && !t._skip)
-    const duplicateCount = parsedTickets.length - newTickets.length - (parsedTickets.filter(t => t._skip).length)
+
+    // Filter out duplicates and skipped tickets
+    const newTickets = []
+    let duplicateCount = 0
+
+    for (const t of parsedTickets) {
+      if (t._skip) continue // Already handled by cross-file matching
+      if (existingTicketIds.has(t.ticket)) continue // Skip exact ID matches
+
+      const key = getTicketKey(t)
+      if (existingTicketKeys.has(key)) {
+        duplicateCount++
+        console.log(`Skipping duplicate ticket: ${t.symbol} ${t.date}`)
+        continue
+      }
+
+      newTickets.push(t)
+      existingTicketKeys.add(key)
+    }
 
     // Merge new tickets with existing ones
     tickets.value = [...tickets.value, ...newTickets].sort((a, b) => a.ticket - b.ticket)
@@ -1115,6 +1144,14 @@ function matchSingleOptions(tradesList, startTicketId) {
     const sym = t.ticketName
     if (!symbolGroups[sym]) symbolGroups[sym] = []
     symbolGroups[sym].push(t)
+  }
+
+  // Debug: log groups with more than 1 trade
+  for (const [symbol, group] of Object.entries(symbolGroups)) {
+    if (group.length > 1) {
+      console.log(`Single option group "${symbol}": ${group.length} trades`)
+      group.forEach(t => console.log(`  ${t.side} ${t.filledTime} qty=${t.legs[0].quantity} premium=${t.legs[0].premium}`))
+    }
   }
 
   for (const [symbol, group] of Object.entries(symbolGroups)) {
