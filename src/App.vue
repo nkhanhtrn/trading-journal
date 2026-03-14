@@ -3,7 +3,7 @@
     <!-- Main Content -->
     <main class="flex-1 max-w-6xl mx-auto px-4 py-6 pb-16 overflow-auto">
       <!-- Calendar Tab -->
-      <div v-if="activeTab === 'calendar'">
+      <div v-if="activeTab === 'calendar'" class="w-[630px] max-w-full mx-auto">
         <!-- Monthly P&L Dashboard -->
         <div class="bg-gray-800 rounded-lg p-4 mb-6">
           <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -66,14 +66,10 @@
               <button @click="prevMonth" class="text-gray-400 hover:text-white px-2 py-1 rounded hover:bg-gray-700">
                 <i class="fas fa-chevron-left"></i>
               </button>
-              <h2 class="text-lg font-semibold text-white">{{ formatMonth(currentMonth) }}</h2>
+              <h2 class="text-lg font-semibold text-white w-32 text-center">{{ formatMonth(currentMonth) }}</h2>
               <button @click="nextMonth" class="text-gray-400 hover:text-white px-2 py-1 rounded hover:bg-gray-700">
                 <i class="fas fa-chevron-right"></i>
               </button>
-            </div>
-            <div class="flex gap-1">
-              <button @click="selectThisWeek" class="text-xs bg-gray-700 hover:bg-gray-600 text-white px-2 py-1 rounded">This Week</button>
-              <button @click="selectThisMonth" class="text-xs bg-gray-700 hover:bg-gray-600 text-white px-2 py-1 rounded">This Month</button>
             </div>
           </div>
 
@@ -89,7 +85,7 @@
           </div>
 
           <!-- Calendar Grid -->
-          <div class="grid grid-cols-7 gap-1">
+          <div class="grid grid-cols-7 grid-rows-5 gap-1">
             <div v-for="day in ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']" :key="day" class="text-center text-xs text-gray-500 py-2">
               {{ day }}
             </div>
@@ -98,7 +94,7 @@
               :key="day.date"
               @click="selectDate(day.date)"
               :class="[
-                'p-2 text-center rounded cursor-pointer text-sm transition-colors min-h-16',
+                'p-2 text-center rounded cursor-pointer text-sm transition-colors h-16 flex flex-col justify-center',
                 !day.date ? 'pointer-events-none' : '',
                 day.pnl === 0 ? 'text-gray-600' : '',
                 day.pnl > 0 ? 'bg-green-900 hover:bg-green-800 text-green-300' : '',
@@ -115,7 +111,7 @@
       </div>
 
       <!-- Trades Tab -->
-      <div v-if="activeTab === 'trades'">
+      <div v-if="activeTab === 'trades'" class="w-[630px] max-w-full mx-auto">
         <!-- Open Positions Section -->
         <div v-if="groupedOpenPositions.length > 0" class="mb-6">
           <div class="flex items-center justify-between mb-3 cursor-pointer" @click="openPositionsCollapsed = !openPositionsCollapsed">
@@ -272,7 +268,7 @@
       </div>
 
       <!-- Dashboard Tab -->
-      <div v-if="activeTab === 'dashboard'">
+      <div v-if="activeTab === 'dashboard'" class="w-[630px] max-w-full mx-auto">
         <div class="bg-gray-800 rounded-lg p-4 mb-6">
           <!-- Year Selector -->
           <div class="flex items-center justify-between mb-4">
@@ -2563,50 +2559,6 @@ const selectDate = (date) => {
   tradeDateRangeStart.value = date
   tradeDateRangeEnd.value = null
   pendingDatePickerValue.value = date
-  activeTab.value = 'trades'
-}
-
-const selectThisWeek = () => {
-  const now = new Date()
-  const dayOfWeek = now.getDay()
-  const startOfWeek = new Date(now)
-  startOfWeek.setDate(now.getDate() - dayOfWeek)
-  const endOfWeek = new Date(startOfWeek)
-  endOfWeek.setDate(startOfWeek.getDate() + 6)
-
-  const startDate = startOfWeek.toISOString().split('T')[0]
-  const endDate = endOfWeek.toISOString().split('T')[0]
-
-  dateRange.value = {
-    mode: 'week',
-    start: startDate,
-    end: endDate,
-    single: null
-  }
-  tradeDateRangeStart.value = startDate
-  tradeDateRangeEnd.value = endDate
-  pendingDatePickerValue.value = [startOfWeek, endOfWeek]
-  activeTab.value = 'trades'
-}
-
-const selectThisMonth = () => {
-  const year = currentMonth.value.getFullYear()
-  const month = currentMonth.value.getMonth()
-  const startOfMonth = new Date(year, month, 1)
-  const endOfMonth = new Date(year, month + 1, 0)
-
-  const startDate = startOfMonth.toISOString().split('T')[0]
-  const endDate = endOfMonth.toISOString().split('T')[0]
-
-  dateRange.value = {
-    mode: 'month',
-    start: startDate,
-    end: endDate,
-    single: null
-  }
-  tradeDateRangeStart.value = startDate
-  tradeDateRangeEnd.value = endDate
-  pendingDatePickerValue.value = [startOfMonth, endOfMonth]
   activeTab.value = 'trades'
 }
 
