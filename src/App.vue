@@ -233,10 +233,8 @@
               </div>
             </div>
 
-            <!-- Empty Component -->
-            <div class="bg-gray-800 rounded-lg p-3 flex flex-col min-h-0">
-              <!-- Empty component placeholder -->
-            </div>
+            <!-- Dashboard Charts -->
+            <DashboardCharts :yearly-summary="yearlySummary" />
           </div>
 
           <!-- Right: Tabbed Content -->
@@ -603,6 +601,7 @@
 import { ref, computed, onMounted, nextTick, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import SummaryCards from './components/SummaryCards.vue'
+import DashboardCharts from './components/DashboardCharts.vue'
 import { detectStrategy, getStrategyDisplayName } from './utils/strategyDetector.js'
 import TradeFormModal from './components/TradeFormModal.vue'
 import MiniCalendarDots from './components/MiniCalendarDots.vue'
