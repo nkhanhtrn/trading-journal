@@ -131,7 +131,7 @@
             </div>
 
             <!-- Charts -->
-            <DashboardCharts :yearly-summary="filteredYearlySummary" :full-year-summary="yearlySummary" />
+            <DashboardCharts :yearly-summary="filteredYearlySummary" :full-year-summary="yearlySummary" :tickets="filteredTickets" :all-tickets="tickets" :selected-date="selectedTradeDate" />
           </div>
 
           <!-- Right Column: Trades List + Strategies -->
