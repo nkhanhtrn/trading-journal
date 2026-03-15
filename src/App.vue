@@ -1,52 +1,52 @@
 <template>
   <div class="h-screen bg-gray-900 flex flex-col overflow-hidden">
     <!-- Main Content -->
-    <div class="pl-14 flex-1 flex flex-col min-h-0">
-      <main class="flex-1 max-w-6xl w-full mx-auto px-4 py-6 overflow-hidden">
+    <div class="pl-14 flex-1 flex flex-col min-h-0 overflow-y-auto sm:overflow-hidden">
+      <main class="flex-1 max-w-6xl w-full mx-auto px-3 sm:px-4 py-3 sm:py-6 overflow-hidden sm:overflow-hidden">
       <!-- Calendar & Dashboard Merged View -->
-      <div v-if="activeTab === 'calendar' || activeTab === 'dashboard'" class="h-full grid grid-rows-[auto_1fr] gap-4 overflow-hidden">
+      <div v-if="activeTab === 'calendar' || activeTab === 'dashboard'" class="h-full grid grid-rows-[auto_1fr] gap-3 sm:gap-4 overflow-hidden sm:overflow-hidden">
         <!-- Header: Month Selector + Summary Cards -->
-        <div class="grid grid-cols-[auto_1fr] gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-[auto_1fr] gap-3 sm:gap-4">
           <!-- Month Selector -->
-          <div class="bg-gray-800 rounded-lg px-4 py-2 flex items-center justify-between">
-            <h2 class="text-lg font-semibold text-white">Dashboard</h2>
-            <div class="flex items-center gap-2">
-              <button @click="prevMonth" class="text-gray-400 hover:text-white px-2 py-1 rounded hover:bg-gray-700">
-                <i class="fas fa-chevron-left"></i>
+          <div class="bg-gray-800 rounded-lg px-3 sm:px-4 py-2 sm:py-2.5 flex items-center justify-between">
+            <h2 class="text-base sm:text-lg font-semibold text-white">Dashboard</h2>
+            <div class="flex items-center gap-1.5 sm:gap-2">
+              <button @click="prevMonth" class="text-gray-400 hover:text-white px-1.5 sm:px-2 py-1 rounded hover:bg-gray-700">
+                <i class="fas fa-chevron-left text-sm sm:text-base"></i>
               </button>
-              <span class="text-white font-medium">{{ formatMonth(currentMonth) }}</span>
-              <button @click="nextMonth" class="text-gray-400 hover:text-white px-2 py-1 rounded hover:bg-gray-700">
-                <i class="fas fa-chevron-right"></i>
+              <span class="text-white font-medium w-24 sm:w-28 text-center text-sm sm:text-base">{{ formatMonth(currentMonth) }}</span>
+              <button @click="nextMonth" class="text-gray-400 hover:text-white px-1.5 sm:px-2 py-1 rounded hover:bg-gray-700">
+                <i class="fas fa-chevron-right text-sm sm:text-base"></i>
               </button>
             </div>
           </div>
           <!-- Summary Cards -->
-          <div class="grid grid-cols-4 gap-3">
-            <div class="bg-gray-800 rounded-lg px-3 py-2 text-center">
-              <div class="text-xl font-bold" :class="monthlySummary.totalPnL >= 0 ? 'text-green-400' : 'text-red-400'">
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
+            <div class="bg-gray-800 rounded-lg px-2 sm:px-3 py-2 sm:py-2.5 text-center">
+              <div class="text-lg sm:text-xl font-bold" :class="monthlySummary.totalPnL >= 0 ? 'text-green-400' : 'text-red-400'">
                 {{ monthlySummary.totalPnL >= 0 ? '+' : '' }}${{ monthlySummary.totalPnL.toFixed(0) }}
               </div>
-              <div class="text-xs text-gray-400">P&L</div>
+              <div class="text-[10px] sm:text-xs text-gray-400 mt-0.5 sm:mt-0">P&L</div>
             </div>
-            <div class="bg-gray-800 rounded-lg px-3 py-2 text-center">
-              <div class="text-xl font-bold text-white">{{ monthlySummary.count }}</div>
-              <div class="text-xs text-gray-400">Trades</div>
+            <div class="bg-gray-800 rounded-lg px-2 sm:px-3 py-2 sm:py-2.5 text-center">
+              <div class="text-lg sm:text-xl font-bold text-white">{{ monthlySummary.count }}</div>
+              <div class="text-[10px] sm:text-xs text-gray-400 mt-0.5 sm:mt-0">Trades</div>
             </div>
-            <div class="bg-gray-800 rounded-lg px-3 py-2 text-center">
-              <div class="text-xl font-bold text-green-400">{{ monthlySummary.winRate }}%</div>
-              <div class="text-xs text-gray-400">Win Rate</div>
+            <div class="bg-gray-800 rounded-lg px-2 sm:px-3 py-2 sm:py-2.5 text-center">
+              <div class="text-lg sm:text-xl font-bold text-green-400">{{ monthlySummary.winRate }}%</div>
+              <div class="text-[10px] sm:text-xs text-gray-400 mt-0.5 sm:mt-0">Win Rate</div>
             </div>
-            <div class="bg-gray-800 rounded-lg px-3 py-2 text-center">
-              <div class="text-xl font-bold text-blue-400">{{ monthlySummary.profitFactor.toFixed(1) }}x</div>
-              <div class="text-xs text-gray-400">PF</div>
+            <div class="bg-gray-800 rounded-lg px-2 sm:px-3 py-2 sm:py-2.5 text-center">
+              <div class="text-lg sm:text-xl font-bold text-blue-400">{{ monthlySummary.profitFactor.toFixed(1) }}x</div>
+              <div class="text-[10px] sm:text-xs text-gray-400 mt-0.5 sm:mt-0">PF</div>
             </div>
           </div>
         </div>
 
         <!-- Main Content: Calendar + Dashboard -->
-        <div class="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-4 min-h-0 min-w-0">
+        <div class="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-3 sm:gap-4 min-h-0 min-w-0">
           <!-- Left Column: Tabbed Content + Charts -->
-          <div class="grid grid-rows-[1.5fr_1fr] gap-4 min-h-0 min-w-0">
+          <div class="grid grid-rows-[1fr_1fr] sm:grid-rows-[1.5fr_1fr] gap-3 sm:gap-4 min-h-0 min-w-0">
             <!-- Tabbed Content -->
             <div class="bg-gray-800 rounded-lg flex flex-col min-h-0">
               <!-- Tabs -->
