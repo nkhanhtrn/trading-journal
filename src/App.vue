@@ -563,7 +563,6 @@
 
 <script setup>
 import { ref, computed, onMounted, nextTick, watch } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
 import SummaryCards from './components/SummaryCards.vue'
 import DashboardCharts from './components/DashboardCharts.vue'
 import { detectStrategy, getStrategyDisplayName } from './utils/strategyDetector.js'
@@ -574,9 +573,6 @@ import flatpickr from 'flatpickr'
 import 'flatpickr/dist/flatpickr.css'
 import 'flatpickr/dist/themes/dark.css'
 
-const router = useRouter()
-const route = useRoute()
-
 // Local storage keys
 const STORAGE_KEY = 'trading_journal_tickets'
 const RAW_TRANSACTIONS_KEY = 'trading_journal_raw_transactions'
@@ -586,21 +582,13 @@ const rawTransactions = ref([])  // Store all raw CSV transactions for re-matchi
 const showAddModal = ref(false)
 const showSettingsModal = ref(false)
 
-// Active tab state - synced with route
-const activeTab = ref(route.name || 'calendar')
+// Active tab state
+const activeTab = ref('dashboard')
 
-// Navigate to a tab and update URL
+// Navigate to a tab
 const navigateTo = (tab) => {
   activeTab.value = tab
-  router.push({ name: tab })
 }
-
-// Watch route changes and update active tab
-watch(() => route.name, (newName) => {
-  if (newName && ['calendar', 'dashboard'].includes(newName)) {
-    activeTab.value = newName
-  }
-})
 
 // Settings
 const SETTINGS_KEY = 'trading_journal_settings'
