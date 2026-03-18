@@ -526,7 +526,7 @@
       <!-- Data Management Section -->
       <div class="border-t border-gray-700 pt-4">
         <h4 class="text-sm font-medium text-gray-300 mb-2">Data Management</h4>
-        <div class="flex gap-2">
+        <div class="flex gap-2 mb-2">
           <button
             @click="clearPriceCache"
             class="flex-1 text-sm bg-gray-700 hover:bg-gray-600 text-white px-3 py-2 rounded transition-colors"
@@ -540,7 +540,16 @@
             Clear All Trading Data
           </button>
         </div>
-        <p class="text-xs text-gray-500 mt-1">Clear cached prices or permanently delete all data</p>
+        <div class="flex gap-2">
+          <button
+            @click="rematchAllTickets"
+            :disabled="isRematching"
+            class="w-full text-sm bg-blue-900/50 hover:bg-blue-900/70 text-blue-300 px-3 py-2 rounded transition-colors disabled:opacity-50"
+          >
+            {{ isRematching ? 'Re-matching...' : 'Re-match All Tickets' }}
+          </button>
+        </div>
+        <p class="text-xs text-gray-500 mt-1">Match BUY/SELL tickets that should close each other</p>
       </div>
 
       <template #footer>
@@ -708,6 +717,7 @@ const importBackup = (event) => {
 
 const csvInputRef = ref(null)
 const isUploading = ref(false)
+const isRematching = ref(false)
 const uploadMessage = ref('')
 
 // Load tickets from localStorage on mount
@@ -859,7 +869,7 @@ const handleCsvUpload = async (event) => {
           return ol.strike === nl.strike &&
                  ol.type === nl.type &&
                  ol.expiry === nl.expiry &&
-                 ol.action === nl.action &&
+                 // Note: Don't compare action - for closing trades, actions are opposite (sell to open, buy to close)
                  ol.quantity === nl.quantity
         })
 
@@ -881,12 +891,22 @@ const handleCsvUpload = async (event) => {
     }
 
     // Helper function to create a unique key for a ticket
+    // For closed tickets, only use entry legs (first half) for duplicate detection
     const getTicketKey = (ticket) => {
       const legs = ticket.strategies[0].legs
-      const legsKey = legs.map(l =>
+      let legsForKey = legs
+
+      // For closed tickets, only use entry legs (first half) for the key
+      // A closed ticket has legs.length that is even (entry legs + exit legs)
+      if (ticket.exit_date && legs.length % 2 === 0) {
+        legsForKey = legs.slice(0, legs.length / 2)
+      }
+
+      const legsKey = legsForKey.map(l =>
         `${l.action}|${l.type}|${l.strike}|${l.expiry}|${l.quantity}`
       ).sort().join('||')
-      return `${ticket.symbol}|${ticket.date}|${ticket.exit_date || ''}|${legsKey}`
+      // Don't include exit_date in key - allows matching open tickets with closed versions
+      return `${ticket.symbol}|${ticket.date}|${legsKey}`
     }
 
     // Get existing ticket keys to prevent duplicates
@@ -1747,6 +1767,125 @@ const clearAllData = () => {
     localStorage.removeItem(STORAGE_KEY)
     uploadMessage.value = 'All data cleared'
     setTimeout(() => uploadMessage.value = '', 2000)
+  }
+}
+
+// Re-match all tickets - match BUY/SELL pairs that should close each other
+const rematchAllTickets = async () => {
+  if (!confirm('Re-match all tickets? This will match BUY and SELL positions that should close each other.')) {
+    return
+  }
+
+  isRematching.value = true
+  uploadMessage.value = 'Re-matching tickets...'
+
+  try {
+    // Convert tickets back to trade format for matching
+    const trades = []
+    let nextTicketId = Math.max(...tickets.value.map(t => t.ticket), 0) + 1
+
+    for (const ticket of tickets.value) {
+      const legs = ticket.strategies[0]?.legs || []
+      if (legs.length === 0) continue
+
+      // For OPEN tickets, extract entry trade
+      if (ticket.status === 'OPEN') {
+        const side = legs[0].action === 'buy' ? 'Buy' : 'Sell'
+        trades.push({
+          ticketName: ticket.strategies[0]?.name || ticket.symbol,
+          side,
+          status: ticket.status,
+          filledTime: ticket.strategies[0]?.entry_time || ticket.date,
+          legs: legs.map(l => ({
+            strike: l.strike,
+            type: l.type,
+            date: l.expiry,
+            side: l.action === 'buy' ? 'Buy' : 'Sell',
+            quantity: l.quantity,
+            premium: l.premium,
+            filledTime: ticket.strategies[0]?.entry_time || ticket.date
+          }))
+        })
+      } else {
+        // For CLOSED tickets, we could extract both entry and exit
+        // For now, skip closed tickets as they're already matched
+        continue
+      }
+    }
+
+    // Group trades by leg signature and match them
+    const sigGroups = {}
+    for (const t of trades) {
+      const sig = t.legs.map(l => `${l.strike}-${l.type}-${l.date}`).sort().join('|')
+      if (!sigGroups[sig]) sigGroups[sig] = []
+      sigGroups[sig].push(t)
+    }
+
+    const newTickets = []
+    for (const group of Object.values(sigGroups)) {
+      group.sort((a, b) => compareDates(a.filledTime, b.filledTime))
+      const openPositions = []
+
+      for (const trade of group) {
+        const isCredit = trade.side === 'Sell'
+        const qty = trade.legs[0].quantity
+
+        if (isCredit) {
+          let remaining = qty
+          for (let i = 0; i < openPositions.length && remaining > 0; i++) {
+            const pos = openPositions[i]
+            if (!pos.isCredit && pos.remaining > 0) {
+              const closeQty = Math.min(remaining, pos.remaining)
+              const pnl = calcPnL(pos.trade, trade, closeQty)
+              newTickets.push(createClosedTicket(pos.trade, trade, closeQty, pnl, nextTicketId++))
+              pos.remaining -= closeQty
+              remaining -= closeQty
+              if (pos.remaining <= 0) { openPositions.splice(i, 1); i-- }
+            }
+          }
+          if (remaining > 0) openPositions.push({ trade, remaining, isCredit: true })
+        } else {
+          let remaining = qty
+          for (let i = 0; i < openPositions.length && remaining > 0; i++) {
+            const pos = openPositions[i]
+            if (pos.isCredit && pos.remaining > 0) {
+              const closeQty = Math.min(remaining, pos.remaining)
+              const pnl = calcPnL(pos.trade, trade, closeQty)
+              newTickets.push(createClosedTicket(pos.trade, trade, closeQty, pnl, nextTicketId++))
+              pos.remaining -= closeQty
+              remaining -= closeQty
+              if (pos.remaining <= 0) { openPositions.splice(i, 1); i-- }
+            }
+          }
+          if (remaining > 0) openPositions.push({ trade, remaining, isCredit: false })
+        }
+      }
+
+      for (const pos of openPositions) {
+        if (pos.remaining > 0) {
+          newTickets.push(createOpenTicket(pos.trade, pos.remaining, nextTicketId++))
+        }
+      }
+    }
+
+    // Add back closed tickets that weren't re-matched
+    const unchangedClosed = tickets.value.filter(t => t.status !== 'OPEN')
+    tickets.value = [...unchangedClosed, ...newTickets].sort((a, b) => a.ticket - b.ticket)
+
+    // Save to storage
+    saveTicketsToStorage()
+
+    const closedCount = newTickets.filter(t => t.status !== 'OPEN').length
+    const openCount = newTickets.filter(t => t.status === 'OPEN').length
+
+    uploadMessage.value = `Re-matched: ${closedCount} closed, ${openCount} still open`
+    setTimeout(() => uploadMessage.value = '', 3000)
+  } catch (e) {
+    console.error('Error re-matching tickets:', e)
+    uploadMessage.value = 'Error re-matching tickets'
+    setTimeout(() => uploadMessage.value = '', 3000)
+  } finally {
+    isRematching.value = false
   }
 }
 const currentMonth = ref(new Date(2026, 2, 1)) // March 2026
