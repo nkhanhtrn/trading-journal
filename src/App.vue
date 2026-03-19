@@ -198,8 +198,9 @@
                       <div class="flex items-center justify-between mb-1">
                         <div class="flex items-center gap-1.5">
                           <span class="text-xs font-medium text-white">{{ group.strategyName }}</span>
-                          <span class="text-xs text-gray-400">{{ group.strikes }}</span>
+                          <span class="text-xs text-gray-500">{{ group.strikes }}</span>
                           <span class="text-xs bg-gray-600 text-gray-300 px-1.5 py-0.5 rounded">{{ group.expiry }}</span>
+                          <span v-if="getGroupPositionDirectionLabel(group)" class="text-xs text-gray-400">{{ getGroupPositionDirectionLabel(group) }}</span>
                         </div>
                         <MiniCalendarDots :entry-dates="getEntryDates(group)" :exit-dates="getExitDates(group)" :expiry-dates="getExpiryDates(group)" />
                       </div>
@@ -232,7 +233,10 @@
                     <div class="text-sm font-bold text-white mb-1">{{ trade.symbol }}</div>
 
                     <!-- Strategy + Strike (symbol removed from strategyName) -->
-                    <div class="text-xs text-gray-300 mb-2">{{ trade.strategyName.replace(new RegExp(`^${trade.symbol}\\s+`, 'i'), '') }} {{ trade.strikes }}</div>
+                    <div class="text-xs text-gray-300 mb-1">{{ trade.strategyName.replace(new RegExp(`^${trade.symbol}\\s+`, 'i'), '') }} {{ trade.strikes }}</div>
+
+                    <!-- Position Direction -->
+                    <div v-if="getGroupPositionDirectionLabel(trade)" class="text-xs text-gray-500 mb-2">{{ getGroupPositionDirectionLabel(trade) }}</div>
 
                     <!-- Mini Calendar -->
                     <div class="mb-2">
@@ -2136,6 +2140,31 @@ const ticketsSummary = computed(() => {
 // Get position direction label (LONG/SHORT + PUT/CALL)
 function getPositionDirectionLabel() {
   const tickets = selectedPositionGroup.value?.tickets || selectedPositionGroup.value?.positions || []
+  if (tickets.length === 0) return ''
+
+  const ticket = tickets[0]
+  const legs = ticket.strategies?.[0]?.legs || []
+  if (legs.length === 0) return ''
+
+  // Determine if long or short based on first leg action
+  const firstLeg = legs[0]
+  const direction = firstLeg.action === 'buy' ? 'LONG' : 'SHORT'
+
+  // Determine the option type(s) involved
+  const types = [...new Set(legs.map(l => l.type.toUpperCase()))]
+
+  // For single leg or same type
+  if (types.length === 1) {
+    return `${direction} ${types[0]}`
+  }
+
+  // For mixed types (spreads), show both
+  return `${direction} ${types.join('/')}`
+}
+
+// Get position direction label for any group
+function getGroupPositionDirectionLabel(group) {
+  const tickets = group.tickets || group.positions || []
   if (tickets.length === 0) return ''
 
   const ticket = tickets[0]
