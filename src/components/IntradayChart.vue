@@ -74,6 +74,17 @@
                   {{ option.label }}
                 </button>
               </div>
+              <!-- Indicator Toggle -->
+              <button
+                @click="showVWAP = !showVWAP"
+                class="px-2 py-1 text-xs rounded transition-colors"
+                :class="showVWAP
+                  ? 'bg-yellow-600 text-white'
+                  : 'bg-gray-700 text-gray-300 hover:bg-gray-600'"
+                title="Toggle VWAP"
+              >
+                VWAP
+              </button>
               <div v-if="daysHeld > 0" class="text-gray-500 text-sm">
                 <i class="fas fa-clock mr-1"></i>
                 {{ daysHeld }} day{{ daysHeld > 1 ? 's' : '' }} held
@@ -154,6 +165,11 @@ const positionIndex = computed({
 const intradayData = ref({ entry: [], exit: [] })
 const loading = ref(false)
 const selectedTimeframe = ref('5m')
+const showVWAP = ref(false)
+
+const INDICATORS = [
+  { value: 'vwap', label: 'VWAP' }
+]
 
 const TIMEFRAME_OPTIONS = [
   { value: '5m', label: '5m', minutes: 5 },
@@ -325,21 +341,88 @@ function parseExitTime(ticket) {
   return new Date(ticket.exit_date + 'T16:00:00-05:00')
 }
 
+// Calculate VWAP (Volume Weighted Average Price) with standard deviation bands
+function calculateVWAP(data) {
+  if (!data || data.length === 0) {
+    return { vwap: [], upper1: [], lower1: [], upper2: [], lower2: [] }
+  }
+
+  const vwapData = []
+  const typicalPrices = []
+  let cumulativeVolumePrice = 0
+  let cumulativeVolume = 0
+
+  // First pass: calculate VWAP
+  for (let i = 0; i < data.length; i++) {
+    const typicalPrice = (data[i].high + data[i].low + data[i].close) / 3
+    typicalPrices.push(typicalPrice)
+    const volume = data[i].volume || 0
+
+    cumulativeVolumePrice += typicalPrice * volume
+    cumulativeVolume += volume
+
+    if (cumulativeVolume > 0) {
+      vwapData.push(cumulativeVolumePrice / cumulativeVolume)
+    } else {
+      vwapData.push(null)
+    }
+  }
+
+  // Calculate standard deviation bands
+  const upper1Data = []
+  const lower1Data = []
+  const upper2Data = []
+  const lower2Data = []
+
+  for (let i = 0; i < data.length; i++) {
+    if (vwapData[i] === null) {
+      upper1Data.push(null)
+      lower1Data.push(null)
+      upper2Data.push(null)
+      lower2Data.push(null)
+      continue
+    }
+
+    // Calculate squared deviations from VWAP up to this point
+    let sumSquaredDev = 0
+    let sumVolume = 0
+
+    for (let j = 0; j <= i; j++) {
+      const volume = data[j].volume || 0
+      sumSquaredDev += Math.pow(typicalPrices[j] - vwapData[i], 2) * volume
+      sumVolume += volume
+    }
+
+    if (sumVolume > 0) {
+      const variance = sumSquaredDev / sumVolume
+      const stdDev = Math.sqrt(variance)
+
+      upper1Data.push(vwapData[i] + stdDev)
+      lower1Data.push(vwapData[i] - stdDev)
+      upper2Data.push(vwapData[i] + stdDev * 2)
+      lower2Data.push(vwapData[i] - stdDev * 2)
+    } else {
+      upper1Data.push(null)
+      lower1Data.push(null)
+      upper2Data.push(null)
+      lower2Data.push(null)
+    }
+  }
+
+  return { vwap: vwapData, upper1: upper1Data, lower1: lower1Data, upper2: upper2Data, lower2: lower2Data }
+}
+
 // Build candlestick data
-function buildCandlestickData(data, entryTime, exitTime, showEntry, showExit, entryAction, exitAction) {
+function buildCandlestickData(data, entryTime, exitTime, showEntry, showExit, entryAction, exitAction, includeVWAP = false) {
   if (!data || data.length === 0) {
     return { labels: [], datasets: [] }
   }
 
   const labels = data.map(point => {
     const date = new Date(point.time)
-    // Format time in EST (UTC-5)
-    const hours = date.getUTCHours() - 5
-    const adjustedHours = ((hours % 24) + 24) % 24 // Handle negative values
-    const minutes = date.getUTCMinutes()
-    const ampm = adjustedHours >= 12 ? 'PM' : 'AM'
-    const displayHours = adjustedHours % 12 || 12
-    return `${displayHours}:${minutes.toString().padStart(2, '0')} ${ampm}`
+    // Format time in Eastern Time (America/New_York)
+    const options = { hour: 'numeric', minute: '2-digit', hour12: true, timeZone: 'America/New_York' }
+    return date.toLocaleTimeString('en-US', options)
   })
 
   // Wicks (thin bars from low to high)
@@ -355,6 +438,17 @@ function buildCandlestickData(data, entryTime, exitTime, showEntry, showExit, en
   const bodyColors = data.map(point => point.close >= point.open ? '#10B981' : '#EF4444')
   const bodyBorderColors = data.map(point => point.close >= point.open ? '#059669' : '#DC2626')
 
+  // Volume data with colors matching candlesticks
+  const volumeData = data.map(point => point.volume || 0)
+  const volumeColors = data.map(point => {
+    const alpha = 0.3
+    if (point.close >= point.open) {
+      return `rgba(16, 185, 129, ${alpha})` // Green with opacity
+    } else {
+      return `rgba(239, 68, 68, ${alpha})` // Red with opacity
+    }
+  })
+
   const datasets = [
     {
       type: 'bar',
@@ -363,7 +457,8 @@ function buildCandlestickData(data, entryTime, exitTime, showEntry, showExit, en
       backgroundColor: bodyColors,
       barPercentage: 0.05,
       categoryPercentage: 1.0,
-      order: 1
+      order: 1,
+      yAxisID: 'y'
     },
     {
       type: 'bar',
@@ -374,9 +469,81 @@ function buildCandlestickData(data, entryTime, exitTime, showEntry, showExit, en
       borderWidth: 1,
       barPercentage: 0.8,
       categoryPercentage: 1.0,
-      order: 2
+      order: 2,
+      yAxisID: 'y'
+    },
+    {
+      type: 'bar',
+      label: 'Volume',
+      data: volumeData,
+      backgroundColor: volumeColors,
+      barPercentage: 0.8,
+      categoryPercentage: 1.0,
+      order: 3,
+      yAxisID: 'y1'
     }
   ]
+
+  // Add VWAP 2SD line if enabled
+  if (includeVWAP) {
+    const vwapResult = calculateVWAP(data)
+
+    datasets.push({
+      type: 'line',
+      label: 'VWAP ±2SD',
+      data: vwapResult.vwap,
+      borderColor: '#FBBF24',
+      backgroundColor: 'transparent',
+      borderWidth: 1,
+      pointRadius: 0,
+      pointHoverRadius: 6,
+      pointHitRadius: 10,
+      fill: false,
+      tension: 0.1,
+      order: 0,
+      yAxisID: 'y'
+    })
+
+    datasets.push({
+      type: 'line',
+      label: 'VWAP +2SD',
+      data: vwapResult.upper2,
+      borderColor: '#22C55E',
+      backgroundColor: 'transparent',
+      borderWidth: 1,
+      borderDash: [3, 3],
+      pointRadius: 0,
+      pointHoverRadius: 0,
+      fill: false,
+      tension: 0.1,
+      order: 0,
+      yAxisID: 'y',
+      interaction: {
+        mode: 'none',
+        intersect: false
+      }
+    })
+
+    datasets.push({
+      type: 'line',
+      label: 'VWAP -2SD',
+      data: vwapResult.lower2,
+      borderColor: '#EF4444',
+      backgroundColor: 'transparent',
+      borderWidth: 1,
+      borderDash: [3, 3],
+      pointRadius: 0,
+      pointHoverRadius: 0,
+      fill: false,
+      tension: 0.1,
+      order: 0,
+      yAxisID: 'y',
+      interaction: {
+        mode: 'none',
+        intersect: false
+      }
+    })
+  }
 
   // Add entry marker
   if (showEntry && entryTime) {
@@ -397,7 +564,8 @@ function buildCandlestickData(data, entryTime, exitTime, showEntry, showExit, en
         pointRadius: 8,
         pointHoverRadius: 10,
         type: 'scatter',
-        order: 0
+        order: 0,
+        yAxisID: 'y'
       })
     }
   }
@@ -428,7 +596,8 @@ function buildCandlestickData(data, entryTime, exitTime, showEntry, showExit, en
         pointRadius: 8,
         pointHoverRadius: 10,
         type: 'scatter',
-        order: 0
+        order: 0,
+        yAxisID: 'y'
       })
     }
   }
@@ -450,7 +619,7 @@ const entryChartData = computed(() => {
   const exitTime = isSameDayExit.value ? parseExitTime(ticket) : null
   const entryAction = ticket.strategies?.[0]?.legs?.[0]?.action || 'buy'
 
-  return buildCandlestickData(data.entry, entryTime, exitTime, props.showEntry, isSameDayExit.value, entryAction, null)
+  return buildCandlestickData(data.entry, entryTime, exitTime, props.showEntry, isSameDayExit.value, entryAction, null, showVWAP.value)
 })
 
 // Exit day chart data
@@ -467,7 +636,7 @@ const exitChartData = computed(() => {
   const exitAction = entryAction === 'buy' ? 'sell' : 'buy'
   const exitTime = parseExitTime(ticket)
 
-  return buildCandlestickData(data.exit, null, exitTime, false, props.showExit, entryAction, exitAction)
+  return buildCandlestickData(data.exit, null, exitTime, false, props.showExit, entryAction, exitAction, showVWAP.value)
 })
 
 // Single chart data (for same-day or entry-only)
@@ -485,7 +654,7 @@ const chartData = computed(() => {
   const entryAction = ticket.strategies?.[0]?.legs?.[0]?.action || 'buy'
   const exitAction = entryAction === 'buy' ? 'sell' : 'buy'
 
-  return buildCandlestickData(data.entry, entryTime, exitTime, props.showEntry, isSameDayExit.value && props.showExit, entryAction, exitAction)
+  return buildCandlestickData(data.entry, entryTime, exitTime, props.showEntry, isSameDayExit.value && props.showExit, entryAction, exitAction, showVWAP.value)
 })
 
 // Chart options
@@ -507,24 +676,42 @@ const chartOptions = computed(() => ({
       callbacks: {
         title: (context) => context[0].label,
         label: (context) => {
-          if (context.dataset.label === 'Entry' || context.dataset.label === 'Exit') {
+          // Only show tooltip for the dataset actually being hovered
+          if (context.dataset.label === 'Entry') {
             const ticket = currentTicket.value
             if (ticket) {
-              const legs = ticket.strategies?.[0]?.legs || []
               const strategyName = ticket.strategies?.[0]?.name || ticket.symbol
-              const legDetails = legs.map(leg => {
-                const action = leg.action === 'buy' ? 'LONG' : 'SHORT'
-                const type = leg.type.toUpperCase()
-                return `${action} ${type} $${leg.strike}`
-              }).join(', ')
               return [
-                `#${ticket.ticket} - ${strategyName}`,
-                `Legs: ${legDetails}`,
-                ticket.status !== 'OPEN' ? `P&L: ${ticket.pnl >= 0 ? '+' : ''}$${ticket.pnl}` : 'Open Position'
+                `🟢 ENTRY POSITION`,
+                `Price: $${context.raw.toFixed(2)}`,
+                `Ticket #${ticket.ticket} - ${strategyName}`
               ]
             }
           }
-          return null // Don't show tooltip for Price (candlesticks)
+          if (context.dataset.label === 'Exit') {
+            const ticket = currentTicket.value
+            if (ticket) {
+              return [
+                `🔴 EXIT POSITION`,
+                `Price: $${context.raw.toFixed(2)}`,
+                ticket.status !== 'OPEN' ? `P&L: ${ticket.pnl >= 0 ? '+' : ''}$${ticket.pnl.toFixed(2)}` : null
+              ].filter(Boolean)
+            }
+          }
+          if (context.dataset.label === 'Volume') {
+            const volume = context.raw
+            let volumeStr = volume.toLocaleString()
+            if (volume >= 1000000) {
+              volumeStr = (volume / 1000000).toFixed(2) + 'M'
+            } else if (volume >= 1000) {
+              volumeStr = (volume / 1000).toFixed(0) + 'K'
+            }
+            return `Volume: ${volumeStr}`
+          }
+          if (context.dataset.label === 'VWAP ±2SD' && context.raw != null) {
+            return `VWAP: $${context.raw.toFixed(2)}`
+          }
+          return null
         }
       }
     }
@@ -536,15 +723,33 @@ const chartOptions = computed(() => ({
       ticks: { color: 'rgba(229, 231, 235, 0.8)', font: { size: 10 }, maxTicksLimit: 8 }
     },
     y: {
+      type: 'linear',
+      display: true,
+      position: 'left',
       grid: { color: 'rgba(75, 85, 99, 0.3)', drawBorder: false },
       ticks: {
         color: 'rgba(229, 231, 235, 0.8)',
         font: { size: 10 },
         callback: (value) => '$' + value.toFixed(2)
       }
+    },
+    y1: {
+      type: 'linear',
+      display: true,
+      position: 'right',
+      grid: { display: false },
+      ticks: {
+        color: 'rgba(229, 231, 235, 0.6)',
+        font: { size: 9 },
+        callback: (value) => {
+          if (value >= 1000000) return (value / 1000000).toFixed(1) + 'M'
+          if (value >= 1000) return (value / 1000).toFixed(0) + 'K'
+          return value
+        }
+      }
     }
   },
-  interaction: { mode: 'index', intersect: false }
+  interaction: { mode: 'nearest', intersect: true }
 }))
 
 // Dynamic Y-axis zoom
@@ -562,19 +767,28 @@ const chartOptionsWithZoom = computed(() => {
   const range = maxPrice - minPrice
   const padding = range * 0.01 || 0.05
 
+  // Calculate volume max and set y1 axis to make bars only 20% tall
+  const allVolumes = data.entry.map(p => p.volume || 0)
+  const maxVolume = Math.max(...allVolumes)
+  const volumeY1Max = maxVolume * 5 // 5x so bars are only 20% of height
+
   return {
     ...chartOptions.value,
     scales: {
       ...chartOptions.value.scales,
       x: {
         ...chartOptions.value.scales.x,
-        grouped: false
+        stacked: true
       },
       y: {
         ...chartOptions.value.scales.y,
         min: minPrice - padding,
         max: maxPrice + padding,
         beginAtZero: false
+      },
+      y1: {
+        ...chartOptions.value.scales.y1,
+        max: volumeY1Max
       }
     }
   }
@@ -594,29 +808,10 @@ const entryChartOptionsWithZoom = computed(() => {
     const range = maxPrice - minPrice
     const padding = range * 0.01 || 0.05
 
-    return {
-      ...chartOptions.value,
-      scales: {
-        ...chartOptions.value.scales,
-        x: {
-          ...chartOptions.value.scales.x,
-          stacked: true
-        },
-        y: {
-          ...chartOptions.value.scales.y,
-          min: minPrice - padding,
-          max: maxPrice + padding,
-          beginAtZero: false
-        }
-      }
-    }
-  } else if (data.entry && data.entry.length > 0) {
-    const allLows = data.entry.map(p => p.low)
-    const allHighs = data.entry.map(p => p.high)
-    const minPrice = Math.min(...allLows)
-    const maxPrice = Math.max(...allHighs)
-    const range = maxPrice - minPrice
-    const padding = range * 0.01 || 0.05
+    // Calculate volume max for y1 axis
+    const allVolumes = allData.map(p => p.volume || 0)
+    const maxVolume = Math.max(...allVolumes)
+    const volumeY1Max = maxVolume * 5
 
     return {
       ...chartOptions.value,
@@ -631,6 +826,43 @@ const entryChartOptionsWithZoom = computed(() => {
           min: minPrice - padding,
           max: maxPrice + padding,
           beginAtZero: false
+        },
+        y1: {
+          ...chartOptions.value.scales.y1,
+          max: volumeY1Max
+        }
+      }
+    }
+  } else if (data.entry && data.entry.length > 0) {
+    const allLows = data.entry.map(p => p.low)
+    const allHighs = data.entry.map(p => p.high)
+    const minPrice = Math.min(...allLows)
+    const maxPrice = Math.max(...allHighs)
+    const range = maxPrice - minPrice
+    const padding = range * 0.01 || 0.05
+
+    // Calculate volume max for y1 axis
+    const allVolumes = data.entry.map(p => p.volume || 0)
+    const maxVolume = Math.max(...allVolumes)
+    const volumeY1Max = maxVolume * 5
+
+    return {
+      ...chartOptions.value,
+      scales: {
+        ...chartOptions.value.scales,
+        x: {
+          ...chartOptions.value.scales.x,
+          stacked: true
+        },
+        y: {
+          ...chartOptions.value.scales.y,
+          min: minPrice - padding,
+          max: maxPrice + padding,
+          beginAtZero: false
+        },
+        y1: {
+          ...chartOptions.value.scales.y1,
+          max: volumeY1Max
         }
       }
     }
@@ -653,29 +885,10 @@ const exitChartOptionsWithZoom = computed(() => {
     const range = maxPrice - minPrice
     const padding = range * 0.01 || 0.05
 
-    return {
-      ...chartOptions.value,
-      scales: {
-        ...chartOptions.value.scales,
-        x: {
-          ...chartOptions.value.scales.x,
-          stacked: true
-        },
-        y: {
-          ...chartOptions.value.scales.y,
-          min: minPrice - padding,
-          max: maxPrice + padding,
-          beginAtZero: false
-        }
-      }
-    }
-  } else if (data.exit && data.exit.length > 0) {
-    const allLows = data.exit.map(p => p.low)
-    const allHighs = data.exit.map(p => p.high)
-    const minPrice = Math.min(...allLows)
-    const maxPrice = Math.max(...allHighs)
-    const range = maxPrice - minPrice
-    const padding = range * 0.01 || 0.05
+    // Calculate volume max for y1 axis
+    const allVolumes = allData.map(p => p.volume || 0)
+    const maxVolume = Math.max(...allVolumes)
+    const volumeY1Max = maxVolume * 5
 
     return {
       ...chartOptions.value,
@@ -690,6 +903,43 @@ const exitChartOptionsWithZoom = computed(() => {
           min: minPrice - padding,
           max: maxPrice + padding,
           beginAtZero: false
+        },
+        y1: {
+          ...chartOptions.value.scales.y1,
+          max: volumeY1Max
+        }
+      }
+    }
+  } else if (data.exit && data.exit.length > 0) {
+    const allLows = data.exit.map(p => p.low)
+    const allHighs = data.exit.map(p => p.high)
+    const minPrice = Math.min(...allLows)
+    const maxPrice = Math.max(...allHighs)
+    const range = maxPrice - minPrice
+    const padding = range * 0.01 || 0.05
+
+    // Calculate volume max for y1 axis
+    const allVolumes = data.exit.map(p => p.volume || 0)
+    const maxVolume = Math.max(...allVolumes)
+    const volumeY1Max = maxVolume * 5
+
+    return {
+      ...chartOptions.value,
+      scales: {
+        ...chartOptions.value.scales,
+        x: {
+          ...chartOptions.value.scales.x,
+          stacked: true
+        },
+        y: {
+          ...chartOptions.value.scales.y,
+          min: minPrice - padding,
+          max: maxPrice + padding,
+          beginAtZero: false
+        },
+        y1: {
+          ...chartOptions.value.scales.y1,
+          max: volumeY1Max
         }
       }
     }
