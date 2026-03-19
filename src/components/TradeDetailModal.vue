@@ -5,9 +5,9 @@
       <div class="relative bg-gray-800 rounded-lg shadow-xl max-w-4xl w-full border border-gray-700 max-h-[90vh] overflow-y-auto">
         <!-- Header -->
         <div class="flex items-center justify-between p-4 border-b border-gray-700 sticky top-0 bg-gray-800 z-10">
-          <div>
-            <h2 class="text-lg font-bold text-white">{{ trade.symbol }} - #{{ trade.id }}</h2>
-            <p class="text-sm text-gray-400">{{ trade.date }}</p>
+          <div class="flex items-baseline gap-2">
+            <h2 class="text-lg font-bold text-white">{{ trade.symbol }}</h2>
+            <span class="text-[10px] text-gray-500">{{ trade.date }}</span>
           </div>
           <button @click="$emit('close')" class="text-gray-400 hover:text-white">
             <i class="fas fa-times"></i>

@@ -993,6 +993,9 @@ const handleCsvUpload = async (event) => {
     uploadMessage.value = message
     setTimeout(() => uploadMessage.value = '', 3000)
 
+    // Automatically re-match tickets after upload
+    await rematchAllTickets(true)
+
   } catch (e) {
     console.error('Error parsing CSV:', e)
     uploadMessage.value = 'Error parsing CSV file'
@@ -1811,8 +1814,8 @@ const clearAllData = () => {
 }
 
 // Re-match all tickets - match BUY/SELL pairs that should close each other
-const rematchAllTickets = async () => {
-  if (!confirm('Re-match all tickets? This will match BUY and SELL positions that should close each other.')) {
+const rematchAllTickets = async (skipConfirm = false) => {
+  if (!skipConfirm && !confirm('Re-match all tickets? This will match BUY and SELL positions that should close each other.')) {
     return
   }
 
