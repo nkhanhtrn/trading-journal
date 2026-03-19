@@ -93,25 +93,27 @@
           </div>
 
           <!-- Intraday Chart -->
-          <div v-if="intradayData && intradayData.length > 0" class="bg-gray-700 rounded p-4">
-            <div class="text-xs text-gray-400 mb-3">Intraday Price - {{ trade.date }}</div>
-            <div class="h-64">
+          <div class="bg-gray-700 rounded p-4">
+            <div class="flex items-center justify-between mb-3">
+              <div class="text-xs text-gray-400">Intraday Price - {{ trade.date }}</div>
+            </div>
+            <div v-if="intradayData && intradayData.length > 0" class="h-64">
               <Line :data="intradayChartData" :options="intradayChartOptions" />
-            </div>
-            <div class="flex justify-center gap-6 mt-3 text-xs">
-              <div class="flex items-center gap-2">
-                <span class="w-3 h-3 rounded-full bg-green-400"></span>
-                <span class="text-gray-400">Entry: {{ formatTime(entryTime) }}</span>
+              <div class="flex justify-center gap-6 mt-3 text-xs">
+                <div class="flex items-center gap-2">
+                  <span class="w-3 h-3 rounded-full bg-green-400"></span>
+                  <span class="text-gray-400">Entry: {{ formatTime(entryTime) }}</span>
+                </div>
+                <div v-if="exitTime" class="flex items-center gap-2">
+                  <span class="w-3 h-3 rounded-full bg-red-400"></span>
+                  <span class="text-gray-400">Exit: {{ formatTime(exitTime) }}</span>
+                </div>
               </div>
-              <div v-if="exitTime" class="flex items-center gap-2">
-                <span class="w-3 h-3 rounded-full bg-red-400"></span>
-                <span class="text-gray-400">Exit: {{ formatTime(exitTime) }}</span>
-              </div>
             </div>
-          </div>
-          <div v-else class="bg-gray-700 rounded p-4 text-center text-gray-400 text-sm">
-            <i class="fas fa-chart-line mr-2"></i>
-            Loading intraday data...
+            <div v-else class="text-center text-gray-400 text-sm">
+              <i class="fas fa-chart-line mr-2"></i>
+              Loading intraday data...
+            </div>
           </div>
 
           <!-- Actions -->

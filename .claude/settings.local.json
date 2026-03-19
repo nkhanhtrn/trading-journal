@@ -36,7 +36,8 @@
       "Bash(gcloud config:*)",
       "Bash(find:*)",
       "Bash(tree:*)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "Bash(pgrep:*)"
     ]
   }
 }

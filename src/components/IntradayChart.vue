@@ -59,9 +59,25 @@
                 <span v-if="exitTimeDisplay" class="text-gray-500 text-sm">{{ exitTimeDisplay }}</span>
               </div>
             </div>
-            <div v-if="daysHeld > 0" class="text-gray-500 text-sm">
-              <i class="fas fa-clock mr-1"></i>
-              {{ daysHeld }} day{{ daysHeld > 1 ? 's' : '' }} held
+            <div class="flex items-center gap-3">
+              <!-- Timeframe Selector -->
+              <div class="flex gap-1">
+                <button
+                  v-for="option in TIMEFRAME_OPTIONS"
+                  :key="option.value"
+                  @click="selectedTimeframe = option.value"
+                  class="px-2 py-1 text-xs rounded transition-colors"
+                  :class="selectedTimeframe === option.value
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-700 text-gray-300 hover:bg-gray-600'"
+                >
+                  {{ option.label }}
+                </button>
+              </div>
+              <div v-if="daysHeld > 0" class="text-gray-500 text-sm">
+                <i class="fas fa-clock mr-1"></i>
+                {{ daysHeld }} day{{ daysHeld > 1 ? 's' : '' }} held
+              </div>
             </div>
           </div>
         </div>
@@ -99,7 +115,7 @@
 <script setup>
 import { ref, computed, watch } from 'vue'
 import { Bar } from 'vue-chartjs'
-import { fetchIntradayPrices } from '../utils/priceFetcher.js'
+import { fetchIntradayPrices, aggregateToTimeframe } from '../utils/priceFetcher.js'
 
 const props = defineProps({
   positions: {
@@ -137,6 +153,26 @@ const positionIndex = computed({
 })
 const intradayData = ref({ entry: [], exit: [] })
 const loading = ref(false)
+const selectedTimeframe = ref('5m')
+
+const TIMEFRAME_OPTIONS = [
+  { value: '5m', label: '5m', minutes: 5 },
+  { value: '15m', label: '15m', minutes: 15 },
+  { value: '30m', label: '30m', minutes: 30 },
+  { value: '1h', label: '1H', minutes: 60 }
+]
+
+// Aggregated data based on selected timeframe
+const aggregatedData = computed(() => {
+  const option = TIMEFRAME_OPTIONS.find(opt => opt.value === selectedTimeframe.value)
+  if (!option || option.minutes === 5) {
+    return intradayData.value
+  }
+  return {
+    entry: aggregateToTimeframe(intradayData.value.entry, option.minutes),
+    exit: aggregateToTimeframe(intradayData.value.exit, option.minutes)
+  }
+})
 
 // Get current ticket
 const currentTicket = computed(() => {
@@ -156,12 +192,12 @@ const isSameDayExit = computed(() => {
 
 // Check if we need dual charts (multi-day)
 const isMultiDay = computed(() => {
-  return intradayData.value.entry.length > 0 && intradayData.value.exit.length > 0 && !isSameDayExit.value
+  return aggregatedData.value.entry.length > 0 && aggregatedData.value.exit.length > 0 && !isSameDayExit.value
 })
 
 // Check if we have data to display
 const hasData = computed(() => {
-  return intradayData.value.entry.length > 0 || intradayData.value.exit.length > 0
+  return aggregatedData.value.entry.length > 0 || aggregatedData.value.exit.length > 0
 })
 
 // Navigation
@@ -321,14 +357,16 @@ function buildCandlestickData(data, entryTime, exitTime, showEntry, showExit, en
 
   const datasets = [
     {
+      type: 'bar',
       label: 'Wicks',
       data: wicksData,
-      backgroundColor: '#6B7280',
+      backgroundColor: bodyColors,
       barPercentage: 0.05,
       categoryPercentage: 1.0,
       order: 1
     },
     {
+      type: 'bar',
       label: 'Price',
       data: bodiesData,
       backgroundColor: bodyColors,
@@ -353,12 +391,11 @@ function buildCandlestickData(data, entryTime, exitTime, showEntry, showExit, en
       datasets.push({
         label: 'Entry',
         data: Array(entryIdx).fill(null).concat([entryPrice]).concat(Array(data.length - entryIdx - 1).fill(null)),
-        backgroundColor: '#3B82F6',
-        borderColor: '#3B82F6',
-        pointStyle: 'triangle',
-        pointRotation: isLong ? 0 : 180,
-        pointRadius: 12,
-        pointHoverRadius: 14,
+        backgroundColor: '#00FFFF',
+        borderColor: '#00CCCC',
+        pointStyle: 'circle',
+        pointRadius: 8,
+        pointHoverRadius: 10,
         type: 'scatter',
         order: 0
       })
@@ -385,12 +422,11 @@ function buildCandlestickData(data, entryTime, exitTime, showEntry, showExit, en
       datasets.push({
         label: 'Exit',
         data: Array(closestIdx).fill(null).concat([exitPrice]).concat(Array(data.length - closestIdx - 1).fill(null)),
-        backgroundColor: '#F97316',
-        borderColor: '#F97316',
-        pointStyle: 'triangle',
-        pointRotation: isLongExit ? 180 : 0,
-        pointRadius: 12,
-        pointHoverRadius: 14,
+        backgroundColor: '#FF1493',
+        borderColor: '#CC1177',
+        pointStyle: 'circle',
+        pointRadius: 8,
+        pointHoverRadius: 10,
         type: 'scatter',
         order: 0
       })
@@ -402,7 +438,8 @@ function buildCandlestickData(data, entryTime, exitTime, showEntry, showExit, en
 
 // Entry day chart data
 const entryChartData = computed(() => {
-  if (!intradayData.value.entry || intradayData.value.entry.length === 0) {
+  const data = aggregatedData.value
+  if (!data.entry || data.entry.length === 0) {
     return { labels: [], datasets: [] }
   }
 
@@ -413,12 +450,13 @@ const entryChartData = computed(() => {
   const exitTime = isSameDayExit.value ? parseExitTime(ticket) : null
   const entryAction = ticket.strategies?.[0]?.legs?.[0]?.action || 'buy'
 
-  return buildCandlestickData(intradayData.value.entry, entryTime, exitTime, props.showEntry, isSameDayExit.value, entryAction, null)
+  return buildCandlestickData(data.entry, entryTime, exitTime, props.showEntry, isSameDayExit.value, entryAction, null)
 })
 
 // Exit day chart data
 const exitChartData = computed(() => {
-  if (!intradayData.value.exit || intradayData.value.exit.length === 0 || isSameDayExit.value) {
+  const data = aggregatedData.value
+  if (!data.exit || data.exit.length === 0 || isSameDayExit.value) {
     return { labels: [], datasets: [] }
   }
 
@@ -429,12 +467,13 @@ const exitChartData = computed(() => {
   const exitAction = entryAction === 'buy' ? 'sell' : 'buy'
   const exitTime = parseExitTime(ticket)
 
-  return buildCandlestickData(intradayData.value.exit, null, exitTime, false, props.showExit, entryAction, exitAction)
+  return buildCandlestickData(data.exit, null, exitTime, false, props.showExit, entryAction, exitAction)
 })
 
 // Single chart data (for same-day or entry-only)
 const chartData = computed(() => {
-  if (!intradayData.value.entry || intradayData.value.entry.length === 0) {
+  const data = aggregatedData.value
+  if (!data.entry || data.entry.length === 0) {
     return { labels: [], datasets: [] }
   }
 
@@ -446,7 +485,7 @@ const chartData = computed(() => {
   const entryAction = ticket.strategies?.[0]?.legs?.[0]?.action || 'buy'
   const exitAction = entryAction === 'buy' ? 'sell' : 'buy'
 
-  return buildCandlestickData(intradayData.value.entry, entryTime, exitTime, props.showEntry, isSameDayExit.value && props.showExit, entryAction, exitAction)
+  return buildCandlestickData(data.entry, entryTime, exitTime, props.showEntry, isSameDayExit.value && props.showExit, entryAction, exitAction)
 })
 
 // Chart options
@@ -492,6 +531,7 @@ const chartOptions = computed(() => ({
   },
   scales: {
     x: {
+      stacked: true,
       grid: { color: 'rgba(75, 85, 99, 0.3)', drawBorder: false },
       ticks: { color: 'rgba(229, 231, 235, 0.8)', font: { size: 10 }, maxTicksLimit: 8 }
     },
@@ -509,78 +549,153 @@ const chartOptions = computed(() => ({
 
 // Dynamic Y-axis zoom
 const chartOptionsWithZoom = computed(() => {
-  const options = { ...chartOptions.value }
+  const data = aggregatedData.value
 
-  if (intradayData.value.entry && intradayData.value.entry.length > 0) {
-    const allLows = intradayData.value.entry.map(p => p.low)
-    const allHighs = intradayData.value.entry.map(p => p.high)
-    const minPrice = Math.min(...allLows)
-    const maxPrice = Math.max(...allHighs)
-    const range = maxPrice - minPrice
-    const padding = range * 0.02 || 0.10
-    options.scales.y.min = minPrice - padding
-    options.scales.y.max = maxPrice + padding
+  if (!data.entry || data.entry.length === 0) {
+    return chartOptions.value
   }
 
-  return options
+  const allLows = data.entry.map(p => p.low)
+  const allHighs = data.entry.map(p => p.high)
+  const minPrice = Math.min(...allLows)
+  const maxPrice = Math.max(...allHighs)
+  const range = maxPrice - minPrice
+  const padding = range * 0.01 || 0.05
+
+  return {
+    ...chartOptions.value,
+    scales: {
+      ...chartOptions.value.scales,
+      x: {
+        ...chartOptions.value.scales.x,
+        grouped: false
+      },
+      y: {
+        ...chartOptions.value.scales.y,
+        min: minPrice - padding,
+        max: maxPrice + padding,
+        beginAtZero: false
+      }
+    }
+  }
 })
 
 // Entry chart options (independent Y-axis)
 const entryChartOptionsWithZoom = computed(() => {
-  const options = { ...chartOptions.value }
+  const data = aggregatedData.value
 
   // For dual charts, use combined range from both days
-  if (isMultiDay.value && intradayData.value.entry.length > 0 && intradayData.value.exit.length > 0) {
-    const allData = [...intradayData.value.entry, ...intradayData.value.exit]
+  if (isMultiDay.value && data.entry.length > 0 && data.exit.length > 0) {
+    const allData = [...data.entry, ...data.exit]
     const allLows = allData.map(p => p.low)
     const allHighs = allData.map(p => p.high)
     const minPrice = Math.min(...allLows)
     const maxPrice = Math.max(...allHighs)
     const range = maxPrice - minPrice
-    const padding = range * 0.02 || 0.10
-    options.scales.y.min = minPrice - padding
-    options.scales.y.max = maxPrice + padding
-  } else if (intradayData.value.entry && intradayData.value.entry.length > 0) {
-    const allLows = intradayData.value.entry.map(p => p.low)
-    const allHighs = intradayData.value.entry.map(p => p.high)
+    const padding = range * 0.01 || 0.05
+
+    return {
+      ...chartOptions.value,
+      scales: {
+        ...chartOptions.value.scales,
+        x: {
+          ...chartOptions.value.scales.x,
+          stacked: true
+        },
+        y: {
+          ...chartOptions.value.scales.y,
+          min: minPrice - padding,
+          max: maxPrice + padding,
+          beginAtZero: false
+        }
+      }
+    }
+  } else if (data.entry && data.entry.length > 0) {
+    const allLows = data.entry.map(p => p.low)
+    const allHighs = data.entry.map(p => p.high)
     const minPrice = Math.min(...allLows)
     const maxPrice = Math.max(...allHighs)
     const range = maxPrice - minPrice
-    const padding = range * 0.02 || 0.10
-    options.scales.y.min = minPrice - padding
-    options.scales.y.max = maxPrice + padding
+    const padding = range * 0.01 || 0.05
+
+    return {
+      ...chartOptions.value,
+      scales: {
+        ...chartOptions.value.scales,
+        x: {
+          ...chartOptions.value.scales.x,
+          stacked: true
+        },
+        y: {
+          ...chartOptions.value.scales.y,
+          min: minPrice - padding,
+          max: maxPrice + padding,
+          beginAtZero: false
+        }
+      }
+    }
   }
 
-  return options
+  return chartOptions.value
 })
 
 // Exit chart options (independent Y-axis)
 const exitChartOptionsWithZoom = computed(() => {
-  const options = { ...chartOptions.value }
+  const data = aggregatedData.value
 
   // For dual charts, use combined range from both days
-  if (intradayData.value.entry.length > 0 && intradayData.value.exit.length > 0) {
-    const allData = [...intradayData.value.entry, ...intradayData.value.exit]
+  if (data.entry.length > 0 && data.exit.length > 0) {
+    const allData = [...data.entry, ...data.exit]
     const allLows = allData.map(p => p.low)
     const allHighs = allData.map(p => p.high)
     const minPrice = Math.min(...allLows)
     const maxPrice = Math.max(...allHighs)
     const range = maxPrice - minPrice
-    const padding = range * 0.02 || 0.10
-    options.scales.y.min = minPrice - padding
-    options.scales.y.max = maxPrice + padding
-  } else if (intradayData.value.exit && intradayData.value.exit.length > 0) {
-    const allLows = intradayData.value.exit.map(p => p.low)
-    const allHighs = intradayData.value.exit.map(p => p.high)
+    const padding = range * 0.01 || 0.05
+
+    return {
+      ...chartOptions.value,
+      scales: {
+        ...chartOptions.value.scales,
+        x: {
+          ...chartOptions.value.scales.x,
+          stacked: true
+        },
+        y: {
+          ...chartOptions.value.scales.y,
+          min: minPrice - padding,
+          max: maxPrice + padding,
+          beginAtZero: false
+        }
+      }
+    }
+  } else if (data.exit && data.exit.length > 0) {
+    const allLows = data.exit.map(p => p.low)
+    const allHighs = data.exit.map(p => p.high)
     const minPrice = Math.min(...allLows)
     const maxPrice = Math.max(...allHighs)
     const range = maxPrice - minPrice
-    const padding = range * 0.02 || 0.10
-    options.scales.y.min = minPrice - padding
-    options.scales.y.max = maxPrice + padding
+    const padding = range * 0.01 || 0.05
+
+    return {
+      ...chartOptions.value,
+      scales: {
+        ...chartOptions.value.scales,
+        x: {
+          ...chartOptions.value.scales.x,
+          stacked: true
+        },
+        y: {
+          ...chartOptions.value.scales.y,
+          min: minPrice - padding,
+          max: maxPrice + padding,
+          beginAtZero: false
+        }
+      }
+    }
   }
 
-  return options
+  return chartOptions.value
 })
 
 // Load intraday data

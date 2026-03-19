@@ -129,6 +129,44 @@ export async function fetchIntradayPrices(symbol, date, proxyUrl) {
   }
 }
 
+// Aggregate 5-minute data to a larger timeframe
+// intervalMinutes: 15, 30, or 60
+export function aggregateToTimeframe(data, intervalMinutes) {
+  if (!data || data.length === 0) return []
+
+  const intervalsPerGroup = intervalMinutes / 5 // 5m is the base interval
+
+  const aggregated = []
+  let currentGroup = []
+
+  for (let i = 0; i < data.length; i++) {
+    currentGroup.push(data[i])
+
+    // When we have enough intervals, or this is the last item, create a candle
+    if (currentGroup.length === intervalsPerGroup || i === data.length - 1) {
+      const open = currentGroup[0].open
+      const close = currentGroup[currentGroup.length - 1].close
+      const high = Math.max(...currentGroup.map(d => d.high))
+      const low = Math.min(...currentGroup.map(d => d.low))
+      const volume = currentGroup.reduce((sum, d) => sum + (d.volume || 0), 0)
+      const time = currentGroup[0].time
+
+      aggregated.push({
+        time,
+        open,
+        high,
+        low,
+        close,
+        volume
+      })
+
+      currentGroup = []
+    }
+  }
+
+  return aggregated
+}
+
 // Clear intraday cache
 export function clearIntradayCache() {
   localStorage.removeItem(INTRADAY_CACHE_KEY)
