@@ -61,10 +61,6 @@ function setCachedIntraday(symbol, date, data) {
 // Requires proxyUrl from settings (format: https://proxy.com/?url={url})
 export async function fetchIntradayPrices(symbol, date, proxyUrl) {
   let yahooSymbol = getYahooSymbol(symbol)
-  // Skip VIX as intraday data is not available
-  if (yahooSymbol === '^VIX') {
-    yahooSymbol = null
-  }
 
   if (!yahooSymbol) {
     return []
