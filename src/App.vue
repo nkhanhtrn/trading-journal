@@ -614,12 +614,12 @@ import TradeFormModal from './components/TradeFormModal.vue'
 import MiniCalendarDots from './components/MiniCalendarDots.vue'
 import BaseModal from './components/BaseModal.vue'
 import { Line, Bar } from 'vue-chartjs'
-import { Chart as ChartJS, Title, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Filler } from 'chart.js'
+import { Chart as ChartJS, Title, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Filler, ScatterController } from 'chart.js'
 import flatpickr from 'flatpickr'
 import 'flatpickr/dist/flatpickr.css'
 import 'flatpickr/dist/themes/dark.css'
 
-ChartJS.register(Title, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Filler)
+ChartJS.register(Title, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Filler, ScatterController)
 import 'flatpickr/dist/themes/dark.css'
 
 // Local storage keys
