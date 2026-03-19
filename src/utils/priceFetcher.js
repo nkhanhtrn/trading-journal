@@ -60,12 +60,10 @@ function setCachedIntraday(symbol, date, data) {
 // Fetch intraday prices for a symbol on a specific date (5-minute intervals)
 // Requires proxyUrl from settings (format: https://proxy.com/?url={url})
 export async function fetchIntradayPrices(symbol, date, proxyUrl) {
-  // Use SPY as proxy for SPX/SPXW since Yahoo doesn't provide reliable intraday for indices
   let yahooSymbol = getYahooSymbol(symbol)
-  if (yahooSymbol === '^SPX') {
-    yahooSymbol = 'SPY' // Use SPY ETF as proxy for S&P 500 index
-  } else if (yahooSymbol === '^VIX') {
-    yahooSymbol = null // VIX intraday data not available, skip
+  // Skip VIX as intraday data is not available
+  if (yahooSymbol === '^VIX') {
+    yahooSymbol = null
   }
 
   if (!yahooSymbol) {
