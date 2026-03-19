@@ -5,6 +5,7 @@
 const SYMBOL_MAP = {
   'VIXW': '^VIX',
   'SPXW': '^SPX',
+  'XSP': '^SPX',
   'VIX': '^VIX',
   'SPX': '^SPX',
   'NDX': '^NDX',
