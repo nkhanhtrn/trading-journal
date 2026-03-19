@@ -38,44 +38,47 @@
         </div>
       </div>
 
-      <!-- Single chart for same-day entry/exit or entry-only -->
-      <div v-if="!isMultiDay" class="border-t border-gray-700 pt-4">
-        <div class="flex items-center justify-between mb-3">
-          <div class="text-sm font-semibold text-gray-300">
-            {{ hasMultiplePositions ? '' : 'Intraday Price - ' }}{{ displayDate }}
-          </div>
-          <div v-if="!hasMultiplePositions" class="flex items-center gap-4">
-            <div class="flex gap-4 text-xs">
-              <div v-if="showEntry" class="flex items-center gap-2">
-                <span class="w-3 h-3 rounded-full bg-blue-500"></span>
-                <span class="text-gray-400">Entry <span v-if="entryTimeDisplay" class="text-gray-300">{{ entryTimeDisplay }}</span></span>
+      <!-- Date Range Header -->
+      <div class="pt-4">
+        <div class="bg-gray-800/50 rounded-lg px-4 py-3 mb-4">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div v-if="isMultiDay || currentTicket?.exit_date" class="flex items-center gap-2">
+                <i class="fas fa-calendar-day text-blue-400"></i>
+                <span class="text-gray-400 text-sm">Entry</span>
+                <span class="text-white font-medium">{{ formatDateRange(entryDateDisplay) }}</span>
+                <span v-if="entryTimeDisplay" class="text-gray-500 text-sm">{{ entryTimeDisplay }}</span>
               </div>
-              <div v-if="showExit" class="flex items-center gap-2">
-                <span class="w-3 h-3 rounded-full bg-orange-500"></span>
-                <span class="text-gray-400">Exit <span v-if="exitTimeDisplay" class="text-gray-300">{{ exitTimeDisplay }}</span></span>
+              <div v-if="isMultiDay || currentTicket?.exit_date" class="flex items-center gap-2 text-gray-600">
+                <i class="fas fa-arrow-right text-xs"></i>
               </div>
+              <div v-if="currentTicket?.exit_date && currentTicket?.status !== 'OPEN'" class="flex items-center gap-2">
+                <i class="fas fa-calendar-day text-orange-400"></i>
+                <span class="text-gray-400 text-sm">Exit</span>
+                <span class="text-white font-medium">{{ formatDateRange(exitDateDisplay) }}</span>
+                <span v-if="exitTimeDisplay" class="text-gray-500 text-sm">{{ exitTimeDisplay }}</span>
+              </div>
+            </div>
+            <div v-if="daysHeld > 0" class="text-gray-500 text-sm">
+              <i class="fas fa-clock mr-1"></i>
+              {{ daysHeld }} day{{ daysHeld > 1 ? 's' : '' }} held
             </div>
           </div>
         </div>
+      </div>
+
+      <!-- Single chart for same-day entry/exit or entry-only -->
+      <div v-if="!isMultiDay">
         <div class="h-96">
           <Bar :data="chartData" :options="chartOptionsWithZoom" />
         </div>
       </div>
 
       <!-- Dual charts for multi-day entry/exit -->
-      <div v-else class="border-t border-gray-700 pt-4">
+      <div v-else>
         <div class="grid grid-cols-2 gap-4">
           <!-- Entry Day Chart -->
           <div>
-            <div class="flex items-center justify-between mb-3">
-              <div class="text-sm font-semibold text-gray-300">
-                {{ hasMultiplePositions ? '' : 'Entry Day - ' }}{{ entryDateDisplay }}
-              </div>
-              <div v-if="!hasMultiplePositions" class="flex items-center gap-2">
-                <span class="w-3 h-3 rounded-full bg-blue-500"></span>
-                <span class="text-xs text-gray-400">Entry <span v-if="entryTimeDisplay" class="text-gray-300">{{ entryTimeDisplay }}</span></span>
-              </div>
-            </div>
             <div class="h-96">
               <Bar :data="entryChartData" :options="entryChartOptionsWithZoom" />
             </div>
@@ -83,15 +86,6 @@
 
           <!-- Exit Day Chart -->
           <div>
-            <div class="flex items-center justify-between mb-3">
-              <div class="text-sm font-semibold text-gray-300">
-                {{ hasMultiplePositions ? '' : 'Exit Day - ' }}{{ exitDateDisplay }}
-              </div>
-              <div v-if="!hasMultiplePositions" class="flex items-center gap-2">
-                <span class="w-3 h-3 rounded-full bg-orange-500"></span>
-                <span class="text-xs text-gray-400">Exit <span v-if="exitTimeDisplay" class="text-gray-300">{{ exitTimeDisplay }}</span></span>
-              </div>
-            </div>
             <div class="h-96">
               <Bar :data="exitChartData" :options="exitChartOptionsWithZoom" />
             </div>
@@ -127,6 +121,10 @@ const props = defineProps({
   modelIndex: {
     type: Number,
     default: 0
+  },
+  proxyUrl: {
+    type: String,
+    default: ''
   }
 })
 
@@ -199,6 +197,30 @@ const exitDateDisplay = computed(() => {
   const ticket = currentTicket.value
   return ticket?.exit_date || ''
 })
+
+// Calculate days held
+const daysHeld = computed(() => {
+  const ticket = currentTicket.value
+  if (!ticket) return 0
+  if (!ticket.exit_date || ticket.status === 'OPEN') return 0
+
+  const entryDate = new Date(ticket.date + 'T00:00:00-05:00')
+  const exitDate = new Date(ticket.exit_date + 'T00:00:00-05:00')
+  const diffTime = exitDate.getTime() - entryDate.getTime()
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+  return diffDays
+})
+
+// Format date range for display (e.g., "Jan 15, 2025")
+function formatDateRange(dateStr) {
+  if (!dateStr) return ''
+  const date = new Date(dateStr + 'T00:00:00-05:00')
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+  const month = months[date.getUTCMonth()]
+  const day = date.getUTCDate()
+  const year = date.getUTCFullYear()
+  return `${month} ${day}, ${year}`
+}
 
 // Format time for display (EST)
 function formatTimeEST(date) {
@@ -570,11 +592,11 @@ async function loadIntradayData() {
 
   try {
     const entryDate = ticket.date
-    const entryData = await fetchIntradayPrices(props.symbol, entryDate)
+    const entryData = await fetchIntradayPrices(props.symbol, entryDate, props.proxyUrl)
 
     if (ticket.exit_date && ticket.status !== 'OPEN') {
       const exitDate = ticket.exit_date
-      const exitData = await fetchIntradayPrices(props.symbol, exitDate)
+      const exitData = await fetchIntradayPrices(props.symbol, exitDate, props.proxyUrl)
       intradayData.value = { entry: entryData, exit: exitData }
     } else {
       intradayData.value = { entry: entryData, exit: [] }

@@ -350,8 +350,8 @@
       </template>
       <template v-if="selectedPositionGroup">
         <!-- Tickets Section -->
-        <div class="border-t border-gray-700">
-          <button @click="ticketsExpanded = !ticketsExpanded" class="w-full flex items-center justify-between px-3 py-3 text-sm text-gray-400 hover:text-gray-300 hover:bg-gray-700/50 transition-colors">
+        <div>
+          <button @click="ticketsExpanded = !ticketsExpanded" class="w-full flex items-center justify-between px-3 py-2 text-sm text-gray-400 hover:text-gray-300 hover:bg-gray-700/50 transition-colors">
             <div class="flex items-center gap-2 flex-wrap">
               <i class="fas fa-chevron-right transition-transform text-xs" :class="{ 'rotate-90': ticketsExpanded }"></i>
               <span class="text-gray-500">{{ selectedPositionGroup?.expiry }}</span>
@@ -501,6 +501,7 @@
           :show-entry="true"
           :show-exit="true"
           :model-index="currentPositionIndex"
+          :proxy-url="settings.proxyUrl || ''"
           @update:model-index="currentPositionIndex = $event"
         />
       </template>
