@@ -112,7 +112,7 @@
             </div>
             <div v-else class="text-center text-gray-400 text-sm">
               <i class="fas fa-chart-line mr-2"></i>
-              Loading intraday data...
+              {{ isIntradayLoading ? 'Loading intraday data...' : 'No intraday data available' }}
             </div>
           </div>
 
@@ -160,6 +160,7 @@ const props = defineProps({
 defineEmits(['close', 'edit', 'delete'])
 
 const intradayData = ref([])
+const isIntradayLoading = ref(true)
 
 // Load intraday data when component mounts or trade changes
 onMounted(() => {
@@ -172,7 +173,9 @@ watch(() => props.trade, () => {
 
 async function loadIntradayData() {
   if (props.trade?.symbol && props.trade?.date) {
+    isIntradayLoading.value = true
     intradayData.value = await fetchIntradayPrices(props.trade.symbol, props.trade.date, props.proxyUrl)
+    isIntradayLoading.value = false
   }
 }
 
