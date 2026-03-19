@@ -3,7 +3,10 @@
     <div :class="['bg-gray-800 rounded-lg w-full', maxWidthClass, customClass]">
       <!-- Header -->
       <div class="flex items-center justify-between p-4 border-b border-gray-700">
-        <h3 class="text-lg font-bold text-white">{{ title }}</h3>
+        <div v-if="$slots.title" class="text-lg">
+          <slot name="title"></slot>
+        </div>
+        <h3 v-else class="text-lg font-bold text-white">{{ title }}</h3>
         <button @click="onClose" class="text-gray-400 hover:text-white">
           <i class="fas fa-times"></i>
         </button>
@@ -73,6 +76,10 @@ export default {
         xl: 'max-w-xl',
         '2xl': 'max-w-2xl',
         '3xl': 'max-w-3xl',
+        '4xl': 'max-w-4xl',
+        '5xl': 'max-w-5xl',
+        '6xl': 'max-w-6xl',
+        '7xl': 'max-w-7xl',
         full: 'max-w-full'
       }
       return sizes[this.maxWidth] || sizes.md

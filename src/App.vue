@@ -332,22 +332,40 @@
     <!-- Trade Detail Modal -->
     <BaseModal
       v-model:show="tradeDetailModalOpen"
-      :title="selectedPositionGroup ? `${selectedPositionGroup.strategyName || 'Strategy'} ${selectedPositionGroup.strikes}` : ''"
-      max-width="2xl"
-      content-class="p-4 space-y-4 max-h-[70vh] overflow-auto"
+      :max-width="modalMaxWidth"
+      :content-class="modalContentClass"
     >
-      <template v-if="selectedPositionGroup">
-        <div class="flex items-center gap-4 text-sm text-gray-400">
-          <span>Expiry: <span class="text-yellow-300 ml-1">{{ selectedPositionGroup.expiry }}</span></span>
-          <span>Total: <span class="text-white ml-1">{{ selectedPositionGroup.totalQuantity }} contracts</span></span>
-          <span v-if="selectedPositionGroup.openCount === 0" :class="selectedPositionGroup.totalPnL >= 0 ? 'text-green-400' : 'text-red-400'">
-            P&L: {{ selectedPositionGroup.totalPnL >= 0 ? '+' : '' }}${{ selectedPositionGroup.totalPnL.toFixed(0) }}
+      <template v-if="selectedPositionGroup" #title>
+        <div class="flex items-center gap-2 flex-wrap">
+          <span class="text-white font-bold">{{ selectedPositionGroup.symbol }}</span>
+          <span class="text-gray-500">·</span>
+          <span class="px-2 py-0.5 rounded text-sm font-medium" :class="getPositionDirectionClass()">{{ getPositionDirectionLabel() }}</span>
+          <span class="text-gray-500">·</span>
+          <span class="text-white font-bold">{{ selectedPositionGroup.strategyName || 'Strategy' }} {{ selectedPositionGroup.strikes }}</span>
+          <span class="text-gray-500">·</span>
+          <span class="text-lg font-bold" :class="selectedPositionGroup.totalPnL >= 0 ? 'text-green-400' : 'text-red-400'">
+            {{ selectedPositionGroup.totalPnL >= 0 ? '+' : '' }}${{ selectedPositionGroup.totalPnL.toFixed(0) }}
           </span>
         </div>
-
-        <div class="border-t border-gray-700 pt-4">
-          <div class="text-sm font-semibold text-gray-300 mb-3">Tickets ({{ (selectedPositionGroup.tickets || selectedPositionGroup.positions).length }})</div>
-          <div v-for="pos in (selectedPositionGroup.tickets || selectedPositionGroup.positions)" :key="pos.ticket" class="bg-gray-900 rounded p-3 mb-3 last:mb-0">
+      </template>
+      <template v-if="selectedPositionGroup">
+        <!-- Tickets Section -->
+        <div class="border-t border-gray-700">
+          <button @click="ticketsExpanded = !ticketsExpanded" class="w-full flex items-center justify-between px-3 py-3 text-sm text-gray-400 hover:text-gray-300 hover:bg-gray-700/50 transition-colors">
+            <div class="flex items-center gap-2 flex-wrap">
+              <i class="fas fa-chevron-right transition-transform text-xs" :class="{ 'rotate-90': ticketsExpanded }"></i>
+              <span class="text-gray-500">{{ selectedPositionGroup?.expiry }}</span>
+              <span class="text-gray-400">{{ selectedPositionGroup?.totalQuantity }}c</span>
+              <span class="text-gray-400">${{ Math.abs(getAverageEntryPrice(selectedPositionGroup)).toFixed(2) }}</span>
+              <span v-if="hasClosingLegs(selectedPositionGroup)" class="text-gray-600">→</span>
+              <span v-if="hasClosingLegs(selectedPositionGroup)" class="text-gray-400">${{ Math.abs(getAverageExitPrice(selectedPositionGroup)).toFixed(2) }}</span>
+              <span class="text-gray-600">=</span>
+              <span :class="ticketsSummary.totalPnL >= 0 ? 'text-green-400' : 'text-red-400'">{{ ticketsSummary.totalPnL >= 0 ? '+' : '' }}${{ ticketsSummary.totalPnL }}</span>
+            </div>
+          </button>
+          <div v-if="ticketsExpanded" class="pt-3 space-y-3">
+          <!-- Only show current ticket that's being displayed in the graph -->
+          <div v-for="pos in (selectedPositionGroup.tickets || selectedPositionGroup.positions).slice(currentPositionIndex, currentPositionIndex + 1)" :key="pos.ticket" class="bg-gray-900 rounded p-3 mb-3 last:mb-0">
             <div class="flex items-center justify-between mb-3">
               <div class="flex items-center gap-3">
                 <span class="text-blue-400 font-mono">#{{ pos.ticket }}</span>
@@ -473,7 +491,18 @@
               </div>
             </div>
           </div>
+          </div>
         </div>
+
+        <!-- Intraday Charts -->
+        <IntradayChart
+          :positions="selectedPositionGroup.tickets || selectedPositionGroup.positions"
+          :symbol="selectedPositionGroup.symbol"
+          :show-entry="true"
+          :show-exit="true"
+          :model-index="currentPositionIndex"
+          @update:model-index="currentPositionIndex = $event"
+        />
       </template>
     </BaseModal>
 
@@ -574,12 +603,18 @@
 import { ref, computed, onMounted, nextTick, watch } from 'vue'
 import SummaryCards from './components/SummaryCards.vue'
 import DashboardCharts from './components/DashboardCharts.vue'
+import IntradayChart from './components/IntradayChart.vue'
 import { detectStrategy, getStrategyDisplayName } from './utils/strategyDetector.js'
 import TradeFormModal from './components/TradeFormModal.vue'
 import MiniCalendarDots from './components/MiniCalendarDots.vue'
 import BaseModal from './components/BaseModal.vue'
+import { Line, Bar } from 'vue-chartjs'
+import { Chart as ChartJS, Title, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Filler } from 'chart.js'
 import flatpickr from 'flatpickr'
 import 'flatpickr/dist/flatpickr.css'
+import 'flatpickr/dist/themes/dark.css'
+
+ChartJS.register(Title, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Filler)
 import 'flatpickr/dist/themes/dark.css'
 
 // Local storage keys
@@ -1979,6 +2014,8 @@ const filters = ref({
 })
 
 const selectedPositionGroup = ref(null)
+const ticketsExpanded = ref(false) // Collapsible tickets section state
+const currentPositionIndex = ref(0) // Track which ticket is displayed in the graph
 const selectedTradeDate = ref(new Date().toISOString().split('T')[0]) // For day navigation in trades view - default to today
 
 // Trades view mode: 'list' or 'square'
@@ -2035,6 +2072,108 @@ const tradeDetailModalOpen = computed({
     if (!value) selectedPositionGroup.value = null
   }
 })
+
+// Reset position index when modal opens
+watch(() => tradeDetailModalOpen.value, (isOpen) => {
+  if (isOpen) {
+    currentPositionIndex.value = 0
+  }
+})
+
+// Computed for modal max width
+const modalMaxWidth = computed(() => {
+  const positions = selectedPositionGroup.value?.tickets || selectedPositionGroup.value?.positions || []
+  if (positions.length === 0) return '2xl'
+  const ticket = positions[0]
+  // Check if entry and exit are on different days
+  if (ticket.exit_date && ticket.status !== 'OPEN') {
+    const entryDate = new Date(ticket.date + 'T00:00:00-05:00')
+    const exitDate = new Date(ticket.exit_date + 'T00:00:00-05:00')
+    const isDifferentDay = exitDate.toDateString() !== entryDate.toDateString()
+    return isDifferentDay ? '7xl' : '2xl'
+  }
+  return '2xl'
+})
+
+// Computed for modal content class (adjust height for dual charts)
+const modalContentClass = computed(() => {
+  const positions = selectedPositionGroup.value?.tickets || selectedPositionGroup.value?.positions || []
+  if (positions.length === 0) return 'p-4 space-y-4 max-h-[70vh] overflow-auto'
+  const ticket = positions[0]
+  // Check if entry and exit are on different days
+  if (ticket.exit_date && ticket.status !== 'OPEN') {
+    const entryDate = new Date(ticket.date + 'T00:00:00-05:00')
+    const exitDate = new Date(ticket.exit_date + 'T00:00:00-05:00')
+    const isDifferentDay = exitDate.toDateString() !== entryDate.toDateString()
+    return isDifferentDay ? 'p-4 space-y-4 max-h-[90vh] overflow-auto' : 'p-4 space-y-4 max-h-[70vh] overflow-auto'
+  }
+  return 'p-4 space-y-4 max-h-[70vh] overflow-auto'
+})
+
+// Tickets summary for the collapsible header
+const ticketsSummary = computed(() => {
+  const tickets = selectedPositionGroup.value?.tickets || selectedPositionGroup.value?.positions || []
+  const closedTickets = tickets.filter(t => t.status !== 'OPEN')
+  const winCount = closedTickets.filter(t => t.status === 'WIN').length
+  const lossCount = closedTickets.filter(t => t.status === 'LOSS').length
+  const totalPnL = closedTickets.reduce((sum, t) => sum + (t.pnl || 0), 0)
+  const winRate = closedTickets.length > 0 ? Math.round((winCount / closedTickets.length) * 100) : 0
+
+  // Get current ticket's individual P&L (synced with graph)
+  const currentTicket = tickets[currentPositionIndex.value] || tickets[0]
+  const currentPnL = currentTicket?.pnl || 0
+
+  return {
+    totalPnL: Math.round(currentPnL),
+    winCount,
+    lossCount,
+    winRate,
+    ticketCount: tickets.length
+  }
+})
+
+// Get position direction label (LONG/SHORT + PUT/CALL)
+function getPositionDirectionLabel() {
+  const tickets = selectedPositionGroup.value?.tickets || selectedPositionGroup.value?.positions || []
+  if (tickets.length === 0) return ''
+
+  const ticket = tickets[0]
+  const legs = ticket.strategies?.[0]?.legs || []
+  if (legs.length === 0) return ''
+
+  // Determine if long or short based on first leg action
+  const firstLeg = legs[0]
+  const direction = firstLeg.action === 'buy' ? 'LONG' : 'SHORT'
+
+  // Determine the option type(s) involved
+  const types = [...new Set(legs.map(l => l.type.toUpperCase()))]
+
+  // For single leg or same type
+  if (types.length === 1) {
+    return `${direction} ${types[0]}`
+  }
+
+  // For mixed types (spreads), show both
+  return `${direction} ${types.join('/')}`
+}
+
+// Get position direction class for color coding
+function getPositionDirectionClass() {
+  const tickets = selectedPositionGroup.value?.tickets || selectedPositionGroup.value?.positions || []
+  if (tickets.length === 0) return 'bg-gray-700/30 text-gray-300'
+
+  const ticket = tickets[0]
+  const legs = ticket.strategies?.[0]?.legs || []
+  if (legs.length === 0) return 'bg-gray-700/30 text-gray-300'
+
+  // Base color on direction (long/short)
+  const firstLeg = legs[0]
+  if (firstLeg.action === 'buy') {
+    return 'bg-green-900/30 text-green-300'
+  } else {
+    return 'bg-red-900/30 text-red-300'
+  }
+}
 
 const openPositions = computed(() => {
   return tickets.value.filter(t => t.status === 'OPEN').sort((a, b) => new Date(a.strategies[0]?.legs[0]?.expiry) - new Date(b.strategies[0]?.legs[0]?.expiry))
