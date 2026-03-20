@@ -645,9 +645,10 @@
 
     <!-- Login Modal -->
     <LoginModal
+      ref="loginModalRef"
       :show="showLoginModal"
       @close="showLoginModal = false"
-      @success="handleSignIn"
+      @success="handleAuth"
     />
 
     <!-- Migration Modal -->
@@ -715,8 +716,10 @@ const syncError = ref(null)
 // Initialize auth composable
 const {
   initialize: initializeAuth,
-  signInWithGoogle,
+  signIn,
+  signUp,
   signOut,
+  resetPassword,
   user,
   isLoading: authLoading,
   isAuthenticated,
@@ -725,6 +728,9 @@ const {
   userPhoto,
   userId
 } = useAuth()
+
+// Login modal ref for accessing child methods
+const loginModalRef = ref(null)
 
 // Real-time sync unsubscribers
 let ticketsUnsubscribe = null
@@ -778,15 +784,31 @@ const saveSettings = async () => {
 // FIREBASE AUTH HANDLERS
 // ============================================================================
 
-// Sign in handler
-const handleSignIn = async () => {
-  const result = await signInWithGoogle()
+// Sign in/up handler
+const handleAuth = async (data) => {
+  const { action, email, password, displayName } = data
+
+  let result
+  if (action === 'signIn') {
+    result = await signIn(email, password)
+  } else if (action === 'signUp') {
+    result = await signUp(email, password, displayName)
+  } else if (action === 'resetPassword') {
+    result = await resetPassword(email)
+    if (result.success) {
+      // Show success message in modal
+      loginModalRef.value?.handleResetSuccess()
+    }
+    return
+  }
+
   if (result.success) {
     showLoginModal.value = false
     // Check for migration needed
     await checkAndPromptMigration()
   } else {
-    console.error('Sign in failed:', result.error)
+    // Show error in modal
+    loginModalRef.value?.setError(result.error)
   }
 }
 
