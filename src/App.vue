@@ -2600,7 +2600,7 @@ const fetchNewsForCurrentPosition = async () => {
 // Computed for modal max width - consistent across all tabs
 const modalMaxWidth = computed(() => {
   // Always use the same width for all tabs
-  return '4xl'
+  return '3xl'
 })
 
 // Computed for modal content class (consistent height)
