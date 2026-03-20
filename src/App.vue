@@ -4,7 +4,7 @@
     <div class="pl-14 flex-1 flex flex-col min-h-0 overflow-y-auto sm:overflow-hidden">
       <main class="flex-1 max-w-6xl w-full mx-auto px-3 sm:px-4 py-3 sm:py-6 overflow-hidden sm:overflow-hidden">
       <!-- Calendar & Dashboard Merged View -->
-      <div v-if="activeTab === 'calendar' || activeTab === 'dashboard'" class="h-full grid grid-rows-[auto_1fr] gap-3 sm:gap-4 overflow-hidden sm:overflow-hidden">
+      <div v-if="activeTab === 'calendar' || activeTab === 'dashboard'" class="h-full grid grid-rows-[auto_1fr] gap-3 sm:gap-4 overflow-auto sm:overflow-hidden">
         <!-- Header: Month Selector + Summary Cards -->
         <div class="grid grid-cols-1 sm:grid-cols-[auto_1fr] gap-3 sm:gap-4">
           <!-- Month Selector -->
@@ -46,7 +46,7 @@
         <!-- Main Content: Calendar + Dashboard -->
         <div class="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-3 sm:gap-4 min-h-0 min-w-0">
           <!-- Left Column: Tabbed Content + Charts -->
-          <div class="grid grid-rows-[1fr_1fr] sm:grid-rows-[1.5fr_1fr] gap-3 sm:gap-4 min-h-0 min-w-0">
+          <div class="grid grid-rows-[2fr_1fr] sm:grid-rows-[1.5fr_1fr] gap-3 sm:gap-4 min-h-0 min-w-0">
             <!-- Tabbed Content -->
             <div class="bg-gray-800 rounded-lg flex flex-col min-h-0">
               <!-- Tabs -->
