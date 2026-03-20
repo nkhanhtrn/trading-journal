@@ -288,7 +288,7 @@
     <nav class="fixed left-0 top-0 bottom-0 w-14 bg-gray-800 border-r border-gray-700 flex flex-col items-center py-4 gap-2 z-50">
       <!-- User Profile Button -->
       <button
-        @click="showLoginModal = true"
+        @click="handleAuthModalClick"
         class="w-10 h-10 rounded-full flex items-center justify-center transition-colors mb-2"
         :class="isAuthenticated ? 'bg-blue-600' : 'bg-gray-700 hover:bg-gray-600'"
         :title="isAuthenticated ? userName : 'Sign In'"
@@ -639,7 +639,7 @@
     <!-- Auth Landing Page -->
     <AuthLanding
       v-if="showAuthLanding && !isAuthenticated"
-      @open-login="showLoginModal = true; showAuthLanding = false"
+      @open-login="handleAuthModalClick; showAuthLanding = false"
       @use-local="useLocalStorageOnly"
     />
 
@@ -649,6 +649,17 @@
       :show="showLoginModal"
       @close="showLoginModal = false"
       @success="handleAuth"
+    />
+
+    <!-- Account Modal (for signed-in users) -->
+    <AccountModal
+      :show="showAccountModal"
+      :user-name="userName"
+      :user-email="userEmail"
+      :is-synced="!isSyncing"
+      :stats="userStats"
+      @close="showAccountModal = false"
+      @sign-out="handleSignOut"
     />
 
     <!-- Migration Modal -->
@@ -672,6 +683,7 @@ import TradeFormModal from './components/TradeFormModal.vue'
 import MiniCalendarDots from './components/MiniCalendarDots.vue'
 import BaseModal from './components/BaseModal.vue'
 import LoginModal from './components/LoginModal.vue'
+import AccountModal from './components/AccountModal.vue'
 import MigrationModal from './components/MigrationModal.vue'
 import AuthLanding from './components/AuthLanding.vue'
 import UserProfile from './components/UserProfile.vue'
@@ -708,6 +720,7 @@ const showSettingsModal = ref(false)
 
 // Firebase Auth state
 const showLoginModal = ref(false)
+const showAccountModal = ref(false)
 const showMigrationModal = ref(false)
 const showAuthLanding = ref(false)
 const isSyncing = ref(false)
@@ -823,6 +836,35 @@ const handleSignOut = async () => {
     loadRawTransactions()
   }
 }
+
+// Handle auth modal click - show account modal if authenticated, login modal otherwise
+const handleAuthModalClick = () => {
+  if (isAuthenticated.value) {
+    showAccountModal.value = true
+  } else {
+    showLoginModal.value = true
+  }
+}
+
+// User stats for account modal
+const userStats = computed(() => {
+  const totalTrades = tickets.value.length
+  const overallPnL = tickets.value.reduce((sum, t) => sum + (t.pnl || 0), 0)
+  const currentYear = new Date().getFullYear()
+  const yearlyTrades = tickets.value.filter(t => new Date(t.date).getFullYear() === currentYear)
+  const yearlyPnL = yearlyTrades.reduce((sum, t) => sum + (t.pnl || 0), 0)
+
+  const closedTrades = tickets.value.filter(t => t.status !== 'OPEN')
+  const wins = closedTrades.filter(t => t.pnl > 0).length
+  const winRate = closedTrades.length > 0 ? Math.round((wins / closedTrades.length) * 100) : 0
+
+  return {
+    totalTrades,
+    overallPnL,
+    yearlyPnL,
+    winRate
+  }
+})
 
 // Check if user needs data migration
 const checkAndPromptMigration = async () => {
