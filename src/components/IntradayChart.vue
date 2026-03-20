@@ -19,7 +19,7 @@
     <!-- P&L Details for current position -->
     <template v-else>
       <!-- Navigation header -->
-      <div class="pt-4">
+      <div class="pt-2">
         <div class="flex items-center justify-between px-3 mb-3">
           <div class="flex items-center gap-3">
             <button v-if="hasMultiplePositions" @click="previousPosition" :disabled="positionIndex === 0" class="px-3 py-1.5 rounded text-xs bg-gray-700 hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed text-white">
