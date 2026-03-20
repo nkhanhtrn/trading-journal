@@ -951,8 +951,8 @@ const loadUserData = async () => {
       settings.value = { ...settings.value, ...loadedSettings }
     }
 
-    // Sync market data from Firestore to local cache
-    await syncIntradayFromFirestore(userId.value)
+    // Note: Market data is NOT synced in bulk - it's fetched on-demand
+    // When you view a chart, it checks: localStorage -> Firestore -> Yahoo API
 
   } catch (err) {
     console.error('Error loading user data:', err)
