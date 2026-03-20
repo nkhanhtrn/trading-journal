@@ -617,7 +617,7 @@
 
     <!-- Auth Landing Page -->
     <AuthLanding
-      v-if="showAuthLanding && !isAuthenticated"
+      v-if="showAuthLanding && !isAuthenticated && !authLoading"
       @open-login="handleAuthModalClick; showAuthLanding = false"
       @use-local="useLocalStorageOnly"
     />
@@ -2598,12 +2598,31 @@ onMounted(() => {
   // Load settings (always from localStorage initially)
   loadSettings()
 
-  // Show auth landing if not configured, otherwise load data
-  if (!isAuthenticated.value) {
-    showAuthLanding.value = true
-  } else {
-    // Authenticated, load from Firestore
-    loadUserData()
+  // Wait for auth state to load, then decide what to show
+  if (!authLoading.value) {
+    // Auth already loaded
+    if (isAuthenticated.value) {
+      loadUserData()
+    } else {
+      showAuthLanding.value = true
+    }
+  }
+})
+
+// Watch for auth state changes
+watch([authLoading, isAuthenticated], ([loading, authenticated]) => {
+  // Only proceed after auth loading is complete
+  if (!loading) {
+    if (authenticated) {
+      // User is logged in, hide auth landing and load data
+      showAuthLanding.value = false
+      if (!tickets.value.length) {
+        loadUserData()
+      }
+    } else if (!showAuthLanding.value) {
+      // User not logged in and auth landing not shown yet
+      showAuthLanding.value = true
+    }
   }
 })
 
