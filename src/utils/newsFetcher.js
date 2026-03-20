@@ -92,14 +92,23 @@ export async function fetchMarketNews(symbol, date, apiKey, proxyUrl) {
 
   try {
     // Calculate date range: from 7 days before to 1 day after the trade date
-    const tradeDate = new Date(date)
+    // Use Eastern Time (market timezone) for date calculations
+    const tradeDate = new Date(date + 'T00:00:00-05:00') // Parse as Eastern Time
     const fromDate = new Date(tradeDate)
     fromDate.setDate(fromDate.getDate() - 7)
     const toDate = new Date(tradeDate)
     toDate.setDate(toDate.getDate() + 1)
 
-    const fromStr = fromDate.toISOString().split('T')[0]
-    const toStr = toDate.toISOString().split('T')[0]
+    // Format dates as YYYY-MM-DD in Eastern Time
+    const formatDateET = (d) => {
+      const year = d.getFullYear()
+      const month = String(d.getMonth() + 1).padStart(2, '0')
+      const day = String(d.getDate()).padStart(2, '0')
+      return `${year}-${month}-${day}`
+    }
+
+    const fromStr = formatDateET(fromDate)
+    const toStr = formatDateET(toDate)
 
     console.log(`Fetching news for ${symbol} from ${fromStr} to ${toStr}`)
 
