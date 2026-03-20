@@ -550,7 +550,7 @@
         </div>
 
         <!-- News Tab -->
-        <div v-show="tradeDetailTab === 'news'" class="h-[600px] overflow-y-auto space-y-4">
+        <div v-show="tradeDetailTab === 'news'" class="h-[350px] overflow-y-auto space-y-4">
           <div v-for="pos in (selectedPositionGroup.tickets || selectedPositionGroup.positions).slice(currentPositionIndex, currentPositionIndex + 1)" :key="'news-' + pos.ticket">
             <div class="flex items-center gap-2 mb-3">
               <span class="text-blue-400 font-mono text-sm">#{{ pos.ticket }}</span>
