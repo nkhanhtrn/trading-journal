@@ -118,14 +118,14 @@
           <button
             @click="selectedChartTab = 'exit'"
             class="w-3 h-3 rounded-full transition-all duration-200"
-            :class="selectedChartTab === 'exit' ? 'bg-orange-500 scale-125' : 'bg-gray-600 hover:bg-gray-500'"
+            :class="selectedChartTab === 'exit' ? 'bg-blue-500 scale-125' : 'bg-gray-600 hover:bg-gray-500'"
             :title="`Exit Day: ${formatDateRange(exitDateDisplay)}`"
           ></button>
         </div>
         <!-- Chart labels -->
         <div class="flex justify-center items-center gap-8 mt-2 text-xs text-gray-400">
           <span :class="selectedChartTab === 'entry' ? 'text-blue-400 font-medium' : ''">Entry</span>
-          <span :class="selectedChartTab === 'exit' ? 'text-orange-400 font-medium' : ''">Exit</span>
+          <span :class="selectedChartTab === 'exit' ? 'text-blue-400 font-medium' : ''">Exit</span>
         </div>
       </div>
     </template>
