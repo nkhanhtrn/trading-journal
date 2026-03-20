@@ -176,16 +176,21 @@ export async function fetchIntradayPrices(symbol, date, proxyUrl, userId) {
   // Layer 1: Check localStorage cache (fastest)
   const localCached = getCachedIntradayFromLocal(yahooSymbol, date)
   if (localCached !== null) {
+    console.log(`%c[Market Data] ${yahooSymbol} ${date} - from localStorage`, 'color: #10b981')
     return localCached
   }
 
   // Layer 2: Check Firestore cache (cloud backup)
   const firestoreCached = await getCachedIntradayFromFirestore(userId, yahooSymbol, date)
   if (firestoreCached !== null) {
+    console.log(`%c[Market Data] ${yahooSymbol} ${date} - from Firestore`, 'color: #f59e0b')
     // Save to localStorage for future use
     setCachedIntradayToLocal(yahooSymbol, date, firestoreCached)
     return firestoreCached
   }
+
+  // Layer 3: Fetch from Yahoo API
+  console.log(`%c[Market Data] ${yahooSymbol} ${date} - fetching from Yahoo API`, 'color: #3b82f6')
 
   // Layer 3: Fetch from Yahoo API
   if (!proxyUrl?.trim()) {
@@ -237,6 +242,7 @@ export async function fetchIntradayPrices(symbol, date, proxyUrl, userId) {
       // Save to both localStorage and Firestore
       setCachedIntradayToLocal(yahooSymbol, date, intradayData)
       await setCachedIntradayToFirestore(userId, yahooSymbol, date, intradayData)
+      console.log(`%c[Market Data] ${yahooSymbol} ${date} - cached ${intradayData.length} points`, 'color: #8b5cf6')
 
       return intradayData
     }
@@ -290,11 +296,12 @@ export function aggregateToTimeframe(data, intervalMinutes) {
 export async function clearIntradayCache(userId) {
   // Clear localStorage
   localStorage.removeItem(INTRADAY_CACHE_KEY)
+  console.log('[Market Data] Cleared localStorage cache')
 
   // Clear Firestore cache
   if (db && userId) {
     try {
-      const collectionRef = collection(db, 'users', userId, 'market_data', 'intraday')
+      const collectionRef = collection(db, 'users', userId, 'market_data')
       const snapshot = await getDocs(collectionRef)
 
       // Delete all documents in the batch
@@ -304,7 +311,7 @@ export async function clearIntradayCache(userId) {
       }
 
       await Promise.all(batch)
-      console.log('Cleared intraday cache from Firestore')
+      console.log(`[Market Data] Cleared ${batch.length} documents from Firestore`)
     } catch (e) {
       console.error('Error clearing Firestore cache:', e)
     }
