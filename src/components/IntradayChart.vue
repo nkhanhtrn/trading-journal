@@ -58,6 +58,27 @@
             >
               VWAP
             </button>
+          </div>
+        </div>
+
+        <!-- Entry/Exit Dates with P&L and days held - single line -->
+        <div class="flex items-center justify-between px-3 text-sm">
+          <div class="flex items-center gap-3">
+            <div class="flex items-center gap-2">
+              <i class="fas fa-calendar-day text-blue-400 text-xs"></i>
+              <span class="text-gray-400 text-xs">Entry</span>
+              <span class="text-white">{{ formatDateRange(entryDateDisplay) }}</span>
+              <span v-if="entryTimeDisplay" class="text-gray-500 text-xs">{{ entryTimeDisplay }}</span>
+            </div>
+            <div v-if="currentTicket?.exit_date && currentTicket?.status !== 'OPEN'" class="flex items-center gap-2">
+              <i class="fas fa-arrow-right text-gray-600 text-xs"></i>
+              <i class="fas fa-calendar-day text-orange-400 text-xs"></i>
+              <span class="text-gray-400 text-xs">Exit</span>
+              <span class="text-white">{{ formatDateRange(exitDateDisplay) }}</span>
+              <span v-if="exitTimeDisplay" class="text-gray-500 text-xs">{{ exitTimeDisplay }}</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
             <div v-if="daysHeld > 0" class="text-gray-500 text-xs">
               <i class="fas fa-clock mr-1"></i>
               {{ daysHeld }}d
@@ -65,23 +86,6 @@
             <div class="text-xs" :class="currentTicket?.pnl >= 0 ? 'text-green-400' : 'text-red-400'">
               {{ currentTicket?.status !== 'OPEN' ? (currentTicket?.pnl >= 0 ? '+' : '') + '$' + currentTicket?.pnl : 'Open' }}
             </div>
-          </div>
-        </div>
-
-        <!-- Entry/Exit Dates - single line -->
-        <div class="flex items-center gap-3 px-3 text-sm">
-          <div class="flex items-center gap-2">
-            <i class="fas fa-calendar-day text-blue-400 text-xs"></i>
-            <span class="text-gray-400 text-xs">Entry</span>
-            <span class="text-white">{{ formatDateRange(entryDateDisplay) }}</span>
-            <span v-if="entryTimeDisplay" class="text-gray-500 text-xs">{{ entryTimeDisplay }}</span>
-          </div>
-          <div v-if="currentTicket?.exit_date && currentTicket?.status !== 'OPEN'" class="flex items-center gap-2">
-            <i class="fas fa-arrow-right text-gray-600 text-xs"></i>
-            <i class="fas fa-calendar-day text-orange-400 text-xs"></i>
-            <span class="text-gray-400 text-xs">Exit</span>
-            <span class="text-white">{{ formatDateRange(exitDateDisplay) }}</span>
-            <span v-if="exitTimeDisplay" class="text-gray-500 text-xs">{{ exitTimeDisplay }}</span>
           </div>
         </div>
       </div>
