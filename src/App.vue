@@ -550,50 +550,49 @@
         </div>
 
         <!-- News Tab -->
-        <div v-show="tradeDetailTab === 'news'" class="h-[350px] overflow-y-auto space-y-4">
+        <div v-show="tradeDetailTab === 'news'" class="h-[350px] overflow-y-auto space-y-2">
           <div v-for="pos in (selectedPositionGroup.tickets || selectedPositionGroup.positions).slice(currentPositionIndex, currentPositionIndex + 1)" :key="'news-' + pos.ticket">
-            <div class="flex items-center gap-2 mb-3">
-              <span class="text-blue-400 font-mono text-sm">#{{ pos.ticket }}</span>
-              <span class="text-xs text-gray-500">{{ pos.date }}</span>
-              <span v-if="loadingNews[pos.ticket]" class="text-xs text-blue-400">
-                <i class="fas fa-spinner fa-spin mr-1"></i>Loading news...
+            <div class="flex items-center gap-2 mb-2">
+              <span class="text-blue-400 font-mono text-xs">#{{ pos.ticket }}</span>
+              <span class="text-[10px] text-gray-500">{{ pos.date }}</span>
+              <span v-if="loadingNews[pos.ticket]" class="text-[10px] text-blue-400">
+                <i class="fas fa-spinner fa-spin mr-1"></i>Loading...
               </span>
             </div>
-            <div v-if="pos.news && pos.news.length > 0" class="space-y-2 pr-1">
+            <div v-if="pos.news && pos.news.length > 0" class="space-y-1 pr-1">
               <a
                 v-for="(article, idx) in pos.news.slice(0, 10)"
                 :key="idx"
                 :href="article.url"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="block bg-gray-800/50 hover:bg-gray-800 rounded p-3 transition-colors"
+                class="block bg-gray-800/50 hover:bg-gray-800 rounded p-2 transition-colors"
               >
-                <div class="flex items-start gap-3">
+                <div class="flex items-start gap-2">
                   <img
                     v-if="article.imageUrl"
                     :src="article.imageUrl"
-                    class="w-20 h-20 rounded object-cover flex-shrink-0"
+                    class="w-12 h-12 rounded object-cover flex-shrink-0"
                     loading="lazy"
                   >
                   <div class="flex-1 min-w-0">
-                    <div class="text-sm font-medium text-gray-200 line-clamp-2 leading-snug mb-2">{{ article.title }}</div>
-                    <div v-if="article.description" class="text-xs text-gray-400 line-clamp-2 mb-2">{{ article.description }}</div>
+                    <div class="text-xs font-medium text-gray-200 line-clamp-1 leading-tight mb-1">{{ article.title }}</div>
                     <div class="flex items-center gap-2">
-                      <span class="text-[10px] text-gray-500">{{ article.source }}</span>
-                      <span class="text-[10px] text-gray-600">{{ formatNewsDate(article.publishedAt) }}</span>
+                      <span class="text-[9px] text-gray-500">{{ article.source }}</span>
+                      <span class="text-[9px] text-gray-600">{{ formatNewsDate(article.publishedAt) }}</span>
                     </div>
                   </div>
                 </div>
               </a>
             </div>
-            <div v-else-if="loadingNews[pos.ticket]" class="text-center py-8 text-gray-500 text-sm">
-              <i class="fas fa-spinner fa-spin mr-2"></i>Loading market news for {{ pos.symbol }}...
+            <div v-else-if="loadingNews[pos.ticket]" class="text-center py-4 text-gray-500 text-xs">
+              <i class="fas fa-spinner fa-spin mr-1"></i>Loading market news for {{ pos.symbol }}...
             </div>
-            <div v-else-if="!settings.newsApiKey" class="text-center py-8">
-              <div class="text-gray-500 text-sm mb-2">No NewsAPI key configured</div>
-              <div class="text-gray-600 text-xs">Add a free API key from <a href="https://newsapi.org/register" target="_blank" class="text-blue-400 hover:underline">newsapi.org</a> in Settings to auto-fetch market news</div>
+            <div v-else-if="!settings.newsApiKey" class="text-center py-4">
+              <div class="text-gray-500 text-xs mb-1">No NewsAPI key configured</div>
+              <div class="text-gray-600 text-[10px]">Add a free API key from <a href="https://newsapi.org/register" target="_blank" class="text-blue-400 hover:underline">newsapi.org</a> in Settings</div>
             </div>
-            <div v-else class="text-center py-8 text-gray-500 text-sm">
+            <div v-else class="text-center py-4 text-gray-500 text-xs">
               No news found for {{ pos.symbol }} around {{ pos.date }}
             </div>
           </div>
