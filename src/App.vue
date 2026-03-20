@@ -350,6 +350,7 @@
       v-model:show="tradeDetailModalOpen"
       :max-width="modalMaxWidth"
       :content-class="modalContentClass"
+      :custom-class="modalCustomClass"
     >
       <template v-if="selectedPositionGroup" #title>
         <div class="flex items-center gap-2 flex-wrap">
@@ -2605,8 +2606,13 @@ const modalMaxWidth = computed(() => {
 
 // Computed for modal content class (consistent height)
 const modalContentClass = computed(() => {
-  // Fixed height for consistent tab appearance
-  return 'p-4 overflow-auto'
+  // Fixed height for consistent tab appearance, no scroll
+  return 'p-4 overflow-hidden'
+})
+
+// Computed for modal custom class (height constraint)
+const modalCustomClass = computed(() => {
+  return 'max-h-[80vh]'
 })
 
 // Tickets summary for the collapsible header

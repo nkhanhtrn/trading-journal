@@ -96,14 +96,14 @@
 
       <!-- Single chart for same-day entry/exit or entry-only -->
       <div v-if="!isMultiDay">
-        <div class="h-96">
+        <div class="h-72">
           <Bar :data="chartData" :options="chartOptionsWithZoom" />
         </div>
       </div>
 
       <!-- Multi-day charts: show one at a time with dot navigation -->
       <div v-else>
-        <div class="h-96">
+        <div class="h-72">
           <Bar :data="selectedChartTab === 'entry' ? entryChartData : exitChartData"
                :options="selectedChartTab === 'entry' ? entryChartOptionsWithZoom : exitChartOptionsWithZoom" />
         </div>
