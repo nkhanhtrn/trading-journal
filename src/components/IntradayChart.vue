@@ -18,76 +18,70 @@
 
     <!-- P&L Details for current position -->
     <template v-else>
-      <!-- Navigation header (always show if multiple tickets) -->
-      <div v-if="hasMultiplePositions" class="border-t border-gray-700 pt-4">
-        <div class="flex items-center justify-between px-3">
+      <!-- Navigation header -->
+      <div class="border-t border-gray-700 pt-4">
+        <div class="flex items-center justify-between px-3 mb-3">
           <div class="flex items-center gap-3">
-            <button @click="previousPosition" :disabled="positionIndex === 0" class="px-3 py-1.5 rounded text-xs bg-gray-700 hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed text-white">
+            <button v-if="hasMultiplePositions" @click="previousPosition" :disabled="positionIndex === 0" class="px-3 py-1.5 rounded text-xs bg-gray-700 hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed text-white">
               <i class="fas fa-chevron-left mr-1"></i> Previous
             </button>
             <span class="text-sm text-gray-300">
               Ticket #{{ currentTicket?.ticket }} <span class="text-gray-500">({{ positionDisplay }})</span>
             </span>
-            <button @click="nextPosition" :disabled="positionIndex >= positions.length - 1" class="px-3 py-1.5 rounded text-xs bg-gray-700 hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed text-white">
+            <button v-if="hasMultiplePositions" @click="nextPosition" :disabled="positionIndex >= positions.length - 1" class="px-3 py-1.5 rounded text-xs bg-gray-700 hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed text-white">
               Next <i class="fas fa-chevron-right ml-1"></i>
             </button>
           </div>
-          <div class="text-xs" :class="currentTicket?.pnl >= 0 ? 'text-green-400' : 'text-red-400'">
-            {{ currentTicket?.status !== 'OPEN' ? (currentTicket?.pnl >= 0 ? '+' : '') + '$' + currentTicket?.pnl : 'Open' }}
+          <div class="flex items-center gap-2">
+            <!-- Timeframe Selector -->
+            <div class="flex gap-1">
+              <button
+                v-for="option in TIMEFRAME_OPTIONS"
+                :key="option.value"
+                @click="selectedTimeframe = option.value"
+                class="px-2 py-1 text-xs rounded transition-colors"
+                :class="selectedTimeframe === option.value
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-700 text-gray-300 hover:bg-gray-600'"
+              >
+                {{ option.label }}
+              </button>
+            </div>
+            <!-- Indicator Toggle -->
+            <button
+              @click="showVWAP = !showVWAP"
+              class="px-2 py-1 text-xs rounded transition-colors"
+              :class="showVWAP
+                ? 'bg-yellow-600 text-white'
+                : 'bg-gray-700 text-gray-300 hover:bg-gray-600'"
+              title="Toggle VWAP"
+            >
+              VWAP
+            </button>
+            <div v-if="daysHeld > 0" class="text-gray-500 text-xs">
+              <i class="fas fa-clock mr-1"></i>
+              {{ daysHeld }}d
+            </div>
+            <div class="text-xs" :class="currentTicket?.pnl >= 0 ? 'text-green-400' : 'text-red-400'">
+              {{ currentTicket?.status !== 'OPEN' ? (currentTicket?.pnl >= 0 ? '+' : '') + '$' + currentTicket?.pnl : 'Open' }}
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Date Range Header -->
-      <div class="pt-4">
-        <div class="bg-gray-800/50 rounded-lg px-4 py-3 mb-4">
-          <div class="flex items-start justify-between gap-4">
-            <!-- Entry/Exit Dates - stacked vertically -->
-            <div class="flex flex-col gap-2">
-              <div v-if="isMultiDay || currentTicket?.exit_date" class="flex items-center gap-2">
-                <i class="fas fa-calendar-day text-blue-400"></i>
-                <span class="text-gray-400 text-xs">Entry</span>
-                <span class="text-white text-sm">{{ formatDateRange(entryDateDisplay) }}</span>
-                <span v-if="entryTimeDisplay" class="text-gray-500 text-xs">{{ entryTimeDisplay }}</span>
-              </div>
-              <div v-if="currentTicket?.exit_date && currentTicket?.status !== 'OPEN'" class="flex items-center gap-2">
-                <i class="fas fa-calendar-day text-orange-400"></i>
-                <span class="text-gray-400 text-xs">Exit</span>
-                <span class="text-white text-sm">{{ formatDateRange(exitDateDisplay) }}</span>
-                <span v-if="exitTimeDisplay" class="text-gray-500 text-xs">{{ exitTimeDisplay }}</span>
-              </div>
-            </div>
-            <div class="flex items-center gap-3 flex-shrink-0">
-              <!-- Timeframe Selector -->
-              <div class="flex gap-1">
-                <button
-                  v-for="option in TIMEFRAME_OPTIONS"
-                  :key="option.value"
-                  @click="selectedTimeframe = option.value"
-                  class="px-2 py-1 text-xs rounded transition-colors"
-                  :class="selectedTimeframe === option.value
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-700 text-gray-300 hover:bg-gray-600'"
-                >
-                  {{ option.label }}
-                </button>
-              </div>
-              <!-- Indicator Toggle -->
-              <button
-                @click="showVWAP = !showVWAP"
-                class="px-2 py-1 text-xs rounded transition-colors"
-                :class="showVWAP
-                  ? 'bg-yellow-600 text-white'
-                  : 'bg-gray-700 text-gray-300 hover:bg-gray-600'"
-                title="Toggle VWAP"
-              >
-                VWAP
-              </button>
-              <div v-if="daysHeld > 0" class="text-gray-500 text-xs">
-                <i class="fas fa-clock mr-1"></i>
-                {{ daysHeld }}d
-              </div>
-            </div>
+        <!-- Entry/Exit Dates - single line -->
+        <div class="flex items-center gap-3 px-3 text-sm">
+          <div class="flex items-center gap-2">
+            <i class="fas fa-calendar-day text-blue-400 text-xs"></i>
+            <span class="text-gray-400 text-xs">Entry</span>
+            <span class="text-white">{{ formatDateRange(entryDateDisplay) }}</span>
+            <span v-if="entryTimeDisplay" class="text-gray-500 text-xs">{{ entryTimeDisplay }}</span>
+          </div>
+          <div v-if="currentTicket?.exit_date && currentTicket?.status !== 'OPEN'" class="flex items-center gap-2">
+            <i class="fas fa-arrow-right text-gray-600 text-xs"></i>
+            <i class="fas fa-calendar-day text-orange-400 text-xs"></i>
+            <span class="text-gray-400 text-xs">Exit</span>
+            <span class="text-white">{{ formatDateRange(exitDateDisplay) }}</span>
+            <span v-if="exitTimeDisplay" class="text-gray-500 text-xs">{{ exitTimeDisplay }}</span>
           </div>
         </div>
       </div>
