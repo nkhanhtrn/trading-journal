@@ -653,10 +653,7 @@
     <!-- Migration Modal -->
     <MigrationModal
       :show="showMigrationModal"
-      :local-data="{
-        tickets: JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'),
-        rawTransactions: JSON.parse(localStorage.getItem(RAW_TRANSACTIONS_KEY) || '[]')
-      }"
+      :local-data="localDataForMigration"
       @close="showMigrationModal = false"
       @migrate="handleMigration"
       @skip="skipMigration"
@@ -933,6 +930,14 @@ const useLocalStorageOnly = () => {
   loadTicketsFromStorage()
   loadRawTransactions()
 }
+
+// Local data for migration modal
+const localDataForMigration = computed(() => {
+  return {
+    tickets: JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'),
+    rawTransactions: JSON.parse(localStorage.getItem(RAW_TRANSACTIONS_KEY) || '[]')
+  }
+})
 
 // Clear price cache
 const clearPriceCache = () => {
