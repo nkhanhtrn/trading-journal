@@ -88,29 +88,31 @@
 
       <!-- Charts -->
       <div class="mt-4">
-        <div class="h-72">
-          <Bar :data="chartData" :options="chartOptionsWithZoom" />
-        </div>
-      </div>
-
-      <!-- Dual charts for multi-day entry/exit -->
-      <div v-else>
-        <div class="grid grid-cols-2 gap-4">
-          <!-- Entry Day Chart -->
-          <div>
-            <div class="h-72">
-              <Bar :data="entryChartData" :options="entryChartOptionsWithZoom" />
-            </div>
-          </div>
-
-          <!-- Exit Day Chart -->
-          <div>
-            <div class="h-72">
-              <Bar :data="exitChartData" :options="exitChartOptionsWithZoom" />
-            </div>
+        <!-- Single chart for same-day entry/exit or entry-only -->
+        <div v-if="!isMultiDay">
+          <div class="h-72">
+            <Bar :data="chartData" :options="chartOptionsWithZoom" />
           </div>
         </div>
-      </div>
+
+        <!-- Dual charts for multi-day entry/exit -->
+        <div v-else>
+          <div class="grid grid-cols-2 gap-4">
+            <!-- Entry Day Chart -->
+            <div>
+              <div class="h-72">
+                <Bar :data="entryChartData" :options="entryChartOptionsWithZoom" />
+              </div>
+            </div>
+
+            <!-- Exit Day Chart -->
+            <div>
+              <div class="h-72">
+                <Bar :data="exitChartData" :options="exitChartOptionsWithZoom" />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </template>
   </div>
