@@ -76,11 +76,17 @@ const FINANCIAL_DOMAINS = [
  * @param {string} symbol - Trading symbol (e.g., "AAPL", "SPY")
  * @param {string} date - Date in YYYY-MM-DD format
  * @param {string} apiKey - NewsAPI.org API key
+ * @param {string} proxyUrl - CORS proxy URL with {url} placeholder
  * @returns {Promise<Array>} Array of news articles
  */
-export async function fetchMarketNews(symbol, date, apiKey) {
+export async function fetchMarketNews(symbol, date, apiKey, proxyUrl) {
   if (!apiKey?.trim()) {
     console.log('No NewsAPI key configured, skipping news fetch')
+    return []
+  }
+
+  if (!proxyUrl?.trim()) {
+    console.warn('No proxy URL configured for news. Please set a proxy URL in Settings.')
     return []
   }
 
@@ -100,124 +106,105 @@ export async function fetchMarketNews(symbol, date, apiKey) {
     // Get expanded symbol name
     const fullName = SYMBOL_NAMES[symbol] || symbol
 
-    // Build search queries with better keywords
-    const searchQueries = [
-      // Try with full name first
-      fullName,
-      `${fullName} stock`,
-      `${fullName} ETF`,
-      `${fullName} price`,
-      `${fullName} shares`,
+    // Use single query: combine symbol and full name for better results
+    const query = fullName !== symbol ? `${symbol} OR ${fullName}` : symbol
 
-      // Then try symbol variations
-      symbol,
-      `${symbol} stock`,
-      `"${symbol}"`,
-      `${symbol} trading`,
-      `${symbol} investment`,
+    // Build NewsAPI URL
+    const newsApiUrl = `${NEWS_API_BASE}/everything?` + new URLSearchParams({
+      q: query,
+      from: fromStr,
+      to: toStr,
+      language: 'en',
+      sortBy: 'relevancy',
+      apiKey: apiKey.trim(),
+      pageSize: '50'
+    })
 
-      // Try symbol + keywords
-      `${symbol} price target`,
-      `${symbol} market`,
-      `${symbol} analyst`,
-    ]
+    // Use CORS proxy (same pattern as priceFetcher)
+    const url = proxyUrl.trim().replace('{url}', encodeURIComponent(newsApiUrl))
 
-    // Remove duplicates
-    const uniqueQueries = [...new Set(searchQueries)]
-
-    // Try each query until we get results
-    for (const query of uniqueQueries) {
-      const url = `${NEWS_API_BASE}/everything?` + new URLSearchParams({
-        q: query,
-        from: fromStr,
-        to: toStr,
-        language: 'en',
-        sortBy: 'relevancy',
-        apiKey: apiKey.trim(),
-        pageSize: '50'
-      })
-
-      const response = await fetch(url)
-
-      if (!response.ok) {
-        const error = await response.json()
-        console.warn(`Query "${query}" failed:`, error.code || error.message)
-        continue
+    const response = await fetch(url, {
+      headers: {
+        'Accept': 'application/json',
       }
+    })
 
-      const data = await response.json()
-
-      if (data.articles?.length > 0) {
-        console.log(`Found ${data.articles.length} articles for ${symbol} using query: "${query}"`)
-
-        // Transform and score articles by relevance
-        const scoredArticles = data.articles
-          .filter(article => {
-            // Filter out problematic sources
-            const url = article.url || ''
-
-            // Skip Yahoo News (consent redirect issues)
-            if (url.includes('yahoo.com') || url.includes('consent.yahoo')) {
-              return false
-            }
-
-            // Skip removed articles
-            if (!article.title || article.title.includes('[Removed]')) {
-              return false
-            }
-
-            return true
-          })
-          .map(article => {
-            const title = article.title.toLowerCase()
-            const description = (article.description || '').toLowerCase()
-            const combinedText = title + ' ' + description
-
-            // Calculate relevance score
-            let score = 0
-
-            // Symbol in title = higher score
-            if (title.includes(symbol.toLowerCase())) score += 10
-            if (title.includes(fullName.toLowerCase())) score += 10
-
-            // Keywords in title
-            if (title.includes('stock')) score += 3
-            if (title.includes('etf')) score += 3
-            if (title.includes('price')) score += 2
-            if (title.includes('trading')) score += 2
-            if (title.includes('market')) score += 1
-
-            // Symbol in description
-            if (description.includes(symbol.toLowerCase())) score += 5
-            if (description.includes(fullName.toLowerCase())) score += 5
-
-            // Financial domain bonus
-            const domain = article.source?.name?.toLowerCase() || ''
-            if (FINANCIAL_DOMAINS.some(d => article.url?.includes(d))) score += 5
-
-            return {
-              title: article.title,
-              description: article.description,
-              url: article.url,
-              source: article.source?.name || 'Unknown',
-              publishedAt: article.publishedAt,
-              imageUrl: article.urlToImage,
-              score
-            }
-          })
-          .sort((a, b) => b.score - a.score) // Sort by relevance
-          .slice(0, 10) // Take top 10 most relevant
-
-        console.log(`Returning ${scoredArticles.length} most relevant articles (scores: ${scoredArticles.map(a => a.score).join(', ')})`)
-
-        // Remove score before returning
-        return scoredArticles.map(({ score, ...article }) => article)
-      }
-
-      console.log(`No results for query: "${query}"`)
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({ code: 'unknown', message: 'Failed to parse error' }))
+      console.warn(`NewsAPI request failed:`, error.code || error.message)
+      return []
     }
 
-    console.log(`No news found for ${symbol} with any search query`)
+    const data = await response.json()
+
+    if (data.articles?.length > 0) {
+      console.log(`Found ${data.articles.length} articles for ${symbol}`)
+
+      // Transform and score articles by relevance
+      const scoredArticles = data.articles
+        .filter(article => {
+          // Filter out problematic sources
+          const url = article.url || ''
+
+          // Skip Yahoo News (consent redirect issues)
+          if (url.includes('yahoo.com') || url.includes('consent.yahoo')) {
+            return false
+          }
+
+          // Skip removed articles
+          if (!article.title || article.title.includes('[Removed]')) {
+            return false
+          }
+
+          return true
+        })
+        .map(article => {
+          const title = article.title.toLowerCase()
+          const description = (article.description || '').toLowerCase()
+          const combinedText = title + ' ' + description
+
+          // Calculate relevance score
+          let score = 0
+
+          // Symbol in title = higher score
+          if (title.includes(symbol.toLowerCase())) score += 10
+          if (title.includes(fullName.toLowerCase())) score += 10
+
+          // Keywords in title
+          if (title.includes('stock')) score += 3
+          if (title.includes('etf')) score += 3
+          if (title.includes('price')) score += 2
+          if (title.includes('trading')) score += 2
+          if (title.includes('market')) score += 1
+
+          // Symbol in description
+          if (description.includes(symbol.toLowerCase())) score += 5
+          if (description.includes(fullName.toLowerCase())) score += 5
+
+          // Financial domain bonus
+          const domain = article.source?.name?.toLowerCase() || ''
+          if (FINANCIAL_DOMAINS.some(d => article.url?.includes(d))) score += 5
+
+          return {
+            title: article.title,
+            description: article.description,
+            url: article.url,
+            source: article.source?.name || 'Unknown',
+            publishedAt: article.publishedAt,
+            imageUrl: article.urlToImage,
+            score
+          }
+        })
+        .sort((a, b) => b.score - a.score) // Sort by relevance
+        .slice(0, 10) // Take top 10 most relevant
+
+      console.log(`Returning ${scoredArticles.length} most relevant articles`)
+
+      // Remove score before returning
+      return scoredArticles.map(({ score, ...article }) => article)
+    }
+
+    console.log(`No news found for ${symbol}`)
     return []
 
   } catch (error) {
@@ -229,13 +216,21 @@ export async function fetchMarketNews(symbol, date, apiKey) {
 /**
  * Check if NewsAPI key is valid
  * @param {string} apiKey - NewsAPI.org API key
+ * @param {string} proxyUrl - CORS proxy URL with {url} placeholder
  * @returns {Promise<boolean>} True if key is valid
  */
-export async function validateNewsApiKey(apiKey) {
+export async function validateNewsApiKey(apiKey, proxyUrl) {
   if (!apiKey?.trim()) return false
+  if (!proxyUrl?.trim()) return false
 
   try {
-    const response = await fetch(`${NEWS_API_BASE}/top-headlines?country=us&apiKey=${apiKey.trim()}`)
+    const newsApiUrl = `${NEWS_API_BASE}/top-headlines?country=us&apiKey=${apiKey.trim()}`
+    const url = proxyUrl.trim().replace('{url}', encodeURIComponent(newsApiUrl))
+    const response = await fetch(url, {
+      headers: {
+        'Accept': 'application/json',
+      }
+    })
     const data = await response.json()
     return data.status === 'ok'
   } catch {

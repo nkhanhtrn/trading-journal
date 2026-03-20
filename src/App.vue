@@ -2583,7 +2583,7 @@ const fetchNewsForCurrentPosition = async () => {
   loadingNews.value[currentPos.ticket] = true
 
   try {
-    const news = await fetchMarketNews(currentPos.symbol, currentPos.date, settings.value.newsApiKey)
+    const news = await fetchMarketNews(currentPos.symbol, currentPos.date, settings.value.newsApiKey, settings.value.proxyUrl)
 
     if (news.length > 0) {
       currentPos.news = news
@@ -4036,7 +4036,7 @@ const saveTrade = async (trade) => {
       saveTicketsToStorage()
     } else {
       // Fetch new news
-      fetchMarketNews(trade.symbol, trade.date, settings.value.newsApiKey)
+      fetchMarketNews(trade.symbol, trade.date, settings.value.newsApiKey, settings.value.proxyUrl)
         .then(news => {
           if (news.length > 0) {
             trade.news = news
@@ -4087,7 +4087,7 @@ const fetchNewsForTicket = async (ticket) => {
   loadingNews.value[ticket.ticket] = true
 
   try {
-    const news = await fetchMarketNews(ticket.symbol, ticket.date, settings.value.newsApiKey)
+    const news = await fetchMarketNews(ticket.symbol, ticket.date, settings.value.newsApiKey, settings.value.proxyUrl)
 
     if (news.length > 0) {
       ticket.news = news
