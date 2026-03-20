@@ -365,21 +365,60 @@
         </div>
       </template>
       <template v-if="selectedPositionGroup">
-        <!-- Tickets Section -->
-        <div>
-          <button @click="ticketsExpanded = !ticketsExpanded" class="w-full flex items-center justify-between px-3 py-2 text-sm text-gray-400 hover:text-gray-300 hover:bg-gray-700/50 transition-colors">
-            <div class="flex items-center gap-2 flex-wrap">
-              <i class="fas fa-chevron-right transition-transform text-xs" :class="{ 'rotate-90': ticketsExpanded }"></i>
-              <span class="text-gray-500">{{ selectedPositionGroup?.expiry }}</span>
-              <span class="text-gray-400">{{ selectedPositionGroup?.totalQuantity }}c</span>
-              <span class="text-gray-400">${{ Math.abs(getAverageEntryPrice(selectedPositionGroup)).toFixed(2) }}</span>
-              <span v-if="hasClosingLegs(selectedPositionGroup)" class="text-gray-600">→</span>
-              <span v-if="hasClosingLegs(selectedPositionGroup)" class="text-gray-400">${{ Math.abs(getAverageExitPrice(selectedPositionGroup)).toFixed(2) }}</span>
-              <span class="text-gray-600">=</span>
-              <span :class="ticketsSummary.totalPnL >= 0 ? 'text-green-400' : 'text-red-400'">{{ ticketsSummary.totalPnL >= 0 ? '+' : '' }}${{ ticketsSummary.totalPnL }}</span>
-            </div>
+        <!-- Tab Navigation -->
+        <div class="flex gap-1 border-b border-gray-700 mb-4">
+          <button
+            @click="tradeDetailTab = 'chart'"
+            :class="[
+              'px-4 py-2 text-sm font-medium rounded-t transition-colors',
+              tradeDetailTab === 'chart'
+                ? 'bg-gray-800 text-white border-t border-x border-gray-700 -mb-px'
+                : 'text-gray-400 hover:text-gray-300 hover:bg-gray-800/50'
+            ]"
+          >
+            <i class="fas fa-chart-line mr-1.5"></i>Chart
           </button>
-          <div v-if="ticketsExpanded" class="pt-3 space-y-3">
+          <button
+            @click="tradeDetailTab = 'details'"
+            :class="[
+              'px-4 py-2 text-sm font-medium rounded-t transition-colors',
+              tradeDetailTab === 'details'
+                ? 'bg-gray-800 text-white border-t border-x border-gray-700 -mb-px'
+                : 'text-gray-400 hover:text-gray-300 hover:bg-gray-800/50'
+            ]"
+          >
+            <i class="fas fa-info-circle mr-1.5"></i>Details
+          </button>
+          <button
+            @click="tradeDetailTab = 'news'"
+            :class="[
+              'px-4 py-2 text-sm font-medium rounded-t transition-colors',
+              tradeDetailTab === 'news'
+                ? 'bg-gray-800 text-white border-t border-x border-gray-700 -mb-px'
+                : 'text-gray-400 hover:text-gray-300 hover:bg-gray-800/50'
+            ]"
+          >
+            <i class="fas fa-newspaper mr-1.5"></i>News
+          </button>
+        </div>
+
+        <!-- Chart Tab -->
+        <div v-show="tradeDetailTab === 'chart'" class="h-[600px] overflow-y-auto">
+          <!-- Intraday Charts -->
+          <IntradayChart
+            :positions="selectedPositionGroup.tickets || selectedPositionGroup.positions"
+            :symbol="selectedPositionGroup.symbol"
+            :show-entry="true"
+            :show-exit="true"
+            :model-index="currentPositionIndex"
+            :proxy-url="settings.proxyUrl || ''"
+            :user-id="userId"
+            @update:model-index="currentPositionIndex = $event"
+          />
+        </div>
+
+        <!-- Details Tab -->
+        <div v-show="tradeDetailTab === 'details'" class="h-[600px] overflow-y-auto">
           <!-- Only show current ticket that's being displayed in the graph -->
           <div v-for="pos in (selectedPositionGroup.tickets || selectedPositionGroup.positions).slice(currentPositionIndex, currentPositionIndex + 1)" :key="pos.ticket" class="bg-gray-900 rounded p-3 mb-3 last:mb-0">
             <div class="flex items-center justify-between mb-3">
@@ -507,20 +546,57 @@
               </div>
             </div>
           </div>
-          </div>
         </div>
 
-        <!-- Intraday Charts -->
-        <IntradayChart
-          :positions="selectedPositionGroup.tickets || selectedPositionGroup.positions"
-          :symbol="selectedPositionGroup.symbol"
-          :show-entry="true"
-          :show-exit="true"
-          :model-index="currentPositionIndex"
-          :proxy-url="settings.proxyUrl || ''"
-          :user-id="userId"
-          @update:model-index="currentPositionIndex = $event"
-        />
+        <!-- News Tab -->
+        <div v-show="tradeDetailTab === 'news'" class="h-[600px] overflow-y-auto space-y-4">
+          <div v-for="pos in (selectedPositionGroup.tickets || selectedPositionGroup.positions).slice(currentPositionIndex, currentPositionIndex + 1)" :key="'news-' + pos.ticket">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="text-blue-400 font-mono text-sm">#{{ pos.ticket }}</span>
+              <span class="text-xs text-gray-500">{{ pos.date }}</span>
+              <span v-if="loadingNews[pos.ticket]" class="text-xs text-blue-400">
+                <i class="fas fa-spinner fa-spin mr-1"></i>Loading news...
+              </span>
+            </div>
+            <div v-if="pos.news && pos.news.length > 0" class="space-y-2 pr-1">
+              <a
+                v-for="(article, idx) in pos.news.slice(0, 10)"
+                :key="idx"
+                :href="article.url"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="block bg-gray-800/50 hover:bg-gray-800 rounded p-3 transition-colors"
+              >
+                <div class="flex items-start gap-3">
+                  <img
+                    v-if="article.imageUrl"
+                    :src="article.imageUrl"
+                    class="w-20 h-20 rounded object-cover flex-shrink-0"
+                    loading="lazy"
+                  >
+                  <div class="flex-1 min-w-0">
+                    <div class="text-sm font-medium text-gray-200 line-clamp-2 leading-snug mb-2">{{ article.title }}</div>
+                    <div v-if="article.description" class="text-xs text-gray-400 line-clamp-2 mb-2">{{ article.description }}</div>
+                    <div class="flex items-center gap-2">
+                      <span class="text-[10px] text-gray-500">{{ article.source }}</span>
+                      <span class="text-[10px] text-gray-600">{{ formatNewsDate(article.publishedAt) }}</span>
+                    </div>
+                  </div>
+                </div>
+              </a>
+            </div>
+            <div v-else-if="loadingNews[pos.ticket]" class="text-center py-8 text-gray-500 text-sm">
+              <i class="fas fa-spinner fa-spin mr-2"></i>Loading market news for {{ pos.symbol }}...
+            </div>
+            <div v-else-if="!settings.newsApiKey" class="text-center py-8">
+              <div class="text-gray-500 text-sm mb-2">No NewsAPI key configured</div>
+              <div class="text-gray-600 text-xs">Add a free API key from <a href="https://newsapi.org/register" target="_blank" class="text-blue-400 hover:underline">newsapi.org</a> in Settings to auto-fetch market news</div>
+            </div>
+            <div v-else class="text-center py-8 text-gray-500 text-sm">
+              No news found for {{ pos.symbol }} around {{ pos.date }}
+            </div>
+          </div>
+        </div>
       </template>
     </BaseModal>
 
@@ -541,6 +617,22 @@
           class="w-full bg-gray-900 border border-gray-700 rounded px-3 py-2 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500"
         >
         <p class="text-xs text-gray-500 mt-1">Use {url} as placeholder for the target URL. Required for fetching prices.</p>
+      </div>
+
+      <!-- News API Section -->
+      <div class="border-t border-gray-700 pt-4">
+        <h4 class="text-sm font-medium text-gray-300 mb-2">Market News</h4>
+        <label class="block text-xs text-gray-500 mb-1">NewsAPI.org Key (optional)</label>
+        <input
+          v-model="settings.newsApiKey"
+          type="password"
+          placeholder="Enter your NewsAPI.org key"
+          class="w-full bg-gray-900 border border-gray-700 rounded px-3 py-2 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-blue-500"
+        >
+        <p class="text-xs text-gray-500 mt-1">
+          Get free API key at <a href="https://newsapi.org/register" target="_blank" class="text-blue-400 hover:underline">newsapi.org</a>.
+          Auto-fetches market news when saving trades.
+        </p>
       </div>
 
       <!-- Backup Section -->
@@ -680,6 +772,7 @@ import {
   hasExistingData
 } from './utils/firestore'
 import { syncIntradayFromFirestore } from './utils/priceFetcher.js'
+import { fetchMarketNews } from './utils/newsFetcher.js'
 import { Line, Bar } from 'vue-chartjs'
 import { Chart as ChartJS, Title, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Filler, ScatterController } from 'chart.js'
 import flatpickr from 'flatpickr'
@@ -697,6 +790,7 @@ const tickets = ref([])
 const rawTransactions = ref([])  // Store all raw CSV transactions for re-matching
 const showAddModal = ref(false)
 const showSettingsModal = ref(false)
+const loadingNews = ref({})  // Track loading state for news fetching per ticket
 
 // Firebase Auth state
 const showLoginModal = ref(false)
@@ -1373,6 +1467,14 @@ function formatDate(dateStr) {
   const parts = dateStr.split(' ')[0].split('/')
   if (parts.length === 3) return `${parts[2]}-${parts[0].padStart(2, '0')}-${parts[1].padStart(2, '0')}`
   return dateStr
+}
+
+// Format ISO date string to readable format (e.g., "Mar 15")
+function formatNewsDate(isoDateStr) {
+  if (!isoDateStr) return ''
+  const date = new Date(isoDateStr)
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+  return `${months[date.getMonth()]} ${date.getDate()}`
 }
 
 function compareDates(timeA, timeB) {
@@ -2369,8 +2471,9 @@ const filters = ref({
 })
 
 const selectedPositionGroup = ref(null)
-const ticketsExpanded = ref(false) // Collapsible tickets section state
+const ticketsExpanded = ref(true) // Details tab expanded by default
 const currentPositionIndex = ref(0) // Track which ticket is displayed in the graph
+const tradeDetailTab = ref('chart') // Trade detail modal tab: 'chart', 'details', 'news' - chart first
 const selectedTradeDate = ref(new Date().toISOString().split('T')[0]) // For day navigation in trades view - default to today
 
 // Trades view mode: 'list' or 'square'
@@ -2432,37 +2535,78 @@ const tradeDetailModalOpen = computed({
 watch(() => tradeDetailModalOpen.value, (isOpen) => {
   if (isOpen) {
     currentPositionIndex.value = 0
+    // Auto-fetch news on modal open if API key configured
+    fetchNewsForCurrentPosition()
   }
 })
 
-// Computed for modal max width
+// Get equivalent symbols for news reuse (SPX/SPXW/SPY share news, VIX/VIXW share news)
+const getEquivalentSymbols = (symbol) => {
+  const equivalents = {
+    'SPX': ['SPX', 'SPXW', 'SPY'],
+    'SPXW': ['SPX', 'SPXW', 'SPY'],
+    'SPY': ['SPX', 'SPXW', 'SPY'],
+    'VIX': ['VIX', 'VIXW'],
+    'VIXW': ['VIX', 'VIXW'],
+  }
+  return equivalents[symbol] || [symbol]
+}
+
+// Fetch news for current position when modal opens
+const fetchNewsForCurrentPosition = async () => {
+  if (!settings.value.newsApiKey?.trim()) return
+
+  const positions = selectedPositionGroup.value?.tickets || selectedPositionGroup.value?.positions || []
+  const currentPos = positions[currentPositionIndex.value]
+
+  // Don't fetch if already has news or currently loading
+  if (!currentPos || currentPos.news?.length > 0 || loadingNews.value[currentPos.ticket]) return
+
+  // Get equivalent symbols for news reuse
+  const equivalentSymbols = getEquivalentSymbols(currentPos.symbol)
+
+  // Check if any ticket has news for the same equivalent symbol + date (reuse existing news)
+  const existingNewsTicket = tickets.value.find(t =>
+    equivalentSymbols.includes(t.symbol) &&
+    t.date === currentPos.date &&
+    t.news?.length > 0 &&
+    t.ticket !== currentPos.ticket
+  )
+
+  if (existingNewsTicket) {
+    console.log(`Reusing ${existingNewsTicket.news.length} existing news articles for ${currentPos.symbol} on ${currentPos.date}`)
+    currentPos.news = existingNewsTicket.news
+    await saveTicketsToStorage()
+    return
+  }
+
+  loadingNews.value[currentPos.ticket] = true
+
+  try {
+    const news = await fetchMarketNews(currentPos.symbol, currentPos.date, settings.value.newsApiKey)
+
+    if (news.length > 0) {
+      currentPos.news = news
+      await saveTicketsToStorage()
+      console.log(`Fetched ${news.length} news articles for ${currentPos.symbol}`)
+    }
+  } catch (error) {
+    console.error('Failed to fetch news:', error)
+  } finally {
+    loadingNews.value[currentPos.ticket] = false
+  }
+}
+
+// Computed for modal max width - consistent across all tabs
 const modalMaxWidth = computed(() => {
-  const positions = selectedPositionGroup.value?.tickets || selectedPositionGroup.value?.positions || []
-  if (positions.length === 0) return '2xl'
-  const ticket = positions[0]
-  // Check if entry and exit are on different days
-  if (ticket.exit_date && ticket.status !== 'OPEN') {
-    const entryDate = new Date(ticket.date + 'T00:00:00-05:00')
-    const exitDate = new Date(ticket.exit_date + 'T00:00:00-05:00')
-    const isDifferentDay = exitDate.toDateString() !== entryDate.toDateString()
-    return isDifferentDay ? '7xl' : '2xl'
-  }
-  return '2xl'
+  // Always use the same width for all tabs
+  return '6xl'
 })
 
-// Computed for modal content class (adjust height for dual charts)
+// Computed for modal content class (consistent height)
 const modalContentClass = computed(() => {
-  const positions = selectedPositionGroup.value?.tickets || selectedPositionGroup.value?.positions || []
-  if (positions.length === 0) return 'p-4 space-y-4 max-h-[70vh] overflow-auto'
-  const ticket = positions[0]
-  // Check if entry and exit are on different days
-  if (ticket.exit_date && ticket.status !== 'OPEN') {
-    const entryDate = new Date(ticket.date + 'T00:00:00-05:00')
-    const exitDate = new Date(ticket.exit_date + 'T00:00:00-05:00')
-    const isDifferentDay = exitDate.toDateString() !== entryDate.toDateString()
-    return isDifferentDay ? 'p-4 space-y-4 max-h-[90vh] overflow-auto' : 'p-4 space-y-4 max-h-[70vh] overflow-auto'
-  }
-  return 'p-4 space-y-4 max-h-[70vh] overflow-auto'
+  // Fixed height for consistent tab appearance
+  return 'p-4 overflow-auto'
 })
 
 // Tickets summary for the collapsible header
@@ -3868,10 +4012,96 @@ const nextMonth = () => {
   currentMonth.value = new Date(currentMonth.value.getFullYear(), currentMonth.value.getMonth() + 1, 1)
 }
 
-const saveTrade = (trade) => {
+const saveTrade = async (trade) => {
   trade.ticket = Date.now()
   tickets.value.unshift(trade)
   saveTicketsToStorage()
+
+  // Auto-fetch market news if API key is configured
+  if (settings.value.newsApiKey?.trim() && trade.symbol && trade.date) {
+    // Get equivalent symbols for news reuse
+    const equivalentSymbols = getEquivalentSymbols(trade.symbol)
+
+    // Check if any existing ticket has news for the same equivalent symbol + date
+    const existingNewsTicket = tickets.value.find(t =>
+      t.ticket !== trade.ticket &&
+      equivalentSymbols.includes(t.symbol) &&
+      t.date === trade.date &&
+      t.news?.length > 0
+    )
+
+    if (existingNewsTicket) {
+      console.log(`Reusing ${existingNewsTicket.news.length} existing news articles for ${trade.symbol} on ${trade.date}`)
+      trade.news = existingNewsTicket.news
+      saveTicketsToStorage()
+    } else {
+      // Fetch new news
+      fetchMarketNews(trade.symbol, trade.date, settings.value.newsApiKey)
+        .then(news => {
+          if (news.length > 0) {
+            trade.news = news
+            saveTicketsToStorage()
+            console.log(`Fetched ${news.length} news articles for ${trade.symbol}`)
+          }
+        })
+        .catch(err => {
+          console.error('Failed to fetch news:', err)
+        })
+    }
+  }
+
   showAddModal.value = false
+}
+
+// Fetch news for an existing ticket
+const fetchNewsForTicket = async (ticket) => {
+  if (!settings.value.newsApiKey?.trim()) {
+    alert('Please add a NewsAPI key in Settings first')
+    return
+  }
+
+  if (!ticket.symbol || !ticket.date) {
+    alert('Ticket must have a symbol and date')
+    return
+  }
+
+  // Get equivalent symbols for news reuse
+  const equivalentSymbols = getEquivalentSymbols(ticket.symbol)
+
+  // Check if any existing ticket has news for the same equivalent symbol + date (reuse existing news)
+  const existingNewsTicket = tickets.value.find(t =>
+    t.ticket !== ticket.ticket &&
+    equivalentSymbols.includes(t.symbol) &&
+    t.date === ticket.date &&
+    t.news?.length > 0
+  )
+
+  if (existingNewsTicket) {
+    console.log(`Reusing ${existingNewsTicket.news.length} existing news articles for ${ticket.symbol} on ${ticket.date}`)
+    ticket.news = existingNewsTicket.news
+    await saveTicketsToStorage()
+    alert(`Reused ${existingNewsTicket.news.length} existing news articles for ${ticket.symbol}`)
+    return
+  }
+
+  loadingNews.value[ticket.ticket] = true
+
+  try {
+    const news = await fetchMarketNews(ticket.symbol, ticket.date, settings.value.newsApiKey)
+
+    if (news.length > 0) {
+      ticket.news = news
+      await saveTicketsToStorage()
+      console.log(`Fetched ${news.length} news articles for ${ticket.symbol}`)
+      alert(`Fetched ${news.length} news articles for ${ticket.symbol}`)
+    } else {
+      alert(`No news found for ${ticket.symbol} around ${ticket.date}`)
+    }
+  } catch (error) {
+    console.error('Failed to fetch news:', error)
+    alert('Failed to fetch news. Check console for details.')
+  } finally {
+    loadingNews.value[ticket.ticket] = false
+  }
 }
 </script>
