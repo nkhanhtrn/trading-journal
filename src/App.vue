@@ -404,7 +404,7 @@
         </div>
 
         <!-- Chart Tab -->
-        <div v-show="tradeDetailTab === 'chart'" class="h-[600px] overflow-y-auto">
+        <div v-show="tradeDetailTab === 'chart'" class="h-[400px] overflow-y-auto">
           <!-- Intraday Charts -->
           <IntradayChart
             :positions="selectedPositionGroup.tickets || selectedPositionGroup.positions"
@@ -419,7 +419,7 @@
         </div>
 
         <!-- Details Tab -->
-        <div v-show="tradeDetailTab === 'details'" class="h-[600px] overflow-y-auto">
+        <div v-show="tradeDetailTab === 'details'" class="h-[400px] overflow-y-auto">
           <!-- Only show current ticket that's being displayed in the graph -->
           <div v-for="pos in (selectedPositionGroup.tickets || selectedPositionGroup.positions).slice(currentPositionIndex, currentPositionIndex + 1)" :key="pos.ticket" class="bg-gray-900 rounded p-3 mb-3 last:mb-0">
             <div class="flex items-center justify-between mb-3">
@@ -550,7 +550,7 @@
         </div>
 
         <!-- News Tab -->
-        <div v-show="tradeDetailTab === 'news'" class="h-[350px] overflow-y-auto space-y-4">
+        <div v-show="tradeDetailTab === 'news'" class="h-[400px] overflow-y-auto space-y-4">
           <div v-for="pos in (selectedPositionGroup.tickets || selectedPositionGroup.positions).slice(currentPositionIndex, currentPositionIndex + 1)" :key="'news-' + pos.ticket">
             <div class="flex items-center gap-2 mb-3">
               <span class="text-blue-400 font-mono text-sm">#{{ pos.ticket }}</span>
