@@ -86,8 +86,8 @@
         </div>
       </div>
 
-      <!-- Single chart for same-day entry/exit or entry-only -->
-      <div v-if="!isMultiDay">
+      <!-- Charts -->
+      <div class="mt-4">
         <div class="h-72">
           <Bar :data="chartData" :options="chartOptionsWithZoom" />
         </div>
@@ -110,6 +110,7 @@
             </div>
           </div>
         </div>
+      </div>
       </div>
     </template>
   </div>
