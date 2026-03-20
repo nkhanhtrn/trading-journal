@@ -286,6 +286,18 @@
 
     <!-- Left Sidebar Navigation -->
     <nav class="fixed left-0 top-0 bottom-0 w-14 bg-gray-800 border-r border-gray-700 flex flex-col items-center py-4 gap-2 z-50">
+      <!-- User Profile Button -->
+      <button
+        @click="showLoginModal = true"
+        class="w-10 h-10 rounded-full flex items-center justify-center transition-colors mb-2"
+        :class="isAuthenticated ? 'bg-blue-600' : 'bg-gray-700 hover:bg-gray-600'"
+        :title="isAuthenticated ? userName : 'Sign In'"
+      >
+        <img v-if="isAuthenticated && userPhoto" :src="userPhoto" class="w-10 h-10 rounded-full object-cover">
+        <span v-else-if="isAuthenticated" class="text-white font-medium">{{ userName.charAt(0) }}</span>
+        <i v-else class="fas fa-user text-gray-400"></i>
+      </button>
+
       <button
         @click="navigateTo('dashboard')"
         :class="[
@@ -557,6 +569,28 @@
         <p class="text-xs text-gray-500 mt-1">Export all trades and settings, or restore from a backup file</p>
       </div>
 
+      <!-- Account Section -->
+      <div v-if="isAuthenticated" class="border-t border-gray-700 pt-4">
+        <h4 class="text-sm font-medium text-gray-300 mb-2">Account</h4>
+        <div class="flex items-center gap-3 mb-3 p-2 bg-gray-700/50 rounded">
+          <img v-if="userPhoto" :src="userPhoto" class="w-10 h-10 rounded-full object-cover">
+          <div v-else class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center">
+            <span class="text-white font-medium">{{ userName.charAt(0) }}</span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="text-white text-sm font-medium truncate">{{ userName }}</p>
+            <p class="text-gray-400 text-xs truncate">{{ userEmail }}</p>
+          </div>
+        </div>
+        <button
+          @click="handleSignOut"
+          class="w-full text-sm bg-gray-700 hover:bg-gray-600 text-white px-3 py-2 rounded transition-colors"
+        >
+          <i class="fas fa-sign-out-alt mr-2"></i>
+          Sign Out
+        </button>
+      </div>
+
       <!-- Data Management Section -->
       <div class="border-t border-gray-700 pt-4">
         <h4 class="text-sm font-medium text-gray-300 mb-2">Data Management</h4>
@@ -601,6 +635,32 @@
         </button>
       </template>
     </BaseModal>
+
+    <!-- Auth Landing Page -->
+    <AuthLanding
+      v-if="showAuthLanding && !isAuthenticated"
+      @open-login="showLoginModal = true; showAuthLanding = false"
+      @use-local="useLocalStorageOnly"
+    />
+
+    <!-- Login Modal -->
+    <LoginModal
+      :show="showLoginModal"
+      @close="showLoginModal = false"
+      @success="handleSignIn"
+    />
+
+    <!-- Migration Modal -->
+    <MigrationModal
+      :show="showMigrationModal"
+      :local-data="{
+        tickets: JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'),
+        rawTransactions: JSON.parse(localStorage.getItem(RAW_TRANSACTIONS_KEY) || '[]')
+      }"
+      @close="showMigrationModal = false"
+      @migrate="handleMigration"
+      @skip="skipMigration"
+    />
   </div>
 </template>
 
@@ -613,6 +673,23 @@ import { detectStrategy, getStrategyDisplayName } from './utils/strategyDetector
 import TradeFormModal from './components/TradeFormModal.vue'
 import MiniCalendarDots from './components/MiniCalendarDots.vue'
 import BaseModal from './components/BaseModal.vue'
+import LoginModal from './components/LoginModal.vue'
+import MigrationModal from './components/MigrationModal.vue'
+import AuthLanding from './components/AuthLanding.vue'
+import UserProfile from './components/UserProfile.vue'
+import { useAuth } from './composables/useAuth'
+import {
+  getTickets,
+  saveTicketsBatch,
+  getRawTransactions,
+  saveRawTransactions as saveRawTransactionsToFirestore,
+  getSettings,
+  saveSettings as saveSettingsToFirestore,
+  subscribeToTickets,
+  subscribeToSettings,
+  migrateToFirestore,
+  hasExistingData
+} from './utils/firestore'
 import { Line, Bar } from 'vue-chartjs'
 import { Chart as ChartJS, Title, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Filler, ScatterController } from 'chart.js'
 import flatpickr from 'flatpickr'
@@ -630,6 +707,31 @@ const tickets = ref([])
 const rawTransactions = ref([])  // Store all raw CSV transactions for re-matching
 const showAddModal = ref(false)
 const showSettingsModal = ref(false)
+
+// Firebase Auth state
+const showLoginModal = ref(false)
+const showMigrationModal = ref(false)
+const showAuthLanding = ref(false)
+const isSyncing = ref(false)
+const syncError = ref(null)
+
+// Initialize auth composable
+const {
+  initialize: initializeAuth,
+  signInWithGoogle,
+  signOut,
+  user,
+  isLoading: authLoading,
+  isAuthenticated,
+  userEmail,
+  userName,
+  userPhoto,
+  userId
+} = useAuth()
+
+// Real-time sync unsubscribers
+let ticketsUnsubscribe = null
+let settingsUnsubscribe = null
 
 // Active tab state
 const activeTab = ref('dashboard')
@@ -655,10 +757,17 @@ const loadSettings = () => {
   }
 }
 
-// Save settings to localStorage
-const saveSettings = () => {
+// Save settings to localStorage and Firestore
+const saveSettings = async () => {
   try {
+    // Save to localStorage
     localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings.value))
+
+    // Also save to Firestore if authenticated
+    if (isAuthenticated.value && userId.value) {
+      await saveSettingsToFirestore(userId.value, settings.value)
+    }
+
     showSettingsModal.value = false
     uploadMessage.value = 'Settings saved'
     setTimeout(() => uploadMessage.value = '', 2000)
@@ -666,6 +775,163 @@ const saveSettings = () => {
     uploadMessage.value = 'Failed to save settings'
     setTimeout(() => uploadMessage.value = '', 2000)
   }
+}
+
+// ============================================================================
+// FIREBASE AUTH HANDLERS
+// ============================================================================
+
+// Sign in handler
+const handleSignIn = async () => {
+  const result = await signInWithGoogle()
+  if (result.success) {
+    showLoginModal.value = false
+    // Check for migration needed
+    await checkAndPromptMigration()
+  } else {
+    console.error('Sign in failed:', result.error)
+  }
+}
+
+// Sign out handler
+const handleSignOut = async () => {
+  const result = await signOut()
+  if (result.success) {
+    // Clear data and reload from localStorage
+    tickets.value = []
+    rawTransactions.value = []
+    loadTicketsFromStorage()
+    loadRawTransactions()
+  }
+}
+
+// Check if user needs data migration
+const checkAndPromptMigration = async () => {
+  if (!isAuthenticated.value || !userId.value) return
+
+  // Check if user has existing Firestore data
+  const hasData = await hasExistingData(userId.value)
+
+  if (!hasData) {
+    // Check for localStorage data
+    const localTickets = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]')
+    const localTransactions = JSON.parse(localStorage.getItem(RAW_TRANSACTIONS_KEY) || '[]')
+
+    if (localTickets.length > 0 || localTransactions.length > 0) {
+      // Show migration modal
+      showMigrationModal.value = true
+    } else {
+      // No local data, load empty from Firestore
+      loadUserData()
+    }
+  } else {
+    // Load data from Firestore
+    loadUserData()
+  }
+}
+
+// Migration handler
+const handleMigration = async ({ onProgress, onSuccess, onError }) => {
+  try {
+    isSyncing.value = true
+
+    // Gather localStorage data
+    const localTickets = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]')
+    const localTransactions = JSON.parse(localStorage.getItem(RAW_TRANSACTIONS_KEY) || '[]')
+    const localSettings = JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}')
+
+    onProgress(10)
+
+    // Perform migration
+    const result = await migrateToFirestore(userId.value, {
+      tickets: localTickets,
+      rawTransactions: localTransactions,
+      settings: localSettings
+    })
+
+    onProgress(100)
+    onSuccess(result.ticketsMigrated)
+
+    // Load data from Firestore after migration
+    setTimeout(() => {
+      loadUserData()
+      showMigrationModal.value = false
+    }, 1500)
+
+  } catch (err) {
+    console.error('Migration error:', err)
+    onError(err)
+  } finally {
+    isSyncing.value = false
+  }
+}
+
+// Skip migration
+const skipMigration = async () => {
+  showMigrationModal.value = false
+  // Load empty state from Firestore
+  loadUserData()
+}
+
+// Load user data from Firestore
+const loadUserData = async () => {
+  if (!isAuthenticated.value || !userId.value) return
+
+  try {
+    isSyncing.value = true
+    syncError.value = null
+
+    // Load tickets
+    const loadedTickets = await getTickets(userId.value)
+    tickets.value = loadedTickets
+
+    // Load raw transactions
+    const loadedTransactions = await getRawTransactions(userId.value)
+    rawTransactions.value = loadedTransactions
+
+    // Load settings
+    const loadedSettings = await getSettings(userId.value)
+    if (Object.keys(loadedSettings).length > 0) {
+      settings.value = { ...settings.value, ...loadedSettings }
+    }
+
+  } catch (err) {
+    console.error('Error loading user data:', err)
+    syncError.value = err.message
+  } finally {
+    isSyncing.value = false
+  }
+}
+
+// Setup real-time sync when authenticated
+watch(isAuthenticated, (newValue) => {
+  if (newValue && userId.value) {
+    // Subscribe to real-time updates
+    ticketsUnsubscribe = subscribeToTickets(userId.value, (updatedTickets) => {
+      tickets.value = updatedTickets
+    })
+
+    settingsUnsubscribe = subscribeToSettings(userId.value, (updatedSettings) => {
+      settings.value = { ...settings.value, ...updatedSettings }
+    })
+  } else {
+    // Unsubscribe when logged out
+    if (ticketsUnsubscribe) {
+      ticketsUnsubscribe()
+      ticketsUnsubscribe = null
+    }
+    if (settingsUnsubscribe) {
+      settingsUnsubscribe()
+      settingsUnsubscribe = null
+    }
+  }
+})
+
+// Use local storage only (skip auth)
+const useLocalStorageOnly = () => {
+  showAuthLanding.value = false
+  loadTicketsFromStorage()
+  loadRawTransactions()
 }
 
 // Clear price cache
@@ -784,19 +1050,31 @@ const loadRawTransactions = () => {
   }
 }
 
-// Save tickets to localStorage
-const saveTicketsToStorage = () => {
+// Save tickets to localStorage and Firestore
+const saveTicketsToStorage = async () => {
   try {
+    // Save to localStorage
     localStorage.setItem(STORAGE_KEY, JSON.stringify(tickets.value))
+
+    // Also save to Firestore if authenticated
+    if (isAuthenticated.value && userId.value) {
+      await saveTicketsBatch(userId.value, tickets.value)
+    }
   } catch (e) {
     console.error('Error saving tickets to storage:', e)
   }
 }
 
-// Save raw transactions to localStorage
-const saveRawTransactions = () => {
+// Save raw transactions to localStorage and Firestore
+const saveRawTransactions = async () => {
   try {
+    // Save to localStorage
     localStorage.setItem(RAW_TRANSACTIONS_KEY, JSON.stringify(rawTransactions.value))
+
+    // Also save to Firestore if authenticated
+    if (isAuthenticated.value && userId.value) {
+      await saveRawTransactionsToFirestore(userId.value, rawTransactions.value)
+    }
   } catch (e) {
     console.error('Error saving raw transactions to storage:', e)
   }
@@ -2245,9 +2523,19 @@ const groupedOpenPositions = computed(() => {
 })
 
 onMounted(() => {
+  // Initialize auth first
+  initializeAuth()
+
+  // Load settings (always from localStorage initially)
   loadSettings()
-  loadTicketsFromStorage()
-  loadRawTransactions()
+
+  // Show auth landing if not configured, otherwise load data
+  if (!isAuthenticated.value) {
+    showAuthLanding.value = true
+  } else {
+    // Authenticated, load from Firestore
+    loadUserData()
+  }
 })
 
 // Watch for trades tab to initialize/cleanup date picker
