@@ -81,8 +81,9 @@ function setCachedIntradayToLocal(symbol, date, data) {
 // ============================================================================
 
 // Get Firestore document path for market data
-function getMarketDataDoc(userId, type, symbol, date) {
-  return doc(db, 'users', userId, 'market_data', type, `${symbol}_${date}`)
+// Format: users/{userId}/market_data/{symbol}_{date}
+function getMarketDataDoc(userId, symbol, date) {
+  return doc(db, 'users', userId, 'market_data', `${symbol}_${date}`)
 }
 
 // Fetch intraday prices from Firestore cache
@@ -90,7 +91,7 @@ async function getCachedIntradayFromFirestore(userId, symbol, date) {
   if (!db || !userId) return null
 
   try {
-    const docRef = getMarketDataDoc(userId, 'intraday', symbol, date)
+    const docRef = getMarketDataDoc(userId, symbol, date)
     const snapshot = await getDoc(docRef)
 
     if (snapshot.exists()) {
@@ -112,7 +113,7 @@ async function setCachedIntradayToFirestore(userId, symbol, date, data) {
   if (!db || !userId) return
 
   try {
-    const docRef = getMarketDataDoc(userId, 'intraday', symbol, date)
+    const docRef = getMarketDataDoc(userId, symbol, date)
     await setDoc(docRef, {
       points: data,
       updatedAt: serverTimestamp()
@@ -127,7 +128,7 @@ export async function syncIntradayFromFirestore(userId) {
   if (!db || !userId) return
 
   try {
-    const collectionRef = collection(db, 'users', userId, 'market_data', 'intraday')
+    const collectionRef = collection(db, 'users', userId, 'market_data')
     const snapshot = await getDocs(collectionRef)
 
     const localCache = getIntradayCache()
@@ -137,12 +138,8 @@ export async function syncIntradayFromFirestore(userId) {
       const key = docSnapshot.id
       const data = docSnapshot.data()
 
-      // Extract symbol and date from key format: "SPX_2026-01-02"
-      const parts = key.split('_')
-      if (parts.length >= 2) {
-        const symbol = parts.slice(0, -1).join('_') // Handle symbols with underscores
-        const date = parts[parts.length - 1]
-
+      // Document IDs are in format: SYMBOL_DATE (e.g., "GLD_2026-03-19")
+      if (data.points) {
         // Convert dates and store locally
         const points = data.points.map(point => ({
           ...point,
@@ -162,6 +159,7 @@ export async function syncIntradayFromFirestore(userId) {
     console.error('Error syncing intraday from Firestore:', e)
   }
 }
+
 
 // ============================================================================
 // LAYERED CACHE FETCHING
