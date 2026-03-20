@@ -518,6 +518,7 @@
           :show-exit="true"
           :model-index="currentPositionIndex"
           :proxy-url="settings.proxyUrl || ''"
+          :user-id="userId"
           @update:model-index="currentPositionIndex = $event"
         />
       </template>
@@ -678,6 +679,7 @@ import {
   migrateToFirestore,
   hasExistingData
 } from './utils/firestore'
+import { syncIntradayFromFirestore } from './utils/priceFetcher.js'
 import { Line, Bar } from 'vue-chartjs'
 import { Chart as ChartJS, Title, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Filler, ScatterController } from 'chart.js'
 import flatpickr from 'flatpickr'
@@ -949,6 +951,9 @@ const loadUserData = async () => {
       settings.value = { ...settings.value, ...loadedSettings }
     }
 
+    // Sync market data from Firestore to local cache
+    await syncIntradayFromFirestore(userId.value)
+
   } catch (err) {
     console.error('Error loading user data:', err)
     syncError.value = err.message
@@ -997,9 +1002,11 @@ const localDataForMigration = computed(() => {
 })
 
 // Clear price cache
-const clearPriceCache = () => {
+const clearPriceCache = async () => {
   try {
     localStorage.removeItem(PRICE_CACHE_KEY)
+    // Also clear intraday cache from both local and Firestore
+    await clearIntradayCache(userId.value)
     uploadMessage.value = 'Price cache cleared'
     setTimeout(() => uploadMessage.value = '', 2000)
   } catch {

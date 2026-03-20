@@ -1,5 +1,18 @@
-// Price fetching utility for Yahoo Finance
+// Price fetching utility with layered caching (localStorage -> Firestore -> Yahoo API)
 // Requires a CORS proxy URL to be configured in settings
+
+import { db } from './firebase.js'
+import {
+  doc,
+  getDoc,
+  setDoc,
+  getDocs,
+  collection,
+  query,
+  where,
+  deleteDoc,
+  serverTimestamp
+} from 'firebase/firestore'
 
 // Symbol mapping for special cases
 const SYMBOL_MAP = {
@@ -16,8 +29,13 @@ function getYahooSymbol(symbol) {
   return SYMBOL_MAP[symbol] || symbol
 }
 
-// Intraday price cache key
+// Local storage keys
 const INTRADAY_CACHE_KEY = 'trading_journal_intraday_cache'
+const PRICE_CACHE_KEY = 'trading_journal_price_cache'
+
+// ============================================================================
+// LOCAL STORAGE CACHE
+// ============================================================================
 
 function getIntradayCache() {
   try {
@@ -39,7 +57,7 @@ function saveIntradayCache(cache) {
   }
 }
 
-function getCachedIntraday(symbol, date) {
+function getCachedIntradayFromLocal(symbol, date) {
   const cache = getIntradayCache()
   const key = `${symbol}_${date}`
   if (cache[key] !== undefined) {
@@ -52,27 +70,126 @@ function getCachedIntraday(symbol, date) {
   return null
 }
 
-function setCachedIntraday(symbol, date, data) {
+function setCachedIntradayToLocal(symbol, date, data) {
   const cache = getIntradayCache()
   cache[`${symbol}_${date}`] = data
   saveIntradayCache(cache)
 }
 
-// Fetch intraday prices for a symbol on a specific date (5-minute intervals)
-// Requires proxyUrl from settings (format: https://proxy.com/?url={url})
-export async function fetchIntradayPrices(symbol, date, proxyUrl) {
+// ============================================================================
+// FIRESTORE CACHE
+// ============================================================================
+
+// Get Firestore document path for market data
+function getMarketDataDoc(userId, type, symbol, date) {
+  return doc(db, 'users', userId, 'market_data', type, `${symbol}_${date}`)
+}
+
+// Fetch intraday prices from Firestore cache
+async function getCachedIntradayFromFirestore(userId, symbol, date) {
+  if (!db || !userId) return null
+
+  try {
+    const docRef = getMarketDataDoc(userId, 'intraday', symbol, date)
+    const snapshot = await getDoc(docRef)
+
+    if (snapshot.exists()) {
+      const data = snapshot.data()
+      // Convert Firestore timestamps back to Dates
+      return data.points.map(point => ({
+        ...point,
+        time: point.time.toDate ? point.time.toDate() : new Date(point.time)
+      }))
+    }
+  } catch (e) {
+    console.error('Error reading intraday from Firestore:', e)
+  }
+  return null
+}
+
+// Save intraday prices to Firestore cache
+async function setCachedIntradayToFirestore(userId, symbol, date, data) {
+  if (!db || !userId) return
+
+  try {
+    const docRef = getMarketDataDoc(userId, 'intraday', symbol, date)
+    await setDoc(docRef, {
+      points: data,
+      updatedAt: serverTimestamp()
+    })
+  } catch (e) {
+    console.error('Error saving intraday to Firestore:', e)
+  }
+}
+
+// Fetch all cached intraday data from Firestore for a user (for new device sync)
+export async function syncIntradayFromFirestore(userId) {
+  if (!db || !userId) return
+
+  try {
+    const collectionRef = collection(db, 'users', userId, 'market_data', 'intraday')
+    const snapshot = await getDocs(collectionRef)
+
+    const localCache = getIntradayCache()
+    let syncedCount = 0
+
+    for (const docSnapshot of snapshot.docs) {
+      const key = docSnapshot.id
+      const data = docSnapshot.data()
+
+      // Extract symbol and date from key format: "SPX_2026-01-02"
+      const parts = key.split('_')
+      if (parts.length >= 2) {
+        const symbol = parts.slice(0, -1).join('_') // Handle symbols with underscores
+        const date = parts[parts.length - 1]
+
+        // Convert dates and store locally
+        const points = data.points.map(point => ({
+          ...point,
+          time: point.time.toDate ? point.time.toDate() : new Date(point.time)
+        }))
+
+        localCache[key] = points
+        syncedCount++
+      }
+    }
+
+    if (syncedCount > 0) {
+      saveIntradayCache(localCache)
+      console.log(`Synced ${syncedCount} intraday datasets from Firestore`)
+    }
+  } catch (e) {
+    console.error('Error syncing intraday from Firestore:', e)
+  }
+}
+
+// ============================================================================
+// LAYERED CACHE FETCHING
+// ============================================================================
+
+// Fetch intraday prices with layered caching: Local -> Firestore -> Yahoo API
+export async function fetchIntradayPrices(symbol, date, proxyUrl, userId) {
   let yahooSymbol = getYahooSymbol(symbol)
 
   if (!yahooSymbol) {
     return []
   }
 
-  // Check cache first
-  const cached = getCachedIntraday(yahooSymbol, date)
-  if (cached !== null) {
-    return cached
+  // Layer 1: Check localStorage cache (fastest)
+  const localCached = getCachedIntradayFromLocal(yahooSymbol, date)
+  if (localCached !== null) {
+    return localCached
   }
 
+  // Layer 2: Check Firestore cache (cloud backup)
+  const firestoreCached = await getCachedIntradayFromFirestore(userId, yahooSymbol, date)
+  if (firestoreCached !== null) {
+    // Save to localStorage for future use
+    setCachedIntradayToLocal(yahooSymbol, date, firestoreCached)
+    return firestoreCached
+  }
+
+  // Layer 3: Fetch from Yahoo API
   if (!proxyUrl?.trim()) {
     console.warn(`No proxy URL configured for intraday prices. Please set a proxy URL in Settings.`)
     return []
@@ -119,7 +236,10 @@ export async function fetchIntradayPrices(symbol, date, proxyUrl) {
         volume: quote.volume[i]
       })).filter(point => point.close !== null) // Filter out null values
 
-      setCachedIntraday(yahooSymbol, date, intradayData)
+      // Save to both localStorage and Firestore
+      setCachedIntradayToLocal(yahooSymbol, date, intradayData)
+      await setCachedIntradayToFirestore(userId, yahooSymbol, date, intradayData)
+
       return intradayData
     }
 
@@ -168,7 +288,27 @@ export function aggregateToTimeframe(data, intervalMinutes) {
   return aggregated
 }
 
-// Clear intraday cache
-export function clearIntradayCache() {
+// Clear intraday cache (both local and Firestore)
+export async function clearIntradayCache(userId) {
+  // Clear localStorage
   localStorage.removeItem(INTRADAY_CACHE_KEY)
+
+  // Clear Firestore cache
+  if (db && userId) {
+    try {
+      const collectionRef = collection(db, 'users', userId, 'market_data', 'intraday')
+      const snapshot = await getDocs(collectionRef)
+
+      // Delete all documents in the batch
+      const batch = []
+      for (const docSnapshot of snapshot.docs) {
+        batch.push(deleteDoc(docSnapshot.ref))
+      }
+
+      await Promise.all(batch)
+      console.log('Cleared intraday cache from Firestore')
+    } catch (e) {
+      console.error('Error clearing Firestore cache:', e)
+    }
+  }
 }

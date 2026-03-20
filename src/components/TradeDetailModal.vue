@@ -154,6 +154,10 @@ const props = defineProps({
   proxyUrl: {
     type: String,
     default: ''
+  },
+  userId: {
+    type: String,
+    default: ''
   }
 })
 
@@ -174,7 +178,7 @@ watch(() => props.trade, () => {
 async function loadIntradayData() {
   if (props.trade?.symbol && props.trade?.date) {
     isIntradayLoading.value = true
-    intradayData.value = await fetchIntradayPrices(props.trade.symbol, props.trade.date, props.proxyUrl)
+    intradayData.value = await fetchIntradayPrices(props.trade.symbol, props.trade.date, props.proxyUrl, props.userId)
     isIntradayLoading.value = false
   }
 }

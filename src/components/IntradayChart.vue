@@ -152,6 +152,10 @@ const props = defineProps({
   proxyUrl: {
     type: String,
     default: ''
+  },
+  userId: {
+    type: String,
+    default: ''
   }
 })
 
@@ -957,11 +961,11 @@ async function loadIntradayData() {
 
   try {
     const entryDate = ticket.date
-    const entryData = await fetchIntradayPrices(props.symbol, entryDate, props.proxyUrl)
+    const entryData = await fetchIntradayPrices(props.symbol, entryDate, props.proxyUrl, props.userId)
 
     if (ticket.exit_date && ticket.status !== 'OPEN') {
       const exitDate = ticket.exit_date
-      const exitData = await fetchIntradayPrices(props.symbol, exitDate, props.proxyUrl)
+      const exitData = await fetchIntradayPrices(props.symbol, exitDate, props.proxyUrl, props.userId)
       intradayData.value = { entry: entryData, exit: exitData }
     } else {
       intradayData.value = { entry: entryData, exit: [] }
