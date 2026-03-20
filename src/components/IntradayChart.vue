@@ -101,22 +101,31 @@
         </div>
       </div>
 
-      <!-- Dual charts for multi-day entry/exit -->
+      <!-- Multi-day charts: show one at a time with dot navigation -->
       <div v-else>
-        <div class="grid grid-cols-2 gap-4">
-          <!-- Entry Day Chart -->
-          <div>
-            <div class="h-96">
-              <Bar :data="entryChartData" :options="entryChartOptionsWithZoom" />
-            </div>
-          </div>
-
-          <!-- Exit Day Chart -->
-          <div>
-            <div class="h-96">
-              <Bar :data="exitChartData" :options="exitChartOptionsWithZoom" />
-            </div>
-          </div>
+        <div class="h-96">
+          <Bar :data="selectedChartTab === 'entry' ? entryChartData : exitChartData"
+               :options="selectedChartTab === 'entry' ? entryChartOptionsWithZoom : exitChartOptionsWithZoom" />
+        </div>
+        <!-- Dot navigation -->
+        <div class="flex justify-center items-center gap-6 mt-4">
+          <button
+            @click="selectedChartTab = 'entry'"
+            class="w-3 h-3 rounded-full transition-all duration-200"
+            :class="selectedChartTab === 'entry' ? 'bg-blue-500 scale-125' : 'bg-gray-600 hover:bg-gray-500'"
+            :title="`Entry Day: ${formatDateRange(entryDateDisplay)}`"
+          ></button>
+          <button
+            @click="selectedChartTab = 'exit'"
+            class="w-3 h-3 rounded-full transition-all duration-200"
+            :class="selectedChartTab === 'exit' ? 'bg-orange-500 scale-125' : 'bg-gray-600 hover:bg-gray-500'"
+            :title="`Exit Day: ${formatDateRange(exitDateDisplay)}`"
+          ></button>
+        </div>
+        <!-- Chart labels -->
+        <div class="flex justify-center items-center gap-8 mt-2 text-xs text-gray-400">
+          <span :class="selectedChartTab === 'entry' ? 'text-blue-400 font-medium' : ''">Entry</span>
+          <span :class="selectedChartTab === 'exit' ? 'text-orange-400 font-medium' : ''">Exit</span>
         </div>
       </div>
     </template>
@@ -170,6 +179,7 @@ const intradayData = ref({ entry: [], exit: [] })
 const loading = ref(false)
 const selectedTimeframe = ref('5m')
 const showVWAP = ref(false)
+const selectedChartTab = ref('entry') // 'entry' or 'exit'
 
 const INDICATORS = [
   { value: 'vwap', label: 'VWAP' }
@@ -980,6 +990,7 @@ async function loadIntradayData() {
 
 // Watch for position changes
 watch(() => [props.symbol, props.positions, positionIndex.value], () => {
+  selectedChartTab.value = 'entry' // Reset to entry chart when position changes
   loadIntradayData()
 }, { immediate: true })
 </script>
