@@ -25,20 +25,24 @@
             <div class="text-xs text-gray-400 mt-1">Total Trades</div>
           </div>
           <div class="bg-gray-700/50 rounded-lg p-4 text-center">
-            <div class="text-2xl font-bold" :class="stats.overallPnL >= 0 ? 'text-green-400' : 'text-red-400'">
-              {{ stats.overallPnL >= 0 ? '+' : '' }}${{ stats.overallPnL.toFixed(0) }}
+            <div class="flex items-center justify-center gap-2">
+              <button @click="changeYear(-1)" class="text-gray-400 hover:text-white px-2 py-1 rounded hover:bg-gray-600 transition-colors">
+                <i class="fas fa-chevron-left"></i>
+              </button>
+              <div class="flex-1">
+                <div class="text-2xl font-bold" :class="stats.yearlyPnL >= 0 ? 'text-green-400' : 'text-red-400'">
+                  {{ stats.yearlyPnL >= 0 ? '+' : '' }}${{ stats.yearlyPnL.toFixed(0) }}
+                </div>
+                <div class="text-xs text-gray-400 mt-1">{{ selectedYear }} P&L</div>
+              </div>
+              <button @click="changeYear(1)" class="text-gray-400 hover:text-white px-2 py-1 rounded hover:bg-gray-600 transition-colors">
+                <i class="fas fa-chevron-right"></i>
+              </button>
             </div>
-            <div class="text-xs text-gray-400 mt-1">Overall P&L</div>
           </div>
-          <div class="bg-gray-700/50 rounded-lg p-4 text-center">
-            <div class="text-2xl font-bold" :class="stats.yearlyPnL >= 0 ? 'text-green-400' : 'text-red-400'">
-              {{ stats.yearlyPnL >= 0 ? '+' : '' }}${{ stats.yearlyPnL.toFixed(0) }}
-            </div>
-            <div class="text-xs text-gray-400 mt-1">Yearly P&L</div>
-          </div>
-          <div class="bg-gray-700/50 rounded-lg p-4 text-center">
+          <div class="bg-gray-700/50 rounded-lg p-4 text-center col-span-2">
             <div class="text-2xl font-bold text-blue-400">{{ stats.winRate }}%</div>
-            <div class="text-xs text-gray-400 mt-1">Win Rate</div>
+            <div class="text-xs text-gray-400 mt-1">Win Rate ({{ selectedYear }})</div>
           </div>
         </div>
 
@@ -68,7 +72,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import BaseModal from './BaseModal.vue'
 
 const props = defineProps({
@@ -83,9 +87,9 @@ const props = defineProps({
     type: Object,
     default: () => ({
       totalTrades: 0,
-      overallPnL: 0,
       yearlyPnL: 0,
-      winRate: 0
+      winRate: 0,
+      yearlyStatsByYear: () => ({})
     })
   }
 })
@@ -93,6 +97,29 @@ const props = defineProps({
 const emit = defineEmits(['close', 'sign-out'])
 
 const isSigningOut = ref(false)
+const currentYear = new Date().getFullYear()
+const selectedYear = ref(currentYear)
+
+const stats = computed(() => {
+  const yearlyStats = props.stats.yearlyStatsByYear || {}
+  const yearData = yearlyStats[selectedYear.value] || { pnl: 0, winRate: 0 }
+
+  return {
+    totalTrades: props.stats.totalTrades || 0,
+    yearlyPnL: yearData.pnl || 0,
+    winRate: yearData.winRate || 0
+  }
+})
+
+const changeYear = (delta) => {
+  const newYear = selectedYear.value + delta
+  const maxYear = currentYear
+  const minYear = Math.min(...Object.keys(props.stats.yearlyStatsByYear || {}).map(Number), currentYear - 5)
+
+  if (newYear >= minYear && newYear <= maxYear) {
+    selectedYear.value = newYear
+  }
+}
 
 const handleSignOut = () => {
   isSigningOut.value = true

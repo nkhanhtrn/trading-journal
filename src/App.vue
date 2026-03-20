@@ -569,28 +569,6 @@
         <p class="text-xs text-gray-500 mt-1">Export all trades and settings, or restore from a backup file</p>
       </div>
 
-      <!-- Account Section -->
-      <div v-if="isAuthenticated" class="border-t border-gray-700 pt-4">
-        <h4 class="text-sm font-medium text-gray-300 mb-2">Account</h4>
-        <div class="flex items-center gap-3 mb-3 p-2 bg-gray-700/50 rounded">
-          <img v-if="userPhoto" :src="userPhoto" class="w-10 h-10 rounded-full object-cover">
-          <div v-else class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center">
-            <span class="text-white font-medium">{{ userName.charAt(0) }}</span>
-          </div>
-          <div class="flex-1 min-w-0">
-            <p class="text-white text-sm font-medium truncate">{{ userName }}</p>
-            <p class="text-gray-400 text-xs truncate">{{ userEmail }}</p>
-          </div>
-        </div>
-        <button
-          @click="handleSignOut"
-          class="w-full text-sm bg-gray-700 hover:bg-gray-600 text-white px-3 py-2 rounded transition-colors"
-        >
-          <i class="fas fa-sign-out-alt mr-2"></i>
-          Sign Out
-        </button>
-      </div>
-
       <!-- Data Management Section -->
       <div class="border-t border-gray-700 pt-4">
         <h4 class="text-sm font-medium text-gray-300 mb-2">Data Management</h4>
@@ -849,20 +827,35 @@ const handleAuthModalClick = () => {
 // User stats for account modal
 const userStats = computed(() => {
   const totalTrades = tickets.value.length
-  const overallPnL = tickets.value.reduce((sum, t) => sum + (t.pnl || 0), 0)
-  const currentYear = new Date().getFullYear()
-  const yearlyTrades = tickets.value.filter(t => new Date(t.date).getFullYear() === currentYear)
-  const yearlyPnL = yearlyTrades.reduce((sum, t) => sum + (t.pnl || 0), 0)
 
+  // Calculate stats by year
+  const yearlyStatsByYear = {}
   const closedTrades = tickets.value.filter(t => t.status !== 'OPEN')
-  const wins = closedTrades.filter(t => t.pnl > 0).length
-  const winRate = closedTrades.length > 0 ? Math.round((wins / closedTrades.length) * 100) : 0
+
+  tickets.value.forEach(t => {
+    const year = new Date(t.date).getFullYear()
+    if (!yearlyStatsByYear[year]) {
+      yearlyStatsByYear[year] = { pnl: 0, trades: 0, wins: 0, total: 0 }
+    }
+    yearlyStatsByYear[year].pnl += t.pnl || 0
+    yearlyStatsByYear[year].trades += 1
+    if (t.status !== 'OPEN') {
+      yearlyStatsByYear[year].total += 1
+      if (t.pnl > 0) {
+        yearlyStatsByYear[year].wins += 1
+      }
+    }
+  })
+
+  // Calculate win rate for each year
+  Object.keys(yearlyStatsByYear).forEach(year => {
+    const stats = yearlyStatsByYear[year]
+    stats.winRate = stats.total > 0 ? Math.round((stats.wins / stats.total) * 100) : 0
+  })
 
   return {
     totalTrades,
-    overallPnL,
-    yearlyPnL,
-    winRate
+    yearlyStatsByYear
   }
 })
 
