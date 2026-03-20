@@ -41,25 +41,23 @@
       <!-- Date Range Header -->
       <div class="pt-4">
         <div class="bg-gray-800/50 rounded-lg px-4 py-3 mb-4">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-3">
+          <div class="flex items-start justify-between gap-4">
+            <!-- Entry/Exit Dates - stacked vertically -->
+            <div class="flex flex-col gap-2">
               <div v-if="isMultiDay || currentTicket?.exit_date" class="flex items-center gap-2">
                 <i class="fas fa-calendar-day text-blue-400"></i>
-                <span class="text-gray-400 text-sm">Entry</span>
-                <span class="text-white font-medium">{{ formatDateRange(entryDateDisplay) }}</span>
-                <span v-if="entryTimeDisplay" class="text-gray-500 text-sm">{{ entryTimeDisplay }}</span>
-              </div>
-              <div v-if="isMultiDay || currentTicket?.exit_date" class="flex items-center gap-2 text-gray-600">
-                <i class="fas fa-arrow-right text-xs"></i>
+                <span class="text-gray-400 text-xs">Entry</span>
+                <span class="text-white text-sm">{{ formatDateRange(entryDateDisplay) }}</span>
+                <span v-if="entryTimeDisplay" class="text-gray-500 text-xs">{{ entryTimeDisplay }}</span>
               </div>
               <div v-if="currentTicket?.exit_date && currentTicket?.status !== 'OPEN'" class="flex items-center gap-2">
                 <i class="fas fa-calendar-day text-orange-400"></i>
-                <span class="text-gray-400 text-sm">Exit</span>
-                <span class="text-white font-medium">{{ formatDateRange(exitDateDisplay) }}</span>
-                <span v-if="exitTimeDisplay" class="text-gray-500 text-sm">{{ exitTimeDisplay }}</span>
+                <span class="text-gray-400 text-xs">Exit</span>
+                <span class="text-white text-sm">{{ formatDateRange(exitDateDisplay) }}</span>
+                <span v-if="exitTimeDisplay" class="text-gray-500 text-xs">{{ exitTimeDisplay }}</span>
               </div>
             </div>
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-3 flex-shrink-0">
               <!-- Timeframe Selector -->
               <div class="flex gap-1">
                 <button
@@ -85,9 +83,9 @@
               >
                 VWAP
               </button>
-              <div v-if="daysHeld > 0" class="text-gray-500 text-sm">
+              <div v-if="daysHeld > 0" class="text-gray-500 text-xs">
                 <i class="fas fa-clock mr-1"></i>
-                {{ daysHeld }} day{{ daysHeld > 1 ? 's' : '' }} held
+                {{ daysHeld }}d
               </div>
             </div>
           </div>
