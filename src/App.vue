@@ -2612,7 +2612,7 @@ const modalContentClass = computed(() => {
 
 // Computed for modal custom class (height constraint)
 const modalCustomClass = computed(() => {
-  return 'max-h-[80vh]'
+  return 'max-h-[90vh]'
 })
 
 // Tickets summary for the collapsible header
