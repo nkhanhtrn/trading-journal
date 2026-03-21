@@ -586,9 +586,9 @@ function buildCandlestickData(data, entryTime, exitTime, showEntry, showExit, en
         closestIdx = i
       }
     }
-    if (closestIdx >= 0 && smallestDiff < 30 * 60 * 1000) { // Within 30 minutes
+    // Always show exit marker on closest candle (removed 30-minute threshold)
+    if (closestIdx >= 0) {
       const exitPrice = data[closestIdx].open
-      const isLongExit = exitAction === 'buy'
       console.log('Exit marker:', { exitTime, closestIdx, exitPrice, candleTime: data[closestIdx]?.time, smallestDiff })
       datasets.push({
         label: 'Exit',
