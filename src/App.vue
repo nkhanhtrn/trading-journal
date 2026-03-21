@@ -91,9 +91,9 @@
                         'p-1 rounded cursor-pointer text-xs transition-colors relative overflow-hidden',
                         !day.date ? 'pointer-events-none' : '',
                         day.date === selectedTradeDate ? 'ring-2 ring-white' : '',
-                        day.isSaturday ? 'bg-indigo-900/80 hover:bg-indigo-800/80' : '',
-                        day.isSaturday && day.weeklyPnl > 0 ? 'bg-indigo-800/90 hover:bg-indigo-700/90' : '',
-                        day.isSaturday && day.weeklyPnl < 0 ? 'bg-purple-900/90 hover:bg-purple-800/90' : '',
+                        day.isSaturday && day.weeklyPnl > 0 ? 'bg-emerald-800/90 hover:bg-emerald-700/90' : '',
+                        day.isSaturday && day.weeklyPnl < 0 ? 'bg-rose-900/90 hover:bg-rose-800/90' : '',
+                        day.isSaturday && day.weeklyPnl === 0 ? 'bg-cyan-900/70 hover:bg-cyan-800/70' : '',
                         !day.isSaturday && day.pnl === 0 ? 'text-gray-600' : '',
                         !day.isSaturday && day.pnl > 0 ? 'bg-green-900 hover:bg-green-800 text-green-300' : '',
                         !day.isSaturday && day.pnl < 0 ? 'bg-red-900 hover:bg-red-800 text-red-300' : ''
@@ -103,7 +103,7 @@
                       <template v-if="day.isSaturday && day.date">
                         <div class="absolute inset-0 flex flex-col items-center justify-center">
                           <div class="text-[9px] text-gray-400 mb-0.5">WEEK</div>
-                          <div class="font-mono font-bold text-sm" :class="day.weeklyPnl >= 0 ? 'text-indigo-300' : 'text-purple-300'">
+                          <div class="font-mono font-bold text-sm" :class="day.weeklyPnl > 0 ? 'text-emerald-200' : day.weeklyPnl < 0 ? 'text-rose-200' : 'text-cyan-200'">
                             {{ day.weeklyPnl >= 0 ? '+' : '' }}${{ day.weeklyPnl.toFixed(0) }}
                           </div>
                         </div>
