@@ -280,12 +280,8 @@ function formatDateRange(dateStr) {
 // Format time for display (EST)
 function formatTimeEST(date) {
   if (!date || isNaN(date.getTime())) return ''
-  const hours = date.getUTCHours() - 5
-  const adjustedHours = ((hours % 24) + 24) % 24
-  const minutes = date.getUTCMinutes()
-  const ampm = adjustedHours >= 12 ? 'PM' : 'AM'
-  const displayHours = adjustedHours % 12 || 12
-  return `${displayHours}:${minutes.toString().padStart(2, '0')} ${ampm}`
+  const options = { hour: 'numeric', minute: '2-digit', hour12: true, timeZone: 'America/New_York' }
+  return date.toLocaleTimeString('en-US', options)
 }
 
 const entryTimeDisplay = computed(() => {
@@ -566,7 +562,6 @@ function buildCandlestickData(data, entryTime, exitTime, showEntry, showExit, en
     if (entryIdx >= 0) {
       const entryPrice = data[entryIdx].open
       const isLong = entryAction === 'buy'
-      console.log('Entry marker:', { entryTime, entryIdx, entryPrice, candleTime: data[entryIdx]?.time })
       datasets.push({
         label: 'Entry',
         data: Array(entryIdx).fill(null).concat([entryPrice]).concat(Array(data.length - entryIdx - 1).fill(null)),
@@ -598,15 +593,6 @@ function buildCandlestickData(data, entryTime, exitTime, showEntry, showExit, en
     // Always show exit marker on closest candle
     if (closestIdx >= 0) {
       const exitPrice = data[closestIdx].open
-      // Debug logging to check timezone issues
-      console.log('Exit marker debug:', {
-        exitTimeStr: exitTime.toISOString(),
-        exitTimeLocal: exitTime.toString(),
-        candleTimeStr: new Date(data[closestIdx].time).toISOString(),
-        candleTimeLocal: new Date(data[closestIdx].time).toString(),
-        closestIdx,
-        smallestDiff: Math.round(smallestDiff / 60000) + 'min'
-      })
       datasets.push({
         label: 'Exit',
         data: Array(closestIdx).fill(null).concat([exitPrice]).concat(Array(data.length - closestIdx - 1).fill(null)),
