@@ -91,16 +91,32 @@
                         'p-1 rounded cursor-pointer text-xs transition-colors relative overflow-hidden',
                         !day.date ? 'pointer-events-none' : '',
                         day.date === selectedTradeDate ? 'ring-2 ring-white' : '',
-                        day.pnl === 0 ? 'text-gray-600' : '',
-                        day.pnl > 0 ? 'bg-green-900 hover:bg-green-800 text-green-300' : '',
-                        day.pnl < 0 ? 'bg-red-900 hover:bg-red-800 text-red-300' : ''
+                        day.isSaturday ? 'bg-indigo-900/80 hover:bg-indigo-800/80' : '',
+                        day.isSaturday && day.weeklyPnl > 0 ? 'bg-indigo-800/90 hover:bg-indigo-700/90' : '',
+                        day.isSaturday && day.weeklyPnl < 0 ? 'bg-purple-900/90 hover:bg-purple-800/90' : '',
+                        !day.isSaturday && day.pnl === 0 ? 'text-gray-600' : '',
+                        !day.isSaturday && day.pnl > 0 ? 'bg-green-900 hover:bg-green-800 text-green-300' : '',
+                        !day.isSaturday && day.pnl < 0 ? 'bg-red-900 hover:bg-red-800 text-red-300' : ''
                       ]"
                     >
-                      <div v-if="day.date && day.pnl !== 0" class="absolute bottom-0.5 right-1 text-[10px] opacity-60">{{ day.dayOfMonth }}</div>
-                      <div v-if="day.pnl !== 0" class="absolute inset-0 flex items-center justify-center font-mono font-bold text-xs" :class="day.pnl >= 0 ? 'text-green-300' : 'text-red-300'">
-                        {{ day.pnl >= 0 ? '+' : '' }}${{ day.pnl.toFixed(0) }}
-                      </div>
-                      <div v-if="day.pnl === 0 && day.date" class="absolute inset-0 flex items-center justify-center text-sm opacity-40">{{ day.dayOfMonth }}</div>
+                      <!-- Saturday: Show weekly P&L with distinct styling -->
+                      <template v-if="day.isSaturday && day.date">
+                        <div class="absolute inset-0 flex flex-col items-center justify-center">
+                          <div class="text-[9px] text-gray-400 mb-0.5">WEEK</div>
+                          <div class="font-mono font-bold text-sm" :class="day.weeklyPnl >= 0 ? 'text-indigo-300' : 'text-purple-300'">
+                            {{ day.weeklyPnl >= 0 ? '+' : '' }}${{ day.weeklyPnl.toFixed(0) }}
+                          </div>
+                        </div>
+                        <div class="absolute bottom-0.5 right-1 text-[9px] opacity-50">{{ day.dayOfMonth }}</div>
+                      </template>
+                      <!-- Other days: Show daily P&L -->
+                      <template v-else>
+                        <div v-if="day.date && day.pnl !== 0" class="absolute bottom-0.5 right-1 text-[10px] opacity-60">{{ day.dayOfMonth }}</div>
+                        <div v-if="day.pnl !== 0" class="absolute inset-0 flex items-center justify-center font-mono font-bold text-xs" :class="day.pnl >= 0 ? 'text-green-300' : 'text-red-300'">
+                          {{ day.pnl >= 0 ? '+' : '' }}${{ day.pnl.toFixed(0) }}
+                        </div>
+                        <div v-if="day.pnl === 0 && day.date" class="absolute inset-0 flex items-center justify-center text-sm opacity-40">{{ day.dayOfMonth }}</div>
+                      </template>
                     </div>
                   </div>
                 </div>
@@ -2960,24 +2976,41 @@ const calendarDays = computed(() => {
   })
 
   for (let i = 0; i < firstDay; i++) {
-    days.push({ date: null, dayOfMonth: '', pnl: 0, tradeCount: 0 })
+    days.push({ date: null, dayOfMonth: '', pnl: 0, tradeCount: 0, weeklyPnl: 0, isSaturday: false })
   }
+
+  // Calculate weekly P&L for each week
+  let currentWeekPnl = 0
+  let weekStartIndex = firstDay
 
   for (let day = 1; day <= totalDays; day++) {
     const date = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`
+    const dayPnl = pnlByDate[date] || 0
+    currentWeekPnl += dayPnl
+
+    const dayOfWeek = (firstDay + day - 1) % 7
+    const isSaturday = dayOfWeek === 6
+
     days.push({
       date,
       dayOfMonth: day,
-      pnl: pnlByDate[date] || 0,
-      tradeCount: tradeCountByDate[date] || 0
+      pnl: dayPnl,
+      tradeCount: tradeCountByDate[date] || 0,
+      weeklyPnl: isSaturday ? currentWeekPnl : 0,
+      isSaturday: isSaturday
     })
+
+    // Reset week P&L after Saturday
+    if (isSaturday) {
+      currentWeekPnl = 0
+    }
   }
 
   // Add trailing empty cells to complete the last row
   const totalCells = firstDay + totalDays
   const remainingCells = (7 - (totalCells % 7)) % 7
   for (let i = 0; i < remainingCells; i++) {
-    days.push({ date: null, dayOfMonth: '', pnl: 0, tradeCount: 0 })
+    days.push({ date: null, dayOfMonth: '', pnl: 0, tradeCount: 0, weeklyPnl: 0, isSaturday: false })
   }
 
   return days
