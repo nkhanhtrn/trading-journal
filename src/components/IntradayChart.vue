@@ -586,10 +586,18 @@ function buildCandlestickData(data, entryTime, exitTime, showEntry, showExit, en
         closestIdx = i
       }
     }
-    // Always show exit marker on closest candle (removed 30-minute threshold)
+    // Always show exit marker on closest candle
     if (closestIdx >= 0) {
       const exitPrice = data[closestIdx].open
-      console.log('Exit marker:', { exitTime, closestIdx, exitPrice, candleTime: data[closestIdx]?.time, smallestDiff })
+      // Debug logging to check timezone issues
+      console.log('Exit marker debug:', {
+        exitTimeStr: exitTime.toISOString(),
+        exitTimeLocal: exitTime.toString(),
+        candleTimeStr: new Date(data[closestIdx].time).toISOString(),
+        candleTimeLocal: new Date(data[closestIdx].time).toString(),
+        closestIdx,
+        smallestDiff: Math.round(smallestDiff / 60000) + 'min'
+      })
       datasets.push({
         label: 'Exit',
         data: Array(closestIdx).fill(null).concat([exitPrice]).concat(Array(data.length - closestIdx - 1).fill(null)),
