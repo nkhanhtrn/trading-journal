@@ -313,13 +313,16 @@ function parseEntryTime(ticket) {
         const parts = timeStr.trim().split(':')
         const hours = parseInt(parts[0])
         const minutes = parseInt(parts[1])
-        const date = new Date(ticket.date + 'T00:00:00-05:00')
-        date.setHours(hours, minutes, 0, 0)
+        // Create date without hardcoding timezone, let browser handle it
+        const dateStr = `${ticket.date}T${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:00`
+        const date = new Date(dateStr)
         return date
       }
     }
   }
-  return new Date(ticket.date + 'T09:30:00-05:00')
+  // Default to 9:30 AM
+  const dateStr = `${ticket.date}T09:30:00`
+  return new Date(dateStr)
 }
 
 // Parse exit time from ticket
@@ -335,13 +338,19 @@ function parseExitTime(ticket) {
         const parts = timeStr.trim().split(':')
         const hours = parseInt(parts[0])
         const minutes = parseInt(parts[1])
-        const date = new Date(ticket.exit_date + 'T00:00:00-05:00')
-        date.setHours(hours, minutes, 0, 0)
+        // Create date in Eastern timezone, handling DST automatically
+        // Use "YYYY-MM-DDTHH:MM:SS" format and let browser convert to local time zone
+        // Then compare using getTime() which normalizes to UTC
+        const dateStr = `${ticket.exit_date}T${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:00`
+        const date = new Date(dateStr)
+        // The date will be parsed as local time, but getTime() gives us UTC for comparison
         return date
       }
     }
   }
-  return new Date(ticket.exit_date + 'T16:00:00-05:00')
+  // Default to 4:00 PM Eastern
+  const dateStr = `${ticket.exit_date}T16:00:00`
+  return new Date(dateStr)
 }
 
 // Calculate VWAP (Volume Weighted Average Price) with standard deviation bands

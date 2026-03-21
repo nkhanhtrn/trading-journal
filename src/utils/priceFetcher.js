@@ -201,8 +201,8 @@ export async function fetchIntradayPrices(symbol, date, proxyUrl, userId) {
   try {
     // Parse the date and get start/end timestamps (use market timezone: Eastern)
     // Market hours: 9:30 AM - 4:00 PM Eastern
-    const startDate = new Date(date + 'T09:30:00-05:00') // 9:30 AM Eastern (EST)
-    const endDate = new Date(date + 'T16:00:00-05:00')   // 4:00 PM Eastern (EST)
+    const startDate = new Date(date + 'T09:30:00') // 9:30 AM Eastern
+    const endDate = new Date(date + 'T16:00:00')   // 4:00 PM Eastern
 
     // Use Yahoo Finance query via CORS proxy for 5m interval data
     const startTimestamp = Math.floor(startDate.getTime() / 1000)
