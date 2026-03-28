@@ -109,27 +109,3 @@ export function getStrategyDisplayName(strategy) {
   return names[strategy] || strategy
 }
 
-// Group trades by strategy
-export function groupTradesByStrategy(trades) {
-  const grouped = {}
-
-  for (const trade of trades) {
-    const strategy = detectStrategy(trade.legs)
-    trade.detected_strategy = strategy
-
-    if (!grouped[strategy]) {
-      grouped[strategy] = []
-    }
-    grouped[strategy].push(trade)
-  }
-
-  return grouped
-}
-
-// Get legs description for display
-export function getLegsDescription(legs) {
-  return legs.map(leg => {
-    const action = leg.action === 'buy' ? 'Long' : 'Short'
-    return `${action} ${leg.type.toUpperCase()} $${leg.strike}`
-  }).join(' + ')
-}

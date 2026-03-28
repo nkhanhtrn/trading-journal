@@ -108,12 +108,10 @@ trading-journal/
 │   ├── components/          # Vue components
 │   ├── composables/         # Vue composables (useAuth)
 │   ├── utils/               # Utility modules
-│   │   ├── parseWebull.js   # CSV parser (shared module)
+│   │   ├── parseWebull.js   # CSV parser
 │   │   ├── strategyDetector.js
 │   │   └── firebase.js
 │   └── data/                # Static data (optional)
-├── scripts/
-│   └── parse-webull.js      # Standalone CSV parser
 ├── tests/
 │   ├── matching.test.js     # Unit tests for matching logic
 │   └── sample-data.test.js  # Integration tests
@@ -126,21 +124,9 @@ trading-journal/
 
 ### Parsing Webull CSV Files
 
-The project includes a CSV parser for Webull options trading data.
+The app includes a built-in CSV parser for Webull options trading data.
 
-#### Using the Standalone Script
-
-```bash
-# Copy your Webull CSV to the project root
-cp your-export.csv Webull_Orders_Records_Options.csv
-
-# Run the parser
-node scripts/parse-webull.js
-```
-
-This generates `src/data/trades.js` with parsed ticket data.
-
-#### Using In-App CSV Upload
+### Using In-App CSV Upload
 
 1. Click the CSV upload button in the app
 2. Select your Webull CSV file
