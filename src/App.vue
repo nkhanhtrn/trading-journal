@@ -216,6 +216,7 @@
                           <span class="text-xs font-medium text-white">{{ group.strategyName }}</span>
                           <span class="text-xs text-gray-500">{{ group.strikes }}</span>
                           <span class="text-xs bg-gray-600 text-gray-300 px-1.5 py-0.5 rounded">{{ group.expiry }}</span>
+                          <span v-if="group.tickets.length > 1" class="text-xs bg-blue-900/50 text-blue-300 px-1.5 py-0.5 rounded">{{ group.tickets.length }}</span>
                           <span v-if="getGroupPositionDirectionLabel(group)" class="text-xs text-gray-400">{{ getGroupPositionDirectionLabel(group) }}</span>
                         </div>
                         <MiniCalendarDots :entry-dates="getEntryDates(group)" :exit-dates="getExitDates(group)" :expiry-dates="getExpiryDates(group)" />
@@ -249,7 +250,10 @@
                     <div class="text-sm font-bold text-white mb-1">{{ trade.symbol }}</div>
 
                     <!-- Strategy + Strike (symbol removed from strategyName) -->
-                    <div class="text-xs text-gray-300 mb-1">{{ trade.strategyName.replace(new RegExp(`^${trade.symbol}\\s+`, 'i'), '') }} {{ trade.strikes }}</div>
+                    <div class="flex items-center gap-1.5 mb-1">
+                      <span class="text-xs text-gray-300">{{ trade.strategyName.replace(new RegExp(`^${trade.symbol}\\s+`, 'i'), '') }} {{ trade.strikes }}</span>
+                      <span v-if="trade.tickets.length > 1" class="text-xs bg-blue-900/50 text-blue-300 px-1 py-0.5 rounded">{{ trade.tickets.length }}</span>
+                    </div>
 
                     <!-- Position Direction -->
                     <div v-if="getGroupPositionDirectionLabel(trade)" class="text-xs text-gray-500 mb-2">{{ getGroupPositionDirectionLabel(trade) }}</div>
@@ -2498,24 +2502,16 @@ const tradeDetailModalOpen = computed({
   }
 })
 
-// All tickets of the selected symbol (for navigation)
+// All tickets in the selected group (for navigation)
 const selectedSymbolTickets = computed(() => {
-  if (!selectedPositionGroup.value) return []
-  const symbol = selectedPositionGroup.value.symbol
-  return tickets.value.filter(t => t.symbol === symbol)
+  return selectedPositionGroup.value?.tickets || []
 })
 
 // Reset position index when modal opens
 watch(() => tradeDetailModalOpen.value, (isOpen) => {
   if (isOpen) {
-    // Find the index of the clicked ticket within all symbol tickets
-    const clickedTicket = selectedPositionGroup.value?.tickets?.[0]
-    if (clickedTicket) {
-      const index = selectedSymbolTickets.value.findIndex(t => t.ticket === clickedTicket.ticket)
-      currentPositionIndex.value = index >= 0 ? index : 0
-    } else {
-      currentPositionIndex.value = 0
-    }
+    // Reset to first ticket in the group
+    currentPositionIndex.value = 0
     // Auto-fetch news on modal open if API key configured
     fetchNewsForCurrentPosition()
   }
@@ -3824,29 +3820,46 @@ const nextDay = () => {
   }
 }
 
-// Display each ticket individually - no grouping
-// Each ticket is its own group for display
+// Group tickets by symbol + strategy + strikes + expiry
+// Tickets with identical characteristics are merged into one group
 const groupedTrades = computed(() => {
-  return filteredTickets.value.map(ticket => {
+  const groups = new Map()
+
+  filteredTickets.value.forEach(ticket => {
     const legs = ticket.strategies[0]?.legs || []
+    if (legs.length === 0) return
+
     const strategyName = ticket.strategies[0]?.name || ticket.symbol + ' Strategy'
     const uniqueStrikes = [...new Set(legs.map(l => l.strike))].sort((a, b) => a - b).join('/')
     const expiries = [...new Set(legs.map(l => l.expiry))].sort().join(',')
+    const key = `${ticket.symbol}|${strategyName}|${uniqueStrikes}|${expiries}`
 
-    return {
-      symbol: ticket.symbol,
-      strategyName,
-      strikes: uniqueStrikes,
-      expiry: legs[0]?.expiry || null, // Primary expiry for display
-      expiries, // All expiries (for calendars/diagonals)
-      tickets: [ticket],
-      totalPnL: ticket.pnl || 0,
-      totalQuantity: legs[0]?.quantity || 0,
-      wins: ticket.status === 'WIN' ? 1 : 0,
-      losses: ticket.status === 'LOSS' ? 1 : 0,
-      openCount: ticket.status === 'OPEN' ? 1 : 0
+    if (!groups.has(key)) {
+      groups.set(key, {
+        symbol: ticket.symbol,
+        strategyName,
+        strikes: uniqueStrikes,
+        expiry: legs[0]?.expiry || null,
+        expiries,
+        tickets: [],
+        totalPnL: 0,
+        totalQuantity: 0,
+        wins: 0,
+        losses: 0,
+        openCount: 0
+      })
     }
-  }).sort((a, b) => b.totalPnL - a.totalPnL)
+
+    const group = groups.get(key)
+    group.tickets.push(ticket)
+    group.totalPnL += ticket.pnl || 0
+    group.totalQuantity += legs[0]?.quantity || 0
+    if (ticket.status === 'WIN') group.wins++
+    if (ticket.status === 'LOSS') group.losses++
+    if (ticket.status === 'OPEN') group.openCount++
+  })
+
+  return Array.from(groups.values()).sort((a, b) => b.totalPnL - a.totalPnL)
 })
 
 // Group trades by symbol for top-level organization

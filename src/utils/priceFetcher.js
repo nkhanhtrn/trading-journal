@@ -201,12 +201,21 @@ export async function fetchIntradayPrices(symbol, date, proxyUrl, userId) {
   try {
     // Parse the date and get start/end timestamps (use market timezone: Eastern)
     // Market hours: 9:30 AM - 4:00 PM Eastern
-    const startDate = new Date(date + 'T09:30:00') // 9:30 AM Eastern
-    const endDate = new Date(date + 'T16:00:00')   // 4:00 PM Eastern
+    // Eastern timezone: EST = UTC-5, EDT = UTC-4
+    // DST: second Sunday in March to first Sunday in November
 
-    // Use Yahoo Finance query via CORS proxy for 5m interval data
-    const startTimestamp = Math.floor(startDate.getTime() / 1000)
-    const endTimestamp = Math.floor(endDate.getTime() / 1000)
+    // Helper function to create Eastern timezone timestamp
+    const getEasternTimestamp = (dateStr, hours, minutes) => {
+      const [year, month, day] = dateStr.split('-').map(Number)
+      // Determine if DST is active (second Sunday in March to first Sunday in November)
+      const isDST = (month > 3) || (month === 3 && day >= 8) || (month === 11 && day < 1)
+      const utcOffset = isDST ? 4 : 5 // EDT = UTC-4, EST = UTC-5
+      const utcDate = new Date(Date.UTC(year, month - 1, day, hours + utcOffset, minutes))
+      return Math.floor(utcDate.getTime() / 1000)
+    }
+
+    const startTimestamp = getEasternTimestamp(date, 9, 30)  // 9:30 AM Eastern
+    const endTimestamp = getEasternTimestamp(date, 16, 0)    // 4:00 PM Eastern
 
     const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${yahooSymbol}?period1=${startTimestamp}&period2=${endTimestamp}&interval=5m`
 

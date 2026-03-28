@@ -18,19 +18,13 @@
 
     <!-- P&L Details for current position -->
     <template v-else>
-      <!-- Navigation header -->
+      <!-- Controls header -->
       <div class="pt-2">
         <div class="flex items-center justify-between px-3 mb-6">
           <div class="flex items-center gap-3">
-            <button v-if="hasMultiplePositions" @click="previousPosition" :disabled="positionIndex === 0" class="px-3 py-1.5 rounded text-xs bg-gray-700 hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed text-white">
-              <i class="fas fa-chevron-left mr-1"></i> Previous
-            </button>
             <span class="text-sm text-gray-300">
-              Ticket #{{ currentTicket?.ticket }} <span class="text-gray-500">({{ positionDisplay }})</span>
+              Ticket #{{ currentTicket?.ticket }}
             </span>
-            <button v-if="hasMultiplePositions" @click="nextPosition" :disabled="positionIndex >= positions.length - 1" class="px-3 py-1.5 rounded text-xs bg-gray-700 hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed text-white">
-              Next <i class="fas fa-chevron-right ml-1"></i>
-            </button>
           </div>
           <div class="flex items-center gap-2">
             <!-- Timeframe Selector -->
@@ -218,24 +212,6 @@ const isMultiDay = computed(() => {
 const hasData = computed(() => {
   return aggregatedData.value.entry.length > 0 || aggregatedData.value.exit.length > 0
 })
-
-// Navigation
-const hasMultiplePositions = computed(() => props.positions.length > 1)
-const positionDisplay = computed(() => `${positionIndex.value + 1} / ${props.positions.length}`)
-
-const previousPosition = () => {
-  if (positionIndex.value > 0) {
-    positionIndex.value--
-    emit('position-change', positionIndex.value)
-  }
-}
-
-const nextPosition = () => {
-  if (positionIndex.value < props.positions.length - 1) {
-    positionIndex.value++
-    emit('position-change', positionIndex.value)
-  }
-}
 
 // Display dates
 const displayDate = computed(() => {
