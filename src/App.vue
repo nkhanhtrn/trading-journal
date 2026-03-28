@@ -777,6 +777,7 @@ import SummaryCards from './components/SummaryCards.vue'
 import DashboardCharts from './components/DashboardCharts.vue'
 import IntradayChart from './components/IntradayChart.vue'
 import { detectStrategy, getStrategyDisplayName } from './utils/strategyDetector.js'
+import { parseCSV as parseWebullCSV, parseOptionSymbol, formatDate } from './utils/parseWebull.js'
 import TradeFormModal from './components/TradeFormModal.vue'
 import MiniCalendarDots from './components/MiniCalendarDots.vue'
 import BaseModal from './components/BaseModal.vue'
@@ -2230,53 +2231,11 @@ function parseCsvRow(row) {
 }
 
 const parseCSV = async (csvText, startTicketId = 1000) => {
-  const lines = csvText.split('\n').filter(line => line.trim())
+  // Parse CSV using the shared parser module
+  const allTickets = await parseWebullCSV(csvText, startTicketId)
 
-  // Parse all rows using the same logic as parse-webull.js
-  const rows = []
-  for (let i = 1; i < lines.length; i++) {
-    const parsed = parseCsvRow(lines[i])
-    if (parsed && parsed.length >= 11) {
-      const [name, symbol, side, status, filled, totalQty, price, avgPrice, tif, placedTime, filledTime] = parsed
-      rows.push({ name: name?.trim() || null, symbol: symbol?.trim() || null, side: side?.trim() || null, status: status?.trim() || null, filled: status === 'Filled' ? parseInt(filled) || 0 : 0, totalQty: parseInt(totalQty) || 0, price: price ? parseFloat(price.replace('@', '')) || 0 : 0, avgPrice: parseFloat(avgPrice) || 0, placedTime: placedTime?.trim() || null, filledTime: filledTime?.trim() || null })
-    }
-  }
-
-  // STEP 1: Categorize into strategy arrays
-  const categorized = categorizeAllRows(rows)
-
-  // STEP 2: Process each strategy array independently
-  const allTickets = []
-  let currentTicketId = startTicketId
-
-  // Multi-leg strategies
-  const vt = parseVerticalSpreads(categorized.vertical_spread, currentTicketId)
-  allTickets.push(...vt)
-  currentTicketId += vt.length
-
-  const ic = parseIronCondors(categorized.iron_condor, currentTicketId)
-  allTickets.push(...ic)
-  currentTicketId += ic.length
-
-  const sd = parseStraddles(categorized.straddle, currentTicketId)
-  allTickets.push(...sd)
-  currentTicketId += sd.length
-
-  const sg = parseStrangles(categorized.strangle, currentTicketId)
-  allTickets.push(...sg)
-  currentTicketId += sg.length
-
-  // Single options - combine long/short for proper matching
-  const calls = parseSingleOptions(categorized.long_call, categorized.short_call, currentTicketId)
-  allTickets.push(...calls)
-  currentTicketId += calls.length
-
-  const puts = parseSingleOptions(categorized.long_put, categorized.short_put, currentTicketId)
-  allTickets.push(...puts)
-  currentTicketId += puts.length
-
-  // STEP 3: Process expired positions
-  const { expired, open: stillOpen } = await processExpiredTickets(allTickets, currentTicketId)
+  // Process expired positions (app-specific feature)
+  const { expired, open: stillOpen } = await processExpiredTickets(allTickets, startTicketId + allTickets.length)
 
   // Combine closed, expired, and still-open tickets
   const finalTickets = [...allTickets.filter(t => t.status !== 'OPEN'), ...expired, ...stillOpen]
