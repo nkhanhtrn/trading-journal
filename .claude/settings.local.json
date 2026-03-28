@@ -37,7 +37,9 @@
       "Bash(find:*)",
       "Bash(tree:*)",
       "Bash(git checkout:*)",
-      "Bash(pgrep:*)"
+      "Bash(pgrep:*)",
+      "Bash(python3:*)",
+      "Bash(xdg-open:*)"
     ]
   }
 }
