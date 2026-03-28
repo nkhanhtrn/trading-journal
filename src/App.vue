@@ -777,7 +777,7 @@ import SummaryCards from './components/SummaryCards.vue'
 import DashboardCharts from './components/DashboardCharts.vue'
 import IntradayChart from './components/IntradayChart.vue'
 import { detectStrategy, getStrategyDisplayName } from './utils/strategyDetector.js'
-import { parseCSV as parseWebullCSV, parseOptionSymbol, formatDate } from './utils/parseWebull.js'
+import { parseCSV as parseWebullCSV, parseOptionSymbol, formatDate, compareDates, generateSingleOptionName } from './utils/parseWebull.js'
 import TradeFormModal from './components/TradeFormModal.vue'
 import MiniCalendarDots from './components/MiniCalendarDots.vue'
 import BaseModal from './components/BaseModal.vue'
@@ -1498,12 +1498,7 @@ const openCsvPicker = () => {
 // UTILITY FUNCTIONS
 // =====================================================
 
-function formatDate(dateStr) {
-  if (!dateStr) return null
-  const parts = dateStr.split(' ')[0].split('/')
-  if (parts.length === 3) return `${parts[2]}-${parts[0].padStart(2, '0')}-${parts[1].padStart(2, '0')}`
-  return dateStr
-}
+// formatDate, compareDates, parseOptionSymbol, generateSingleOptionName are now imported from parseWebull.js
 
 // Format ISO date string to readable format (e.g., "Mar 15")
 function formatNewsDate(isoDateStr) {
@@ -1511,28 +1506,6 @@ function formatNewsDate(isoDateStr) {
   const date = new Date(isoDateStr)
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
   return `${months[date.getMonth()]} ${date.getDate()}`
-}
-
-function compareDates(timeA, timeB) {
-  const dateA = timeA ? new Date(timeA) : new Date(0)
-  const dateB = timeB ? new Date(timeB) : new Date(0)
-  return dateA.getTime() - dateB.getTime()
-}
-
-function parseOptionSymbol(symbol) {
-  if (!symbol) return null
-  const match = symbol.match(/^([A-Z]+)2?(\d{2})(\d{2})(\d{2})([CP])(\d+)$/)
-  if (match) {
-    const [, underlying, year, month, day, type, strike] = match
-    return { underlying, year: `20${year}`, month, day, date: `20${year}-${month}-${day}`, type: type === 'C' ? 'call' : 'put', strike: parseInt(strike) / 1000 }
-  }
-  return null
-}
-
-function generateSingleOptionName(opt) {
-  const capitalType = opt.type.charAt(0).toUpperCase() + opt.type.slice(1)
-  const expiryMonth = opt.date.substring(5, 7) + '/' + opt.date.substring(8, 10)
-  return `${opt.underlying} ${capitalType} $${opt.strike} ${expiryMonth}`
 }
 
 // =====================================================

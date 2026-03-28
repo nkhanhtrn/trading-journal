@@ -289,7 +289,7 @@ function processVerticalSpread(header) {
     filledTime: header.filledTime,
     legs: header.legs.map(l => {
       const opt = parseOptionSymbol(l.symbol)
-      return { ...opt, side: l.side, quantity: l.filled, premium: l.avgPrice, filledTime: l.filledTime }
+      return { ...opt, symbol: l.symbol, side: l.side, quantity: l.filled, premium: l.avgPrice, filledTime: l.filledTime }
     }).filter(l => l.underlying)
   }]
 }
@@ -304,7 +304,7 @@ function processIronCondor(header) {
     filledTime: header.filledTime,
     legs: header.legs.map(l => {
       const opt = parseOptionSymbol(l.symbol)
-      return { ...opt, side: l.side, quantity: l.filled, premium: l.avgPrice, filledTime: l.filledTime }
+      return { ...opt, symbol: l.symbol, side: l.side, quantity: l.filled, premium: l.avgPrice, filledTime: l.filledTime }
     }).filter(l => l.underlying)
   }]
 }
@@ -319,7 +319,7 @@ function processStraddle(header) {
     filledTime: header.filledTime,
     legs: header.legs.map(l => {
       const opt = parseOptionSymbol(l.symbol)
-      return { ...opt, side: l.side, quantity: l.filled, premium: l.avgPrice, filledTime: l.filledTime }
+      return { ...opt, symbol: l.symbol, side: l.side, quantity: l.filled, premium: l.avgPrice, filledTime: l.filledTime }
     }).filter(l => l.underlying)
   }]
 }
@@ -334,7 +334,7 @@ function processStrangle(header) {
     filledTime: header.filledTime,
     legs: header.legs.map(l => {
       const opt = parseOptionSymbol(l.symbol)
-      return { ...opt, side: l.side, quantity: l.filled, premium: l.avgPrice, filledTime: l.filledTime }
+      return { ...opt, symbol: l.symbol, side: l.side, quantity: l.filled, premium: l.avgPrice, filledTime: l.filledTime }
     }).filter(l => l.underlying)
   }]
 }
@@ -348,128 +348,280 @@ function processSingleOption(row) {
     side: row.side,
     status: row.status,
     filledTime: row.filledTime,
-    legs: [{ ...opt, side: row.side, quantity: row.filled, premium: row.avgPrice, filledTime: row.filledTime }]
+    legs: [{ ...opt, symbol: row.symbol, side: row.side, quantity: row.filled, premium: row.avgPrice, filledTime: row.filledTime }]
   }]
 }
 
 // =====================================================
-// SECTION 5: MATCHING FUNCTIONS
+// SECTION 5: MATCHING FUNCTIONS BY STRATEGY TYPE
 // =====================================================
 
-function matchMultiLeg(tradesList, startTicketId) {
+// Core matching logic: attempts to close trades against open positions
+// Returns: { tickets, openPositions }
+function matchClosingTrades(trades, matchKeyFn, canMatchFn, calcPnLFn, startTicketId) {
   const tickets = []
   let ticketId = startTicketId
 
-  // Group by leg signature
-  const sigGroups = {}
-  for (const t of tradesList) {
-    const sig = t.legs.map(l => `${l.strike}-${l.type}-${l.date}`).sort().join('|')
-    if (!sigGroups[sig]) sigGroups[sig] = []
-    sigGroups[sig].push(t)
+  // Group by match key
+  const groups = {}
+  for (const t of trades) {
+    const key = matchKeyFn(t)
+    if (!groups[key]) groups[key] = []
+    groups[key].push(t)
   }
 
-  for (const group of Object.values(sigGroups)) {
+  const allOpenPositions = []
+
+  for (const group of Object.values(groups)) {
     group.sort((a, b) => compareDates(a.filledTime, b.filledTime))
     const openPositions = []
 
     for (const trade of group) {
-      const isCredit = trade.side === 'Sell'
       const qty = trade.legs[0].quantity
+      let remaining = qty
 
-      if (isCredit) {
-        let remaining = qty
-        for (let i = 0; i < openPositions.length && remaining > 0; i++) {
-          const pos = openPositions[i]
-          if (!pos.isCredit && pos.remaining > 0) {
-            const closeQty = Math.min(remaining, pos.remaining)
-            const pnl = calcPnL(pos.trade, trade, closeQty)
-            tickets.push(createClosedTicket(pos.trade, trade, closeQty, pnl, ticketId++))
-            pos.remaining -= closeQty
-            remaining -= closeQty
-            if (pos.remaining <= 0) { openPositions.splice(i, 1); i-- }
+      // Try to close against existing open positions
+      for (let i = 0; i < openPositions.length && remaining > 0; i++) {
+        const pos = openPositions[i]
+        if (canMatchFn(pos, trade) && pos.remaining > 0) {
+          const closeQty = Math.min(remaining, pos.remaining)
+          const pnl = calcPnLFn(pos.trade, trade, closeQty)
+          tickets.push(createClosedTicket(pos.trade, trade, closeQty, pnl, ticketId++))
+          pos.remaining -= closeQty
+          remaining -= closeQty
+          if (pos.remaining <= 0) {
+            openPositions.splice(i, 1)
+            i--
           }
         }
-        if (remaining > 0) openPositions.push({ trade, remaining, isCredit: true })
-      } else {
-        let remaining = qty
-        for (let i = 0; i < openPositions.length && remaining > 0; i++) {
-          const pos = openPositions[i]
-          if (pos.isCredit && pos.remaining > 0) {
-            const closeQty = Math.min(remaining, pos.remaining)
-            const pnl = calcPnL(pos.trade, trade, closeQty)
-            tickets.push(createClosedTicket(pos.trade, trade, closeQty, pnl, ticketId++))
-            pos.remaining -= closeQty
-            remaining -= closeQty
-            if (pos.remaining <= 0) { openPositions.splice(i, 1); i-- }
-          }
-        }
-        if (remaining > 0) openPositions.push({ trade, remaining, isCredit: false })
+      }
+
+      // Add remaining quantity as new open position
+      if (remaining > 0) {
+        openPositions.push({ trade, remaining })
       }
     }
 
-    for (const pos of openPositions) {
-      if (pos.remaining > 0) {
-        tickets.push(createOpenTicket(pos.trade, pos.remaining, ticketId++))
-      }
+    allOpenPositions.push(...openPositions)
+  }
+
+  return { tickets, openPositions: allOpenPositions }
+}
+
+// Creates open tickets for any remaining unmatched positions
+function createOpeningTickets(openPositions, startTicketId) {
+  const tickets = []
+  let ticketId = startTicketId
+
+  for (const pos of openPositions) {
+    if (pos.remaining > 0) {
+      tickets.push(createOpenTicket(pos.trade, pos.remaining, ticketId++))
     }
   }
 
   return tickets
 }
 
+// ============================================================================
+// SINGLE OPTIONS MATCHING (Long/Short Calls & Puts)
+// ============================================================================
+
+function matchLongCall(tradesList, startTicketId) {
+  const matchKeyFn = (t) => t.legs[0].symbol
+  const canMatchFn = (pos, trade) => {
+    return pos.trade.side === 'Buy' && trade.side === 'Sell' && pos.trade.legs[0].symbol === trade.legs[0].symbol
+  }
+  const calcPnLFn = (open, close, qty) => {
+    return (close.legs[0].premium - open.legs[0].premium) * qty * 100
+  }
+
+  const { tickets: closedTickets, openPositions } = matchClosingTrades(
+    tradesList,
+    matchKeyFn,
+    canMatchFn,
+    calcPnLFn,
+    startTicketId
+  )
+
+  const openTickets = createOpeningTickets(openPositions, startTicketId + closedTickets.length)
+  return [...closedTickets, ...openTickets]
+}
+
+function matchShortCall(tradesList, startTicketId) {
+  const matchKeyFn = (t) => t.legs[0].symbol
+  const canMatchFn = (pos, trade) => {
+    return pos.trade.side === 'Sell' && trade.side === 'Buy' && pos.trade.legs[0].symbol === trade.legs[0].symbol
+  }
+  const calcPnLFn = (open, close, qty) => {
+    return (open.legs[0].premium - close.legs[0].premium) * qty * 100
+  }
+
+  const { tickets: closedTickets, openPositions } = matchClosingTrades(
+    tradesList,
+    matchKeyFn,
+    canMatchFn,
+    calcPnLFn,
+    startTicketId
+  )
+
+  const openTickets = createOpeningTickets(openPositions, startTicketId + closedTickets.length)
+  return [...closedTickets, ...openTickets]
+}
+
+function matchLongPut(tradesList, startTicketId) {
+  const matchKeyFn = (t) => t.legs[0].symbol
+  const canMatchFn = (pos, trade) => {
+    return pos.trade.side === 'Buy' && trade.side === 'Sell' && pos.trade.legs[0].symbol === trade.legs[0].symbol
+  }
+  const calcPnLFn = (open, close, qty) => {
+    return (close.legs[0].premium - open.legs[0].premium) * qty * 100
+  }
+
+  const { tickets: closedTickets, openPositions } = matchClosingTrades(
+    tradesList,
+    matchKeyFn,
+    canMatchFn,
+    calcPnLFn,
+    startTicketId
+  )
+
+  const openTickets = createOpeningTickets(openPositions, startTicketId + closedTickets.length)
+  return [...closedTickets, ...openTickets]
+}
+
+function matchShortPut(tradesList, startTicketId) {
+  const matchKeyFn = (t) => t.legs[0].symbol
+  const canMatchFn = (pos, trade) => {
+    return pos.trade.side === 'Sell' && trade.side === 'Buy' && pos.trade.legs[0].symbol === trade.legs[0].symbol
+  }
+  const calcPnLFn = (open, close, qty) => {
+    return (open.legs[0].premium - close.legs[0].premium) * qty * 100
+  }
+
+  const { tickets: closedTickets, openPositions } = matchClosingTrades(
+    tradesList,
+    matchKeyFn,
+    canMatchFn,
+    calcPnLFn,
+    startTicketId
+  )
+
+  const openTickets = createOpeningTickets(openPositions, startTicketId + closedTickets.length)
+  return [...closedTickets, ...openTickets]
+}
+
+// Combined single options matching (long/short calls & puts)
 function matchSingleOptions(tradesList, startTicketId) {
-  const tickets = []
-  let ticketId = startTicketId
-
-  // Group by symbol
-  const symbolGroups = {}
-  for (const t of tradesList) {
-    const sym = t.ticketName
-    if (!symbolGroups[sym]) symbolGroups[sym] = []
-    symbolGroups[sym].push(t)
+  const matchKeyFn = (t) => t.legs[0].symbol
+  const canMatchFn = (pos, trade) => {
+    return pos.trade.side !== trade.side && pos.trade.legs[0].symbol === trade.legs[0].symbol
   }
-
-  for (const [symbol, group] of Object.entries(symbolGroups)) {
-    group.sort((a, b) => compareDates(a.filledTime, b.filledTime))
-
-    const openPositions = []
-
-    for (const trade of group) {
-      const isLong = trade.side === 'Buy'
-      const qty = trade.legs[0].quantity
-      let remaining = qty
-
-      // Try to close opposite positions
-      for (let i = 0; i < openPositions.length && remaining > 0; i++) {
-        const pos = openPositions[i]
-        if (pos.isLong !== isLong && pos.remaining > 0) {
-          const closeQty = Math.min(remaining, pos.remaining)
-          let pnl = 0
-          if (pos.isLong) {
-            pnl = (trade.legs[0].premium - pos.trade.legs[0].premium) * closeQty * 100
-          } else {
-            pnl = (pos.trade.legs[0].premium - trade.legs[0].premium) * closeQty * 100
-          }
-          tickets.push(createClosedTicket(pos.trade, trade, closeQty, pnl, ticketId++))
-          pos.remaining -= closeQty
-          remaining -= closeQty
-          if (pos.remaining <= 0) { openPositions.splice(i, 1); i-- }
-        }
-      }
-
-      if (remaining > 0) {
-        openPositions.push({ trade, remaining, isLong })
-      }
-    }
-
-    for (const pos of openPositions) {
-      if (pos.remaining > 0) {
-        tickets.push(createOpenTicket(pos.trade, pos.remaining, ticketId++))
-      }
+  const calcPnLFn = (open, close, qty) => {
+    if (open.side === 'Buy') {
+      return (close.legs[0].premium - open.legs[0].premium) * qty * 100
+    } else {
+      return (open.legs[0].premium - close.legs[0].premium) * qty * 100
     }
   }
 
-  return tickets
+  const { tickets: closedTickets, openPositions } = matchClosingTrades(
+    tradesList,
+    matchKeyFn,
+    canMatchFn,
+    calcPnLFn,
+    startTicketId
+  )
+
+  const openTickets = createOpeningTickets(openPositions, startTicketId + closedTickets.length)
+  return [...closedTickets, ...openTickets]
+}
+
+// ============================================================================
+// MULTI-LEG STRATEGY MATCHING
+// ============================================================================
+
+function matchVerticalSpread(tradesList, startTicketId) {
+  const matchKeyFn = (t) => t.legs.map(l => l.symbol).sort().join('|')
+  const canMatchFn = (pos, trade) => {
+    const posSymbols = pos.trade.legs.map(l => l.symbol).sort().join('|')
+    const tradeSymbols = trade.legs.map(l => l.symbol).sort().join('|')
+    return pos.trade.side !== trade.side && posSymbols === tradeSymbols
+  }
+  const calcPnLFn = calcPnL
+
+  const { tickets: closedTickets, openPositions } = matchClosingTrades(
+    tradesList,
+    matchKeyFn,
+    canMatchFn,
+    calcPnLFn,
+    startTicketId
+  )
+
+  const openTickets = createOpeningTickets(openPositions, startTicketId + closedTickets.length)
+  return [...closedTickets, ...openTickets]
+}
+
+function matchIronCondor(tradesList, startTicketId) {
+  const matchKeyFn = (t) => t.legs.map(l => l.symbol).sort().join('|')
+  const canMatchFn = (pos, trade) => {
+    const posSymbols = pos.trade.legs.map(l => l.symbol).sort().join('|')
+    const tradeSymbols = trade.legs.map(l => l.symbol).sort().join('|')
+    return pos.trade.side !== trade.side && posSymbols === tradeSymbols
+  }
+  const calcPnLFn = calcPnL
+
+  const { tickets: closedTickets, openPositions } = matchClosingTrades(
+    tradesList,
+    matchKeyFn,
+    canMatchFn,
+    calcPnLFn,
+    startTicketId
+  )
+
+  const openTickets = createOpeningTickets(openPositions, startTicketId + closedTickets.length)
+  return [...closedTickets, ...openTickets]
+}
+
+function matchStraddle(tradesList, startTicketId) {
+  const matchKeyFn = (t) => t.legs.map(l => l.symbol).sort().join('|')
+  const canMatchFn = (pos, trade) => {
+    const posSymbols = pos.trade.legs.map(l => l.symbol).sort().join('|')
+    const tradeSymbols = trade.legs.map(l => l.symbol).sort().join('|')
+    return pos.trade.side !== trade.side && posSymbols === tradeSymbols
+  }
+  const calcPnLFn = calcPnL
+
+  const { tickets: closedTickets, openPositions } = matchClosingTrades(
+    tradesList,
+    matchKeyFn,
+    canMatchFn,
+    calcPnLFn,
+    startTicketId
+  )
+
+  const openTickets = createOpeningTickets(openPositions, startTicketId + closedTickets.length)
+  return [...closedTickets, ...openTickets]
+}
+
+function matchStrangle(tradesList, startTicketId) {
+  const matchKeyFn = (t) => t.legs.map(l => l.symbol).sort().join('|')
+  const canMatchFn = (pos, trade) => {
+    const posSymbols = pos.trade.legs.map(l => l.symbol).sort().join('|')
+    const tradeSymbols = trade.legs.map(l => l.symbol).sort().join('|')
+    return pos.trade.side !== trade.side && posSymbols === tradeSymbols
+  }
+  const calcPnLFn = calcPnL
+
+  const { tickets: closedTickets, openPositions } = matchClosingTrades(
+    tradesList,
+    matchKeyFn,
+    canMatchFn,
+    calcPnLFn,
+    startTicketId
+  )
+
+  const openTickets = createOpeningTickets(openPositions, startTicketId + closedTickets.length)
+  return [...closedTickets, ...openTickets]
 }
 
 // =====================================================
@@ -613,7 +765,7 @@ function parseVerticalSpreads(verticalSpreadArray, startTicketId) {
 
     const parsedLegs = header.legs.map(l => {
       const opt = parseOptionSymbol(l.symbol)
-      return { ...opt, side: l.side, quantity: l.filled, premium: l.avgPrice, filledTime: l.filledTime }
+      return { ...opt, symbol: l.symbol, side: l.side, quantity: l.filled, premium: l.avgPrice, filledTime: l.filledTime }
     }).filter(l => l.underlying)
 
     if (parsedLegs.length >= 2) {
@@ -627,7 +779,7 @@ function parseVerticalSpreads(verticalSpreadArray, startTicketId) {
     }
   }
 
-  return matchMultiLeg(tradesData, startTicketId)
+  return matchVerticalSpread(tradesData, startTicketId)
 }
 
 function parseIronCondors(ironCondorArray, startTicketId) {
@@ -638,7 +790,7 @@ function parseIronCondors(ironCondorArray, startTicketId) {
 
     const parsedLegs = header.legs.map(l => {
       const opt = parseOptionSymbol(l.symbol)
-      return { ...opt, side: l.side, quantity: l.filled, premium: l.avgPrice, filledTime: l.filledTime }
+      return { ...opt, symbol: l.symbol, side: l.side, quantity: l.filled, premium: l.avgPrice, filledTime: l.filledTime }
     }).filter(l => l.underlying)
 
     if (parsedLegs.length >= 4) {
@@ -652,7 +804,7 @@ function parseIronCondors(ironCondorArray, startTicketId) {
     }
   }
 
-  return matchMultiLeg(tradesData, startTicketId)
+  return matchIronCondor(tradesData, startTicketId)
 }
 
 function parseStraddles(straddleArray, startTicketId) {
@@ -663,7 +815,7 @@ function parseStraddles(straddleArray, startTicketId) {
 
     const parsedLegs = header.legs.map(l => {
       const opt = parseOptionSymbol(l.symbol)
-      return { ...opt, side: l.side, quantity: l.filled, premium: l.avgPrice, filledTime: l.filledTime }
+      return { ...opt, symbol: l.symbol, side: l.side, quantity: l.filled, premium: l.avgPrice, filledTime: l.filledTime }
     }).filter(l => l.underlying)
 
     if (parsedLegs.length >= 2) {
@@ -677,7 +829,7 @@ function parseStraddles(straddleArray, startTicketId) {
     }
   }
 
-  return matchMultiLeg(tradesData, startTicketId)
+  return matchStraddle(tradesData, startTicketId)
 }
 
 function parseStrangles(strangleArray, startTicketId) {
@@ -688,7 +840,7 @@ function parseStrangles(strangleArray, startTicketId) {
 
     const parsedLegs = header.legs.map(l => {
       const opt = parseOptionSymbol(l.symbol)
-      return { ...opt, side: l.side, quantity: l.filled, premium: l.avgPrice, filledTime: l.filledTime }
+      return { ...opt, symbol: l.symbol, side: l.side, quantity: l.filled, premium: l.avgPrice, filledTime: l.filledTime }
     }).filter(l => l.underlying)
 
     if (parsedLegs.length >= 2) {
@@ -702,7 +854,7 @@ function parseStrangles(strangleArray, startTicketId) {
     }
   }
 
-  return matchMultiLeg(tradesData, startTicketId)
+  return matchStrangle(tradesData, startTicketId)
 }
 
 function parseSingleOptions(longArray, shortArray, startTicketId) {
@@ -714,7 +866,7 @@ function parseSingleOptions(longArray, shortArray, startTicketId) {
       side: row.side,
       status: row.status,
       filledTime: row.filledTime,
-      legs: [{ ...opt, side: row.side, quantity: row.filled, premium: row.avgPrice, filledTime: row.filledTime }]
+      legs: [{ ...opt, symbol: row.symbol, side: row.side, quantity: row.filled, premium: row.avgPrice, filledTime: row.filledTime }]
     }
   }).filter(t => t !== null)
 
@@ -726,7 +878,7 @@ function parseSingleOptions(longArray, shortArray, startTicketId) {
       side: row.side,
       status: row.status,
       filledTime: row.filledTime,
-      legs: [{ ...opt, side: row.side, quantity: row.filled, premium: row.avgPrice, filledTime: row.filledTime }]
+      legs: [{ ...opt, symbol: row.symbol, side: row.side, quantity: row.filled, premium: row.avgPrice, filledTime: row.filledTime }]
     }
   }).filter(t => t !== null)
 

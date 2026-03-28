@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clear Trading Journal Data</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      background: #1f2937;
+      color: white;
+    }
+    .container {
+      text-align: center;
+      padding: 2rem;
+      background: #374151;
+      border-radius: 8px;
+      max-width: 400px;
+    }
+    h1 { margin-top: 0; }
+    button {
+      background: #ef4444;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin: 8px;
+    }
+    button:hover { background: #dc2626; }
+    .success { color: #10b981; margin-top: 16px; }
+    .info { color: #9ca3af; font-size: 14px; margin-top: 16px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Clear Trading Journal Data</h1>
+    <p>This will clear all local trading data from your browser.</p>
+    <button onclick="clearAllData()">Clear All Data</button>
+    <button onclick="checkData()">Check Current Data</button>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    const STORAGE_KEYS = {
+      tickets: 'trading_journal_tickets',
+      rawTransactions: 'trading_journal_raw_transactions',
+      settings: 'trading_journal_settings',
+      priceCache: 'trading_journal_price_cache',
+      intradayCache: 'trading_journal_intraday_cache'
+    };
+
+    function checkData() {
+      const result = document.getElementById('result');
+      let html = '<div class="info">Current data in localStorage:</div>';
+
+      for (const [key, storageKey] of Object.entries(STORAGE_KEYS)) {
+        const data = localStorage.getItem(storageKey);
+        if (data) {
+          let count = 0;
+          try {
+            const parsed = JSON.parse(data);
+            count = Array.isArray(parsed) ? parsed.length : Object.keys(parsed).length;
+          } catch {}
+          html += `<div class="info">${key}: ${count} items</div>`;
+        }
+      }
+
+      if (html === '<div class="info">Current data in localStorage:</div>') {
+        html += '<div class="info">No data found</div>';
+      }
+
+      result.innerHTML = html;
+    }
+
+    function clearAllData() {
+      const result = document.getElementById('result');
+      let clearedCount = 0;
+
+      // Clear all trading journal data
+      for (const storageKey of Object.values(STORAGE_KEYS)) {
+        if (localStorage.getItem(storageKey)) {
+          localStorage.removeItem(storageKey);
+          clearedCount++;
+        }
+      }
+
+      result.innerHTML = `<div class="success">Cleared ${clearedCount} data items. Refresh the trading journal to see the changes.</div>`;
+
+      // Also check and clear any Firebase auth persistence
+      try {
+        sessionStorage.clear();
+      } catch (e) {
+        // Ignore errors
+      }
+    }
+
+    // Check data on page load
+    window.addEventListener('load', checkData);
+  </script>
+</body>
+</html>
