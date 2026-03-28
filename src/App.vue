@@ -434,7 +434,21 @@
         </div>
 
         <!-- Chart Tab -->
-        <div v-show="tradeDetailTab === 'chart'" class="h-[480px] overflow-y-auto">
+        <div v-show="tradeDetailTab === 'chart'" class="h-[520px] overflow-y-auto">
+          <!-- Trade Summary -->
+          <div v-if="selectedSymbolTickets[currentPositionIndex]" class="bg-gray-900 rounded p-3 mb-3 flex flex-wrap gap-3 text-xs">
+            <span class="text-gray-400"><span class="text-gray-500">Contracts:</span> <span class="text-white font-mono">{{ getTotalContracts(selectedSymbolTickets[currentPositionIndex]) }}</span></span>
+            <span class="text-gray-400">
+              <span class="text-gray-500">{{ isOpeningLong(selectedSymbolTickets[currentPositionIndex]) ? 'Debit:' : 'Credit:' }}</span>
+              <span class="font-mono" :class="isOpeningLong(selectedSymbolTickets[currentPositionIndex]) ? 'text-red-400' : 'text-green-400'">
+                {{ isOpeningLong(selectedSymbolTickets[currentPositionIndex]) ? '-' : '+' }}${{ Math.abs(getTicketEntryPrice(selectedSymbolTickets[currentPositionIndex])).toFixed(2) }}
+              </span>
+            </span>
+            <span class="text-gray-400"><span class="text-gray-500">Entry:</span> <span class="text-white">{{ getEntryTimeDisplay(selectedSymbolTickets[currentPositionIndex]) }}</span></span>
+            <span class="text-gray-400"><span class="text-gray-500">Exit:</span> <span class="text-white">{{ getExitTimeDisplay(selectedSymbolTickets[currentPositionIndex]) }}</span></span>
+            <span class="text-gray-400"><span class="text-gray-500">Days:</span> <span class="text-white">{{ getDaysHeld(selectedSymbolTickets[currentPositionIndex]) }}</span></span>
+          </div>
+
           <!-- Intraday Charts -->
           <IntradayChart
             :positions="selectedSymbolTickets"
@@ -449,7 +463,7 @@
         </div>
 
         <!-- Details Tab -->
-        <div v-show="tradeDetailTab === 'details'" class="h-[480px] overflow-y-auto">
+        <div v-show="tradeDetailTab === 'details'" class="h-[520px] overflow-y-auto">
           <!-- Only show current ticket that's being displayed in the graph -->
           <div v-for="pos in selectedSymbolTickets.slice(currentPositionIndex, currentPositionIndex + 1)" :key="pos.ticket" class="bg-gray-900 rounded p-3 mb-3 last:mb-0">
             <div class="flex items-center justify-between mb-3">
@@ -580,7 +594,7 @@
         </div>
 
         <!-- News Tab -->
-        <div v-show="tradeDetailTab === 'news'" class="h-[480px] overflow-y-auto space-y-4">
+        <div v-show="tradeDetailTab === 'news'" class="h-[520px] overflow-y-auto space-y-4">
           <div v-for="pos in selectedSymbolTickets.slice(currentPositionIndex, currentPositionIndex + 1)" :key="'news-' + pos.ticket">
             <div class="flex items-center gap-2 mb-3">
               <span class="text-blue-400 font-mono text-sm">#{{ pos.ticket }}</span>
@@ -3942,6 +3956,49 @@ const closingLegs = (ticket) => {
   }
   // Otherwise, return empty (no closing position)
   return []
+}
+
+// Get total number of contracts
+const getTotalContracts = (ticket) => {
+  const legs = openingLegs(ticket)
+  return legs.reduce((sum, leg) => sum + leg.quantity, 0)
+}
+
+// Get entry time display
+const getEntryTimeDisplay = (ticket) => {
+  const entryTime = ticket.strategies?.[0]?.entry_time
+  if (!entryTime) return 'N/A'
+  try {
+    const date = new Date(entryTime)
+    if (isNaN(date.getTime())) return 'N/A'
+    return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })
+  } catch {
+    return 'N/A'
+  }
+}
+
+// Get exit time display
+const getExitTimeDisplay = (ticket) => {
+  if (!ticket.exit_date) return '—'
+  const exitTime = ticket.strategies?.[0]?.exit_time
+  if (!exitTime) return 'N/A'
+  try {
+    const date = new Date(exitTime)
+    if (isNaN(date.getTime())) return 'N/A'
+    return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })
+  } catch {
+    return 'N/A'
+  }
+}
+
+// Get days held
+const getDaysHeld = (ticket) => {
+  if (!ticket.exit_date || ticket.status === 'OPEN') return '—'
+  const entryDate = new Date(ticket.date + 'T00:00:00-05:00')
+  const exitDate = new Date(ticket.exit_date + 'T00:00:00-05:00')
+  const diffTime = exitDate.getTime() - entryDate.getTime()
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+  return diffDays === 0 ? '< 1 day' : `${diffDays} day${diffDays > 1 ? 's' : ''}`
 }
 
 // Check if opening position is long (buy to open)
