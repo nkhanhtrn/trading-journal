@@ -210,7 +210,7 @@
                     </span>
                   </div>
                   <div v-show="expandedSymbols.has(symbolGroup.symbol)" class="border-t border-gray-600">
-                    <div v-for="group in symbolGroup.groups" :key="group.symbol + group.strategyName + group.strikes + group.expiry" class="border-b border-gray-600/50 last:border-0 cursor-pointer hover:bg-gray-700/50 p-2" @click="selectedPositionGroup = group">
+                    <div v-for="group in symbolGroup.groups" :key="group.tickets[0]?.ticket || group.symbol + group.strategyName + group.strikes + group.expiry" class="border-b border-gray-600/50 last:border-0 cursor-pointer hover:bg-gray-700/50 p-2" @click="selectedPositionGroup = group">
                       <div class="flex items-center justify-between mb-1">
                         <div class="flex items-center gap-1.5">
                           <span class="text-xs font-medium text-white">{{ group.strategyName }}</span>
@@ -240,7 +240,7 @@
               <div v-else class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
                 <div
                   v-for="trade in flattenedTrades"
-                  :key="trade.symbol + trade.strategyName + trade.strikes + trade.expiry"
+                  :key="trade.tickets[0]?.ticket || trade.symbol + trade.strategyName + trade.strikes + trade.expiry"
                   :class="['rounded-lg p-3 cursor-pointer transition-all hover:scale-105 hover:shadow-lg flex flex-col', getEquityColor(trade.symbol)]"
                   @click="selectedPositionGroup = trade"
                 >
@@ -370,14 +370,24 @@
     >
       <template v-if="selectedPositionGroup" #title>
         <div class="flex items-center gap-2 flex-wrap">
-          <span class="text-white font-bold">{{ selectedPositionGroup.symbol }}</span>
+          <span class="text-white font-bold">{{ selectedSymbolTickets[currentPositionIndex]?.symbol || selectedPositionGroup.symbol }}</span>
           <span class="text-gray-500">·</span>
           <span class="px-2 py-0.5 rounded text-sm font-medium" :class="getPositionDirectionClass()">{{ getPositionDirectionLabel() }}</span>
           <span class="text-gray-500">·</span>
-          <span class="text-white font-bold">{{ selectedPositionGroup.strategyName || 'Strategy' }} {{ selectedPositionGroup.strikes }}</span>
+          <span class="text-white font-bold">{{ (selectedSymbolTickets[currentPositionIndex]?.strategies?.[0]?.name || selectedPositionGroup.strategyName || 'Strategy') }} {{ selectedPositionGroup.strikes }}</span>
           <span class="text-gray-500">·</span>
-          <span class="text-lg font-bold" :class="selectedPositionGroup.totalPnL >= 0 ? 'text-green-400' : 'text-red-400'">
-            {{ selectedPositionGroup.totalPnL >= 0 ? '+' : '' }}${{ selectedPositionGroup.totalPnL.toFixed(0) }}
+          <span class="text-lg font-bold" :class="(selectedSymbolTickets[currentPositionIndex]?.pnl || 0) >= 0 ? 'text-green-400' : 'text-red-400'">
+            {{ (selectedSymbolTickets[currentPositionIndex]?.pnl || 0) >= 0 ? '+' : '' }}${{ (selectedSymbolTickets[currentPositionIndex]?.pnl || 0).toFixed(0) }}
+          </span>
+          <!-- Navigation indicator -->
+          <span v-if="selectedSymbolTickets.length > 1" class="ml-auto flex items-center gap-2 text-sm">
+            <button @click.stop="currentPositionIndex = Math.max(0, currentPositionIndex - 1)" :disabled="currentPositionIndex === 0" class="px-2 py-1 rounded hover:bg-gray-700 disabled:opacity-30 disabled:cursor-not-allowed">
+              <i class="fas fa-chevron-left"></i>
+            </button>
+            <span class="text-gray-400 font-mono">{{ currentPositionIndex + 1 }} / {{ selectedSymbolTickets.length }}</span>
+            <button @click.stop="currentPositionIndex = Math.min(selectedSymbolTickets.length - 1, currentPositionIndex + 1)" :disabled="currentPositionIndex >= selectedSymbolTickets.length - 1" class="px-2 py-1 rounded hover:bg-gray-700 disabled:opacity-30 disabled:cursor-not-allowed">
+              <i class="fas fa-chevron-right"></i>
+            </button>
           </span>
         </div>
       </template>
@@ -423,7 +433,7 @@
         <div v-show="tradeDetailTab === 'chart'" class="h-[480px] overflow-y-auto">
           <!-- Intraday Charts -->
           <IntradayChart
-            :positions="selectedPositionGroup.tickets || selectedPositionGroup.positions"
+            :positions="selectedSymbolTickets"
             :symbol="selectedPositionGroup.symbol"
             :show-entry="true"
             :show-exit="true"
@@ -437,7 +447,7 @@
         <!-- Details Tab -->
         <div v-show="tradeDetailTab === 'details'" class="h-[480px] overflow-y-auto">
           <!-- Only show current ticket that's being displayed in the graph -->
-          <div v-for="pos in (selectedPositionGroup.tickets || selectedPositionGroup.positions).slice(currentPositionIndex, currentPositionIndex + 1)" :key="pos.ticket" class="bg-gray-900 rounded p-3 mb-3 last:mb-0">
+          <div v-for="pos in selectedSymbolTickets.slice(currentPositionIndex, currentPositionIndex + 1)" :key="pos.ticket" class="bg-gray-900 rounded p-3 mb-3 last:mb-0">
             <div class="flex items-center justify-between mb-3">
               <div class="flex items-center gap-3">
                 <span class="text-blue-400 font-mono">#{{ pos.ticket }}</span>
@@ -567,7 +577,7 @@
 
         <!-- News Tab -->
         <div v-show="tradeDetailTab === 'news'" class="h-[480px] overflow-y-auto space-y-4">
-          <div v-for="pos in (selectedPositionGroup.tickets || selectedPositionGroup.positions).slice(currentPositionIndex, currentPositionIndex + 1)" :key="'news-' + pos.ticket">
+          <div v-for="pos in selectedSymbolTickets.slice(currentPositionIndex, currentPositionIndex + 1)" :key="'news-' + pos.ticket">
             <div class="flex items-center gap-2 mb-3">
               <span class="text-blue-400 font-mono text-sm">#{{ pos.ticket }}</span>
               <span class="text-xs text-gray-500">{{ pos.date }}</span>
@@ -923,7 +933,7 @@ const handleSignOut = async () => {
     // Clear data and reload from localStorage
     tickets.value = []
     rawTransactions.value = []
-    loadTicketsFromStorage()
+    await loadTicketsFromStorage()
     loadRawTransactions()
   }
 }
@@ -1098,9 +1108,9 @@ watch(isAuthenticated, (newValue) => {
 })
 
 // Use local storage only (skip auth)
-const useLocalStorageOnly = () => {
+const useLocalStorageOnly = async () => {
   showAuthLanding.value = false
-  loadTicketsFromStorage()
+  await loadTicketsFromStorage()
   loadRawTransactions()
 }
 
@@ -1207,11 +1217,19 @@ const isRematching = ref(false)
 const uploadMessage = ref('')
 
 // Load tickets from localStorage on mount
-const loadTicketsFromStorage = () => {
+const loadTicketsFromStorage = async () => {
   try {
     const stored = localStorage.getItem(STORAGE_KEY)
     if (stored) {
       tickets.value = JSON.parse(stored)
+    } else {
+      // Fallback: load from trades.js if localStorage is empty
+      try {
+        const { tradesData } = await import('./data/trades.js')
+        tickets.value = tradesData
+      } catch (e) {
+        console.warn('Could not load trades.js:', e)
+      }
     }
   } catch (e) {
     console.error('Error loading tickets from storage:', e)
@@ -2548,10 +2566,24 @@ const tradeDetailModalOpen = computed({
   }
 })
 
+// All tickets of the selected symbol (for navigation)
+const selectedSymbolTickets = computed(() => {
+  if (!selectedPositionGroup.value) return []
+  const symbol = selectedPositionGroup.value.symbol
+  return tickets.value.filter(t => t.symbol === symbol)
+})
+
 // Reset position index when modal opens
 watch(() => tradeDetailModalOpen.value, (isOpen) => {
   if (isOpen) {
-    currentPositionIndex.value = 0
+    // Find the index of the clicked ticket within all symbol tickets
+    const clickedTicket = selectedPositionGroup.value?.tickets?.[0]
+    if (clickedTicket) {
+      const index = selectedSymbolTickets.value.findIndex(t => t.ticket === clickedTicket.ticket)
+      currentPositionIndex.value = index >= 0 ? index : 0
+    } else {
+      currentPositionIndex.value = 0
+    }
     // Auto-fetch news on modal open if API key configured
     fetchNewsForCurrentPosition()
   }
@@ -2573,8 +2605,7 @@ const getEquivalentSymbols = (symbol) => {
 const fetchNewsForCurrentPosition = async () => {
   if (!settings.value.newsApiKey?.trim()) return
 
-  const positions = selectedPositionGroup.value?.tickets || selectedPositionGroup.value?.positions || []
-  const currentPos = positions[currentPositionIndex.value]
+  const currentPos = selectedSymbolTickets.value[currentPositionIndex.value]
 
   // Don't fetch if already has news or currently loading
   if (!currentPos || currentPos.news?.length > 0 || loadingNews.value[currentPos.ticket]) return
@@ -2828,7 +2859,6 @@ const filteredTickets = computed(() => {
     return matchSymbol && matchStatus && matchDate && matchSelectedDate && matchTradeDateFilter
   })
 
-  console.log('Total tickets:', tickets.value.length, 'Filtered tickets:', filtered.length)
   return filtered
 })
 
@@ -3862,47 +3892,29 @@ const nextDay = () => {
   }
 }
 
-// Group filtered tickets by position (symbol + strategy + strikes + expiry)
+// Display each ticket individually - no grouping
+// Each ticket is its own group for display
 const groupedTrades = computed(() => {
-  const groups = new Map()
-
-  filteredTickets.value.forEach(ticket => {
+  return filteredTickets.value.map(ticket => {
     const legs = ticket.strategies[0]?.legs || []
-    if (legs.length === 0) return
-
     const strategyName = ticket.strategies[0]?.name || ticket.symbol + ' Strategy'
     const uniqueStrikes = [...new Set(legs.map(l => l.strike))].sort((a, b) => a - b).join('/')
     const expiries = [...new Set(legs.map(l => l.expiry))].sort().join(',')
-    const key = `${ticket.symbol}|${strategyName}|${uniqueStrikes}|${expiries}`
 
-    if (!groups.has(key)) {
-      groups.set(key, {
-        symbol: ticket.symbol,
-        strategyName,
-        strikes: uniqueStrikes,
-        expiry: legs[0].expiry, // Primary expiry for display
-        expiries, // All expiries (for calendars/diagonals)
-        tickets: [],
-        totalPnL: 0,
-        totalQuantity: 0,
-        wins: 0,
-        losses: 0,
-        openCount: 0
-      })
+    return {
+      symbol: ticket.symbol,
+      strategyName,
+      strikes: uniqueStrikes,
+      expiry: legs[0]?.expiry || null, // Primary expiry for display
+      expiries, // All expiries (for calendars/diagonals)
+      tickets: [ticket],
+      totalPnL: ticket.pnl || 0,
+      totalQuantity: legs[0]?.quantity || 0,
+      wins: ticket.status === 'WIN' ? 1 : 0,
+      losses: ticket.status === 'LOSS' ? 1 : 0,
+      openCount: ticket.status === 'OPEN' ? 1 : 0
     }
-
-    const group = groups.get(key)
-    group.tickets.push(ticket)
-    group.totalPnL += (ticket.pnl || 0)
-    group.totalQuantity += legs[0].quantity
-
-    if (ticket.status === 'WIN') group.wins++
-    else if (ticket.status === 'LOSS') group.losses++
-    else if (ticket.status === 'OPEN') group.openCount++
-  })
-
-  // Sort groups by P&L (highest first)
-  return Array.from(groups.values()).sort((a, b) => b.totalPnL - a.totalPnL)
+  }).sort((a, b) => b.totalPnL - a.totalPnL)
 })
 
 // Group trades by symbol for top-level organization
@@ -3931,7 +3943,18 @@ const groupedBySymbol = computed(() => {
     symbolGroup.totalPnL += group.totalPnL
   })
 
-  return Array.from(symbolMap.values()).sort((a, b) => b.totalPnL - a.totalPnL)
+  const result = Array.from(symbolMap.values()).sort((a, b) => b.totalPnL - a.totalPnL)
+
+  // Debug logging
+  console.log('=== groupedBySymbol ===')
+  result.forEach(s => {
+    console.log(`Symbol: ${s.symbol}, Groups: ${s.groups.length}`)
+    s.groups.forEach(g => {
+      console.log(`  Ticket: ${g.tickets[0]?.ticket}, Strikes: ${g.strikes}, Entry: ${g.tickets[0]?.strategies[0]?.entry_time}`)
+    })
+  })
+
+  return result
 })
 
 // Split legs into opening (first half) and closing (second half)
